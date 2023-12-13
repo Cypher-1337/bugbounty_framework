@@ -1,0 +1,53 @@
+.dark{
+    --body-color: #18191A;
+    --sidebar-color: #1b1b1b;
+    --primary-color: #838383;
+    --primary-color-light: #3A3B3C;
+    --toggle-color: #FFF;
+    --text-color: #CCC;
+}
+  
+.light{
+    --body-color: #2C2546;      /* Purple background color */
+    --sidebar-color: #322C4E;   /* Darker purple for the sidebar */
+    --primary-color: #B76FBF;   /* Purple primary color */
+    --primary-color-light: #735088; /* Lighter shade of purple */
+    --toggle-color: #FFF;
+    --text-color: #CCC;
+}
+
+#root{
+  box-sizing: border-box;
+}
+
+body{
+  height:fit-content;
+  background-color: grey;
+}
+.App{
+  display:flex;
+  width: 100%;
+  color: white;
+  background-color: var(--sidebar-color);
+}
+
+
+.dashboard{
+  height: 110vh;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.table-content{
+  display: flex;
+  flex-direction: column;
+  height:100%;
+  border: 1px solid var(--primary-color);
+}
+
+
+.filter-area{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}

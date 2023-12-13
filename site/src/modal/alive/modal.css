@@ -1,0 +1,108 @@
+.dark{
+    --body-color: #18191A;
+    --sidebar-color: #1b1b1b;
+    --primary-color: #838383;
+    --primary-color-light: #3A3B3C;
+    --toggle-color: #FFF;
+    --text-color: #CCC;
+}
+  
+.light{
+    --body-color: #2C2546;      /* Purple background color */
+    --sidebar-color: #322C4E;   /* Darker purple for the sidebar */
+    --primary-color: #B76FBF;   /* Purple primary color */
+    --primary-color-light: #735088; /* Lighter shade of purple */
+    --toggle-color: #FFF;
+    --text-color: #CCC;
+}
+
+
+.modal-background {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+.modal-content {
+    width: 50%;
+    height: 80%;
+    border-radius: 12px;
+    background-color: var(--sidebar-color);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    color: white;
+}
+
+
+
+.modal-content .title {
+    font-size: larger;
+    display: inline-block;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.titleCloseBtn {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.titleCloseBtn button {
+    background-color: transparent;
+    border: none;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.modal-content .body {
+    flex: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 1.7rem;
+}
+
+.modal-content .alive-content{
+    width: 100%
+}
+
+.modal-content .alive-prop{
+    width: 100%;
+    display:flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0
+}
+.alive-prop p{
+    flex: 50%;
+    margin-left: 100px;
+}
+.alive-prop span{
+    flex: 50%;
+    color: var(--text-color)
+}
+.alive-prop .input-style{
+    flex: 50%;
+}
+.modal-content .footer {
+    flex: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content .footer button {
+    width: 150px;
+    height: 45px;
+    margin: 10px;
+    border-radius: 8px;
+    font-size: 20px;
+}

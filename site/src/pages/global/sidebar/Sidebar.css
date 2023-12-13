@@ -1,0 +1,196 @@
+.light{
+  --body-color: #2C2546;      /* Purple background color */
+  --sidebar-color: #322C4E;   /* Darker purple for the sidebar */
+  --primary-color: #B76FBF;   /* Purple primary color */
+  --primary-color-light: #735088; /* Lighter shade of purple */
+  --toggle-color: #FFF;
+  --text-color: #CCC;
+  
+  
+    --tran-02: all 0.2s ease;
+    --tran-03: all 0.3s ease;
+    --tran-04: all 0.4s ease;
+    --tran-05: all 0.5s ease;
+}
+
+.dark {
+  --body-color: #18191A;
+  --sidebar-color: #1b1b1b;
+  --primary-color: #838383;
+  --primary-color-light: #3A3B3C;
+  --toggle-color: #FFF;
+  --text-color: #CCC;
+}
+
+.sidebar .bug-icon {
+  color: var(--primary-color);
+}
+
+
+.sidebar {
+  position: sticky;
+  left: 0;
+  top: 0;
+  width: 250px;
+  height: 100vh;
+  padding: 10px 15px;
+  background-color: var(--sidebar-color);
+  transition: var(--tran-04);
+  border: 1px solid var(--primary-color);
+}
+
+.sidebar.collapsed {
+  width: 88px;
+}
+
+.sidebar .text {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-color);
+  transition: var(--tran-04);
+  white-space: nowrap;
+  opacity: 1;
+  flex: 1;
+}
+
+.sidebar.collapsed .text {
+  opacity: 0;
+}
+
+.sidebar header .image-text {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.sidebar header .header-text {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+.header-text .name {
+  font-weight: 700;
+}
+
+.sidebar header .toggle-cover {
+  position: absolute;
+  top: 5%;
+  right: -14px;
+  background-color: var(--primary-color);
+  transform: translateY(-50%);
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--sidebar-color);
+}
+
+.sidebar ul {
+  margin: 60px 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-top: 10px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+}
+
+.sidebar li .link-a {
+  height: 40px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px 28px;
+  transition: var(--tran-04);
+}
+
+.sidebar li .link-icon {
+  font-size: 24px;
+  margin-right: 40px;
+  color: var(--text-color);
+}
+
+.sidebar li {
+  border-radius: 6px;
+}
+
+.sidebar li:hover {
+  background: var(--primary-color);
+}
+
+.sidebar li:hover .text,
+.sidebar li:hover .link-icon {
+  color: var(--sidebar-color);
+  transition: var(--tran-03);
+}
+
+.sidebar .menu-bar {
+  height: 88%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.sidebar .menu-bar .bottom-content {
+  width: 100%;
+  text-align: center;
+}
+
+.menu-bar .mode {
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--primary-color-light);
+  border-radius: 6px;
+}
+
+
+.menu-bar .mode .sun {
+  opacity: 0;
+}
+
+.bottom-content .mode .toggle-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-width: 60px;
+  outline: none;
+}
+
+.sidebar.collapsed .mode .toggle-switch {
+  position: absolute;
+  right: 15px;
+}
+
+.sidebar.collapsed .data-form {
+  width: 90px;
+}
+
+
+.data-form{
+  width: 250px;
+  background-color: var(--primary-color);
+  transition: var(--tran-04);
+
+}
+
+.menu-item{
+  background-color: var(--sidebar-color);
+
+}
+
+
+/* sx={{ width: "auto", color: "green", background: "#3A3B3C"}} */

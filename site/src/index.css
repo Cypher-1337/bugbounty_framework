@@ -1,0 +1,22 @@
+:root{
+  --body-color: #18191A;
+  --sidebar-color: #1b1b1b;
+  --primary-color: #838383;
+  --primary-color-light: #3A3B3C;
+  --toggle-color: #FFF;
+  --text-color: #CCC;
+}
+
+
+body,
+.content {
+  width: 100%;
+  height: 100%;
+  margin:0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+box-sizing: border-box;
+}
+
+#root{
+}
