@@ -4,8 +4,8 @@ import Axios from 'axios';
 export const fetchSubdomainsData = async (inputFilter) => {
   try {
     const url = inputFilter
-    ? `http://127.0.0.1:5000/api/v1/subdomains?filter=${encodeURIComponent(inputFilter)}`
-    : 'http://127.0.0.1:5000/api/v1/subdomains';
+    ? `/api/v1/subdomains?filter=${encodeURIComponent(inputFilter)}`
+    : '/api/v1/subdomains';
 
     const response = await Axios.get(url);
     return response.data;

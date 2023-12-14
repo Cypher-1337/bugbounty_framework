@@ -3,7 +3,7 @@ import Axios from 'axios';
 export const fetchAliveData = async (id) => {
   try {
     // Append the inputFilter to the API URL if it has a value
-    const url = `http://127.0.0.1:5000/api/v1/alive/${encodeURIComponent(id)}`
+    const url = `/api/v1/alive/${encodeURIComponent(id)}`
 
     const response = await Axios.get(url);
     

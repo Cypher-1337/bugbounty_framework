@@ -4,8 +4,8 @@ export const fetchAliveData = async (inputFilter) => {
   try {
     // Append the inputFilter to the API URL if it has a value
     const url = inputFilter
-      ? `http://127.0.0.1:5000/api/v1/alive?filter=${encodeURIComponent(inputFilter)}`
-      : 'http://127.0.0.1:5000/api/v1/alive';
+      ? `/api/v1/alive?filter=${encodeURIComponent(inputFilter)}`
+      : '/api/v1/alive';
 
     const response = await Axios.get(url);
     
