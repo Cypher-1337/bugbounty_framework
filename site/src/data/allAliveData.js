@@ -25,6 +25,9 @@ export const formatAliveData = (data) => {
     status: alive.status,
     size:  alive.size,
     title: alive.title,
+    tech: alive.tech,
+    waf: alive.waf,
+    comment: alive.comment,
     date: alive.date
     // Add more fields as needed
   }));

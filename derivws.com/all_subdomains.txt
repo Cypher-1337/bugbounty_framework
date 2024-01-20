@@ -1,0 +1,7 @@
+derivws.com
+frontend.derivws.com
+green.derivws.com
+red.derivws.com
+blue.derivws.com
+ws.derivws.com
+*.derivws.com

@@ -1,0 +1,45 @@
+.dark{
+    --body-color: #18191A;
+    --sidebar-color: #1b1b1b;
+    --primary-color: #838383;
+    --primary-color-light: #3A3B3C;
+    --toggle-color: #FFF;
+    --text-color: #CCC;
+}
+  
+.light{
+    --body-color: #2C2546;      /* Purple background color */
+    --sidebar-color: #322C4E;   /* Darker purple for the sidebar */
+    --primary-color: #B76FBF;   /* Purple primary color */
+    --primary-color-light: #735088; /* Lighter shade of purple */
+    --toggle-color: #FFF;
+    --text-color: #CCC;
+}
+
+
+.recon{
+    padding: 40px 80px;
+    background-color: var(--sidebar-color);
+    flex: 1
+}
+
+.recon-content{
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    flex: 30%;
+}
+
+.recon-field{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.recon-result{
+    width: 80%;
+    flex: 70%;
+
+}

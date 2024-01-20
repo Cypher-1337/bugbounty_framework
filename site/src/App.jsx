@@ -1,8 +1,13 @@
 import './App.css';
+
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import Sidebar from './pages/global/sidebar/Sidebar';
 import Dashboard from './pages/dashboard/Dashboard';
-import { createContext, useState } from 'react';
+import Recon from './pages/recon/recon';
+import { createContext, useState, useEffect } from 'react';
+import Monitor from './pages/monitor/monitor';
+import Display from './pages/monitor/Display';
+import Navbar from './pages/global/navbar/Navbar';
 
 export const AppContext = createContext()
 
@@ -18,14 +23,21 @@ function App() {
 
 
 
+  
   return (
   <AppContext.Provider value={{data, setData, darkMode, setDarkMode, isSidebarCollapsed, setIsSidebarCollapsed, inputFilter, setInputFilter}}>
     <div className={darkMode === 'dark' ? "App dark" : "App light"}>
       <Router>
         <Sidebar />
-          <Routes>
-            <Route path='/dashboard' element={<Dashboard />}></Route>
-          </Routes>
+        <div className='nav-dashboard'>
+          <Navbar />
+            <Routes>
+              <Route path='/dashboard' element={<Dashboard />}></Route>
+              <Route path='/recon' element={<Recon />}></Route>
+              <Route path='/monitor' element={<Monitor />}></Route>
+              <Route path='/monitor/display' element={<Display />}></Route>
+            </Routes>
+        </div>
       </Router>
       
     </div>

@@ -1,6 +1,8 @@
 const connection = require('../db/mysql')
 
 
+
+
 const formatDateTime = (dateTimeString) => {
   const date = new Date(dateTimeString);
   const year = date.getFullYear();
@@ -53,6 +55,7 @@ const getAllAlive = async (req, res) => {
             date: formatDateTime(result.date), // Assuming 'date' is the column with the date string
           }));
 
+          
           res.json(formattedResults);
 
 
@@ -77,7 +80,7 @@ const updateAlive = async (req, res) => {
     connection.execute(
       `UPDATE live SET alive = ?, status = ?, size = ?, title = ? WHERE id = ?`,
       [`${alive}`, status, size, `${title}`, id],
-      
+       
       function(err, results, fields) {
         if (err) {
           console.error('Error updating data:', err);
@@ -139,7 +142,6 @@ const deleteAlive = async (req, res) => {
       [id],
       function(err, results, fields) {
         if (err) {
-          console.error('Error updating data:', err);
           return res.status(500).json({ message: 'Internal Server Error' });
         }
 

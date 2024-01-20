@@ -59,7 +59,7 @@ function EditModal({ domainId, onClose }) {
       setWaybackValue(editedWayback);
     
       // Send a POST request to update the data
-      const url = 'http://127.0.0.1:5000/api/v1/domains';
+      const url = '/api/v1/domains';
       const requestBody = {
         id: formattedDomains[0].id,
         domain: editedDomain,

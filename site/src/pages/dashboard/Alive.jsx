@@ -117,6 +117,33 @@ const handleScanButtonClick = (url) => {
 
     },
     {
+      field: 'tech',
+      headerName: 'Tech',
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      width: 250,
+      cellClassName: 'custom-cell', // Add this line
+
+    },
+    {
+      field: 'waf',
+      headerName: 'Waf',
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      width: 150,
+      cellClassName: 'custom-cell', // Add this line
+
+    },
+    {
+      field: 'comment',
+      headerName: 'Comment',
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      width: 75,
+      cellClassName: 'custom-cell', // Add this line
+
+    },
+    {
         field: 'date',
         headerName: 'Date',
         type: 'Date',

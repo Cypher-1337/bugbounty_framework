@@ -62,7 +62,7 @@ function EditModal({ aliveId, onClose }) {
       setSizeValue(editedSize);
       setTitleValue(editedTitle);
       // Send a POST request to update the data
-      const url = 'http://127.0.0.1:5000/api/v1/alive';
+      const url = '/api/v1/alive';
       const requestBody = {
         id: formattedAlive[0].id,
         alive: editedAlive,

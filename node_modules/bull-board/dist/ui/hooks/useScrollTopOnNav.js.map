@@ -1,0 +1,1 @@
+{"version":3,"file":"useScrollTopOnNav.js","sourceRoot":"","sources":["../../../src/ui/hooks/useScrollTopOnNav.ts"],"names":[],"mappings":";;;AAAA,iCAAkC;AAClC,uDAA+C;AAE/C,SAAgB,iBAAiB;IAC/B,MAAM,EAAE,GAAG,EAAE,GAAG,8BAAW,EAAE,CAAC;IAC9B,iBAAS,CAAC,GAAG,EAAE;QACb,MAAM,CAAC,QAAQ,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC;IACxB,CAAC,EAAE,CAAC,GAAG,CAAC,CAAC,CAAC;AACZ,CAAC;AALD,8CAKC"}

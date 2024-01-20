@@ -31,7 +31,7 @@
   position: sticky;
   left: 0;
   top: 0;
-  width: 250px;
+  width: 70px;
   height: 100vh;
   padding: 10px 15px;
   background-color: var(--sidebar-color);
@@ -53,9 +53,6 @@
   flex: 1;
 }
 
-.sidebar.collapsed .text {
-  opacity: 0;
-}
 
 .sidebar header .image-text {
   display: flex;
@@ -70,9 +67,6 @@
   margin-left: 20px;
 }
 
-.header-text .name {
-  font-weight: 700;
-}
 
 .sidebar header .toggle-cover {
   position: absolute;
@@ -162,26 +156,25 @@
 }
 
 .bottom-content .mode .toggle-switch {
+  width: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
-  min-width: 60px;
   outline: none;
 }
 
-.sidebar.collapsed .mode .toggle-switch {
+ .mode .toggle-switch {
   position: absolute;
   right: 15px;
 }
 
-.sidebar.collapsed .data-form {
-  width: 90px;
+.data-form {
+  border-radius: 5px;
 }
 
 
 .data-form{
-  width: 250px;
   background-color: var(--primary-color);
   transition: var(--tran-04);
 

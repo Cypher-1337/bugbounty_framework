@@ -5,6 +5,7 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import { IconButton } from '@mui/material';
 import SearchIconOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
+import MonitorIcon from '@mui/icons-material/Monitor';
 import Switch from '@mui/material/Switch';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import "./Sidebar.css"
@@ -17,11 +18,8 @@ export default function Sidebar() {
 
 
     // Getting the data from useContext
-    const {data, setData, darkMode, setDarkMode, isSidebarCollapsed, setIsSidebarCollapsed} = useContext(AppContext)
+    const {data, setData, darkMode, setDarkMode} = useContext(AppContext)
 
-    const toggleSidebar = () => {
-        setIsSidebarCollapsed(!isSidebarCollapsed);
-      };
 
     const toggleDarkMode = () => {
         setDarkMode(darkMode === 'dark' ? 'light' : 'dark');
@@ -38,23 +36,13 @@ export default function Sidebar() {
       
 
   return ( 
-    <nav className={`sidebar ${darkMode === 'dark' ? 'dark' : 'light'} ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+    <nav className={`sidebar ${darkMode === 'dark' ? 'dark' : 'light'}`}>
         <header>
             <div className='image-text'>
                 <IconButton> 
                     <BugReportOutlinedIcon className='bug-icon' sx={{ fontSize: 40}}  /> 
-                </IconButton>
-
-                <div className='text header-text'>
-                    <span className='name'>Bug Bounty</span>
-                </div>
+                </IconButton>   
             </div>
-            <div className={isSidebarCollapsed ? 'collapsed-toggle toggle-cover' : 'toggle-cover'}>
-                <IconButton onClick={toggleSidebar}>
-                    <ArrowForwardIosIcon className='toggle' sx={{ fontSize: 'small' }} />
-                </IconButton>
-            </div>
-
         </header>
 
         <div className='menu-bar'>
@@ -63,7 +51,6 @@ export default function Sidebar() {
                     <li className='nav-link'>
                         <Link to="/dashboard" className='link-a'>
                             <DashboardOutlinedIcon className='link-icon' />
-                            <span className='text nav-text'>Dashboard</span>
                         </Link>
                         
                     </li>
@@ -71,7 +58,6 @@ export default function Sidebar() {
                     <li className='nav-link'>
                         <Link to="/recon" className='link-a'>
                             <SearchIconOutlinedIcon className='link-icon' />
-                            <span className='text nav-text'>Recon</span>
                         </Link>
                         
                     </li>
@@ -79,13 +65,15 @@ export default function Sidebar() {
                     <li className='nav-link'>
                         <Link to="/scanner" className='link-a'>
                             <ConstructionOutlinedIcon className='link-icon' />
-                            <span className='text nav-text'>Scanner</span>
                         </Link>
-                        
                     </li>
 
 
-
+                    <li className='nav-link'>
+                        <Link to="/monitor" className='link-a'>
+                            <MonitorIcon className='link-icon' />
+                        </Link>
+                    </li>
 
                 </ul>
             </div>
@@ -111,7 +99,6 @@ export default function Sidebar() {
                 
                 <li className='mode'>
 
-                    <span className='mode-text text'>Dark Mode</span>
 
                     <div className={darkMode === 'dark' ? 'dark toggle-switch' : 'light toggle-switch'}>
                         <Switch defaultChecked={darkMode === 'dark'}

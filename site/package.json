@@ -1,7 +1,6 @@
 {
   "name": "site",
   "version": "0.1.0",
-  "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -22,7 +21,10 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.2",
+    "date-fns": "^3.0.6",
+    "dompurify": "^3.0.6",
     "formik": "^2.4.5",
+    "http-proxy-middleware": "^2.0.6",
     "lodash.debounce": "^4.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -30,7 +32,10 @@
     "react-query": "^3.39.3",
     "react-router-dom": "^6.20.1",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "react-syntax-highlighter": "^15.5.0",
+    "socket.io-client": "^4.7.3",
+    "web-vitals": "^2.1.4",
+    "websocket": "^1.0.34"
   },
   "scripts": {
     "start": "react-scripts start",
