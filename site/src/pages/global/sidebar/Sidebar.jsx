@@ -5,6 +5,7 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import { IconButton } from '@mui/material';
 import SearchIconOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
+import DownloadIcon from '@mui/icons-material/Download';
 import MonitorIcon from '@mui/icons-material/Monitor';
 import Switch from '@mui/material/Switch';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
@@ -79,6 +80,14 @@ export default function Sidebar() {
             </div>
 
             <div className='bottom-content'>
+
+                    <li className='nav-link'>
+                        <Link to="/download" className='link-a'>
+                            <DownloadIcon className='link-icon' />
+                        </Link>
+                    </li>
+
+
                 <li>
                     <FormControl className={darkMode === 'dark' ? 'dark data-form' : 'light data-form'}>
                         <InputLabel id="demo-simple-select-label" sx={{color: 'white'}}>Data</InputLabel>
