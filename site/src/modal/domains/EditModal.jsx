@@ -15,6 +15,7 @@ function EditModal({ domainId, onClose }) {
   const [domainValue, setDomainValue] = useState('');
   const [monitorValue, setMonitorValue] = useState('');
   const [waybackValue, setWaybackValue] = useState('');
+  const [programValue, setProgramValue] = useState('');
 
   // Fetch data based on inputFilter using useQuery
   const { data, isLoading, isError } = useQuery(['domainsData', domainId], () =>
@@ -37,6 +38,7 @@ function EditModal({ domainId, onClose }) {
       let editedDomain = domainValue;
       let editedMonitor = monitorValue;
       let editedWayback = waybackValue;
+      let editedProgram = programValue;
     
       // Check and update domain value if it's empty or not a valid domain
       if (!editedDomain || !domainPattern.test(editedDomain)) {
@@ -57,6 +59,7 @@ function EditModal({ domainId, onClose }) {
       setDomainValue(editedDomain);
       setMonitorValue(editedMonitor);
       setWaybackValue(editedWayback);
+      setWaybackValue(editedProgram);
     
       // Send a POST request to update the data
       const url = '/api/v1/domains';
@@ -65,6 +68,7 @@ function EditModal({ domainId, onClose }) {
         domain: editedDomain,
         monitor: editedMonitor,
         wayback: editedWayback,
+        program: editedProgram,
       };
 
       await Axios.post(url, requestBody);
@@ -139,6 +143,18 @@ function EditModal({ domainId, onClose }) {
                 </FormControl>
               </div>
             </div> 
+
+            <div className='domain-prop'>
+              <p>Program: </p>
+              <div className='input-style'>
+                <FormControl color='success' fullWidth sx={{ backgroundColor: '#eee', borderRadius: '5px 5px 0 0'}}>
+                 
+                  <Input id="domain" value={programValue} onChange={(e) => setProgramValue(e.target.value)}
+                    sx={{ padding: ' 10px 20px', fontSize: '20px'}}
+                  />
+                </FormControl>
+              </div>
+            </div>
 
             <div className='domain-prop'>
               <p>Date: </p>

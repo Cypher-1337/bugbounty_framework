@@ -74,6 +74,13 @@ export default function DomainsData() {
       
   }, 
   {
+    field: 'program',
+    headerName: 'Program',
+    width: 400,
+    headerClassName: 'super-app-theme--header',
+    headerAlign: 'center',
+  },
+  {
     field: 'edit', // You can customize this field name
     headerName: 'Edit',
     width: 150,

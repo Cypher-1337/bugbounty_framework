@@ -72,10 +72,11 @@ const updateDomain = async (req, res) => {
     const domain = req.body.domain;
     const monitor = req.body.monitor;
     const wayback = req.body.wayback;
+    const program = req.body.program;
 
     connection.execute(
-      `UPDATE domains SET domain = ?, monitor = ?, wayback = ? WHERE id = ?`,
-      [`${domain}`, monitor, wayback, id],
+      `UPDATE domains SET domain = ?, monitor = ?, wayback = ?, program = ? WHERE id = ?`,
+      [`${domain}`, monitor, wayback, program, id],
       function(err, results, fields) {
         if (err) {
           console.error('Error updating data:', err);

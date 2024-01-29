@@ -24,7 +24,8 @@ export const formatDomainsData = (data) => {
     domain: domain.domain,
     monitor: domain.monitor,
     wayback:  domain.wayback,
-    date: domain.date
+    date: domain.date,
+    program: domain.program
     // Add more fields as needed
   }));
 };
