@@ -7,7 +7,7 @@ const monitorRoute = require('./routes/monitorRoute');
 const reconRoute = require('./routes/reconRoute');
 const downloadRoute = require('./routes/downloadRoute')
 const notificationRoute = require('./routes/notificationRoute')
-require('./monitor/change_detection')
+// require('./monitor/change_detection')
 const http = require('http');
 
 

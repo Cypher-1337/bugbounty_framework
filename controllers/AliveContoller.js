@@ -155,9 +155,37 @@ const deleteAlive = async (req, res) => {
   }
 }
 
+const updateScanned = async (req, res) => {
+  try {
+
+    // Get the domain details from the request body
+    const id = req.params.id;
+    const scanned = req.body.scanned
 
 
-module.exports = {getAllAlive, getAlive, updateAlive, deleteAlive}
+    connection.execute(
+      `UPDATE live SET scanned = ? WHERE id = ?`,
+      [scanned,  id],
+       
+      function(err, results, fields) {
+        if (err) {
+          console.error('Error updating data:', err);
+          return res.status(500).json({ message: 'Internal Server Error' });
+        }
+
+        res.json(`${id} Set to ${scanned}`);
+      }
+
+    );
+  } catch (error) {
+    console.error('Error updating data:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
+
+module.exports = {getAllAlive, getAlive, updateAlive, deleteAlive, updateScanned}
 
 
 

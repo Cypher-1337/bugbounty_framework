@@ -7,7 +7,6 @@ import Recon from './pages/recon/recon';
 import { createContext, useState, useEffect } from 'react';
 import Monitor from './pages/monitor/monitor';
 import Display from './pages/monitor/Display';
-import Navbar from './pages/global/navbar/Navbar';
 
 export const AppContext = createContext()
 
@@ -30,7 +29,6 @@ function App() {
       <Router>
         <Sidebar />
         <div className='nav-dashboard'>
-          <Navbar />
             <Routes>
               <Route path='/dashboard' element={<Dashboard />}></Route>
               <Route path='/recon' element={<Recon />}></Route>

@@ -26,7 +26,8 @@ export const formatAliveData = (data) => {
     tech: alive.tech,
     waf: alive.waf,
     comment: alive.comment,
-    date: alive.date
+    date: alive.date,
+    scanned: alive.scanned
     // Add more fields as needed
   }));
 };

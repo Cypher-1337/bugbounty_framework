@@ -1,5 +1,5 @@
 const express = require('express')
-const {getAllAlive, getAlive, updateAlive, deleteAlive} = require('../controllers/AliveContoller.js')
+const {getAllAlive, getAlive, updateAlive, deleteAlive, updateScanned} = require('../controllers/AliveContoller.js')
 const router = express.Router()
 
 router.route('/')
@@ -9,5 +9,6 @@ router.route('/')
 router.route('/:id')
     .get(getAlive)
     .delete(deleteAlive)
+    .patch(updateScanned)
 
 module.exports = router

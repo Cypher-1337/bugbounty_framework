@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import { Button, Modal } from '@mui/material';
 import EditModal from '../../modal/alive/EditModal';
 import DeleteModal from '../../modal/alive/DelModal';
+import Axios from 'axios';
 
 export default function AliveData() {
   
@@ -51,9 +52,19 @@ export default function AliveData() {
   };
 // ------------------------------------------------------
 
-const handleScanButtonClick = (url) => {
-  // Implement the logic for the scan button click
-  alert(`Scan button clicked for URL: ${url}`);
+const  handleScannedButtonClick = async (id ,scannedValue) => {
+  const oppositeValue = scannedValue === 'true' ? 'false' : 'true';
+  const url = "/api/v1/alive/"+id;
+  const requestBody = {
+    scanned: oppositeValue
+  };
+
+  try {
+    const response = await Axios.patch(url, requestBody);
+    alert(`${response.data}`);
+  } catch (error) {
+    alert(`Error: ${error.message}`);
+  }  
 };
 
   // Fetch data based on inputFilter using useQuery
@@ -76,14 +87,6 @@ const handleScanButtonClick = (url) => {
           <a style={{ textDecoration: 'none', color: 'white' }} href={params.value} target="_blank" rel="noopener noreferrer">
             {params.value}
           </a>
-          <Button
-            variant="outlined"
-            color="warning"  // You can customize the color as needed
-            onClick={() => handleScanButtonClick(params.row.alive)}
-            style={{ marginLeft: 'auto' }}
-          >
-            Scan
-          </Button>
         </div>
       ),
       cellClassName: 'custom-cell',
@@ -112,7 +115,7 @@ const handleScanButtonClick = (url) => {
         headerName: 'Title',
         headerClassName: 'super-app-theme--header',
         headerAlign: 'center',
-        width: 300,
+        width: 200,
         cellClassName: 'custom-cell', // Add this line
 
     },
@@ -121,7 +124,7 @@ const handleScanButtonClick = (url) => {
       headerName: 'Tech',
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
-      width: 250,
+      width: 150,
       cellClassName: 'custom-cell', // Add this line
 
     },
@@ -139,7 +142,7 @@ const handleScanButtonClick = (url) => {
       headerName: 'Comment',
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
-      width: 75,
+      width: 100,
       cellClassName: 'custom-cell', // Add this line
 
     },
@@ -154,6 +157,25 @@ const handleScanButtonClick = (url) => {
 
     },
     {
+      field: 'scanned',
+      headerName: 'Scanned',
+      type: 'Scanned',
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      width: 150,
+      cellClassName: 'custom-cell', // Add this line
+      renderCell: (params) => (
+        <Button
+        variant="outlined"
+        color={params.row.scanned === 'true' ? 'success' : 'info'}
+        onClick={() => handleScannedButtonClick(params.row.id, params.row.scanned)}
+      >
+        {params.row.scanned}
+      </Button>
+      ),
+
+    },
+    {
       field: 'edit', // You can customize this field name
       headerName: 'Edit',
       width: 100,
@@ -161,7 +183,7 @@ const handleScanButtonClick = (url) => {
       renderCell: (params) => (
         <Button
         variant="contained"
-        color="success"
+        color="secondary"
         onClick={() => handleEditButtonClick(params.row.id)}
       >
         Edit
@@ -190,15 +212,21 @@ const handleScanButtonClick = (url) => {
 
   const getRowClassName = (p) => {
     const statusValue = p.row.status;
-    if (statusValue === 200 || statusValue === 204) {
+    const scannedValue = p.row.scanned;
+    
+    if (scannedValue === 'true') {
+      return 'black-background';
+    } else {
+      if (statusValue === 200 || statusValue === 204) {
         return 'green-background';
-    } else if (statusValue >= 300 & statusValue < 400) {
+      } else if (statusValue >= 300 && statusValue < 400) {
         return 'blue-background';
-    } else if (statusValue >= 400) {
+      } else if (statusValue >= 400) {
         return 'red-background';
+      }
     }
-    return '';
   };
+  
 
   
   if (isLoading) {
@@ -241,7 +269,7 @@ const handleScanButtonClick = (url) => {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 100,
+              pageSize: 50,
             },
           },
         }}
@@ -274,6 +302,10 @@ const handleScanButtonClick = (url) => {
           },
           '& .blue-background': {
             backgroundColor: '#002244',
+            color: 'white',
+          },
+          '& .black-background': {
+            backgroundColor: '#000',
             color: 'white',
           },
           '& .custom-cell': {
