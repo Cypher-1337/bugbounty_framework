@@ -1,11 +1,7 @@
 import React, {useContext} from 'react'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import { IconButton } from '@mui/material';
-import SearchIconOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
-import DownloadIcon from '@mui/icons-material/Download';
 import MonitorIcon from '@mui/icons-material/Monitor';
 import Switch from '@mui/material/Switch';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
@@ -32,10 +28,6 @@ export default function Sidebar() {
     
 
 
-    
-
-      
-
   return ( 
     <nav className={`sidebar ${darkMode === 'dark' ? 'dark' : 'light'}`}>
         <header>
@@ -57,20 +49,6 @@ export default function Sidebar() {
                     </li>
 
                     <li className='nav-link'>
-                        <Link to="/recon" className='link-a'>
-                            <SearchIconOutlinedIcon className='link-icon' />
-                        </Link>
-                        
-                    </li>
-
-                    <li className='nav-link'>
-                        <Link to="/scanner" className='link-a'>
-                            <ConstructionOutlinedIcon className='link-icon' />
-                        </Link>
-                    </li>
-
-
-                    <li className='nav-link'>
                         <Link to="/monitor" className='link-a'>
                             <MonitorIcon className='link-icon' />
                         </Link>
@@ -81,11 +59,7 @@ export default function Sidebar() {
 
             <div className='bottom-content'>
 
-                    <li className='nav-link'>
-                        <Link to="/download" className='link-a'>
-                            <DownloadIcon className='link-icon' />
-                        </Link>
-                    </li>
+
 
 
                 <li>

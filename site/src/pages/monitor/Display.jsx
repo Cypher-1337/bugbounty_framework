@@ -1,135 +1,143 @@
-import { Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { List, ListItemText, ListItem, Typography, Box, Paper } from '@mui/material';
 
 function Display() {
-    const [savedHtml, setSavedHtml] = useState('');
-    const [latestDifferences, setLatestDifferences] = useState('');
-    // Get All diff_files that exist
-    const [diffFiles, setDiffFiles] = useState([]);
-    const location = useLocation();
+  const [files, setFiles] = useState([]);
+  const [newFiles, setNewFiles] = useState([]);
+  const [folder, setFolder] = useState('');
+  const [fileContent, setFileContent] = useState('');
+  const [note, setNote] = useState([]);
 
-    const [fileName, setFileName] = useState('');
-    const urlParam = new URLSearchParams(location.search).get('url');
-  
-    const fetchData = async (file) => {
-        try {
-            if (!urlParam) {
-                console.error('URL parameter is not defined.');
-                // Handle the case where urlParam is not defined, e.g., set default values, display an error message, etc.
-                return;
-            }
-            
-            let apiUrl = `/api/v1/monitor/display?url=${decodeURIComponent(urlParam)}`;
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const url = query.get('url');
 
-            // Append file parameter if provided
-            if (file) {
-                apiUrl += `&file=${encodeURIComponent(file)}`;
-            }
+  useEffect(() => {
+    if (url) {
+      axios.get(`/api/v1/monitor/display?url=${url}`)
+        .then(response => {
+          setFolder(response.data.savedFolder);
+          setFiles(response.data.files);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
 
-            const response = await fetch(apiUrl);
-            const data = await response.json();
+      // getting notifications 
+      axios.get(`/api/v1/monitor/display/notifications?url=${url}`)
+        .then(response => {
+          setNote(response.data.map(item => item.path));
+        })
+        .catch(error => {
+          console.error('Error fetching data from another endpoint:', error);
+        });
+    }
+  }, [url]);
 
-            if(file){
-                // replace the latest file with the one that you click 
-                setLatestDifferences(data.getFile)
-                setFileName(file)
-            }else{
-                setSavedHtml(data.savedHtml);
-                setLatestDifferences(data.latestDifferences);
-                
-            }
-            setDiffFiles(data.diffFileNames);
+  const getFile = (file) => {
+    axios.get(`/api/v1/monitor/display?url=${url}&file=${file}`)
+      .then(response => {
+        setFileContent(response.data.fileContent);
+        setNewFiles(response.data.newFiles || []);
+      })
+      .catch(error => {
+        console.error(`Error Getting file ${file}`, error);
+      });
+  };
+
+  const fileName = (filePath) => {
+    return filePath.split('/').pop();
+  };
+
+  // Function to count highlighted items in newFiles
+  const countHighlighted = (fileName) => {
+    const count = note.filter(n => n.includes(fileName)).length;
+    return count > 0 ? `(${count})` : ''; // Return count only if it's greater than zero
+  };
+
+  const deletePath = async (path) => {
+    try {
+      const encodedPath = encodeURIComponent(path);
+      await axios.delete(`/api/v1/monitor/display/notifications?path=${encodedPath}`);
+      setNote(prevNote => prevNote.filter(n => n !== path));
+
+    } catch (error) {
+      console.error('Error deleting path:', error);
+    }
+  };
+
+  const handleFileClick = (file) => {
+    getFile(file);
+
+    if (note.some(n => n.includes(file))) {
+      deletePath(file)
+    }
+  };
 
 
-        } catch (error) {
-            console.error('Error fetching data:', error.message);
-        }
-    };
+  // hightlight add content + and removed content - 
+  const renderHighlightedContent = (content) => {
+    if (!content) return null;
 
-    useEffect(() => {
-        fetchData();
-    }, [urlParam]);
-
-    const handleFetchAgain = () => {
-        fetchData();
-    };
-
-
-    const highlightWords = (html) => {
-        // Define the words to highlight
-        const wordsToHighlight = ['username', 'admin', 'test', 'apikey'];
-        
-        // Create a regular expression to match the words globally and case-insensitively
-        const regex = new RegExp(`\\b(${wordsToHighlight.join('|')})\\b`, 'gi');
-        
-        // Replace the matched words with a span tag for styling within a <pre> tag
-        const highlightedHtml = html.replace(regex, (match) => `<span style="color: red">${match}</span>`);
-        
-        return highlightedHtml;
-      };
-      
+    return content.split('\n').map((line, index) => {
+      if (line.startsWith('+')) {
+        return <span key={index} style={{ backgroundColor: 'green' }}>{line}<br /></span>;
+      } else if (line.startsWith('-')) {
+        return <span key={index} style={{ backgroundColor: 'red' }}>{line}<br /></span>;
+      } else {
+        return <span key={index}>{line}<br /></span>;
+      }
+    });
+  };
 
 
   return (
-    <div>
-        <div style={{margin: 'auto', width: '60%', display: 'flex', justifyContent: 'space-around'}}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', mt: 4, margin: '8px' }}>
+      <Typography variant="h5" sx={{ mb: 2 }}>Files in {folder}</Typography>
+      <Box sx={{ display: 'flex', width: '100%', maxWidth: 1600 }}>
+        
+        <Paper className='custom-scrollbar' sx={{ flex: 1, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--primary-color)' }}>
+          <List>
+            {files.map((file, index) => (
+              <ListItem
+                key={index}
+                onClick={() => getFile(file)}
+                className={note.some(n => n.includes(fileName(file))) ? 'notification' : ''}
+              >
+                <ListItemText primary={`${fileName(file)} ${countHighlighted(fileName(file))}`} sx={{ fontSize: '1px' }} />
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
 
-            <h2>{urlParam}</h2>
-            
-            <Button
-            variant="outlined"
-            color="warning"  // You can customize the color as needed
-            style={{ marginLeft: 'auto' }}
-            onClick={handleFetchAgain}
-            >
-                Fetch Again
-            </Button>
+        {fileContent && (
+          <Paper className='custom-scrollbar' sx={{ flex: 3, p: 3, fontSize: '18px',border: '1px solid var(--primary-color)', backgroundColor: "var(--secondary-color)", color: 'white', overflow: "auto", maxHeight: '85vh', margin: "0 20px" }}>
+            <Typography variant="h6">File Content </Typography>
+            <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+              {renderHighlightedContent(fileContent)}
+            </pre>
+          </Paper>
+        )}
 
-        </div>
+        <Paper className='custom-scrollbar' sx={{ flex: 2, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--primary-color)' }}>
+          <List>
+            {newFiles.map((newFile, index) => (
+              <ListItem
+                key={index}
+                onClick={() => handleFileClick(newFile)}
+                className={note.includes(newFile) ? 'notification' : ''}
+              >
+                <ListItemText primary={fileName(newFile)} sx={{ fontSize: '1px' }} />
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
 
-        <div style={{ display: 'flex', height: '80vh', width: "1600px", border: '1px solid white'}}>
-
-            
-            {/*Differences */}
-            <div style={{ flex: 1, overflowY: 'scroll', padding: '10px' }}>
-                <h3 style={{ color: 'yellow' }}>{fileName}</h3>
-                {/* Display the HTML source code with highlighted words within a <pre> tag */}
-                <pre style={{ whiteSpace: 'pre-wrap' }}>{highlightWords(latestDifferences)}</pre>
-            </div>
-            
-            {/*Saved HTML */}
-            <div style={{ flex: 1, overflowY: 'scroll', padding: '10px' }}>
-                <h3 style={{color: 'yellow'}}>Saved HTML:</h3>
-                <pre>{savedHtml}</pre>
-            </div>
-        </div>
-
-        <div>
-            <h2>{diffFiles.length}</h2>
-            {diffFiles.map((diffFile, index) => {
-                // Parse the date from the filename
-                const datePart = diffFile.match(/(\d{4}-\d{2}-\d{2}T\d{2}-\d{2})/);
-                const formattedDate = datePart ? datePart[0].replace('T', ' ') : '';
-
-                return (
-                    <div key={index}>
-                        <Button
-                            color='success'
-                            onClick={() => fetchData(diffFile)}
-                        >{formattedDate} </Button>
-                    </div>
-                );
-            })}
- 
-        </div>
-    </div>
-  )
+      </Box>
+    </Box>
+  );
 }
 
-export default Display
-
-
-
-
-
+export default Display;

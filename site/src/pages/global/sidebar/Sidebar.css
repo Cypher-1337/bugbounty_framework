@@ -1,21 +1,16 @@
 .light{
-  --body-color: #2C2546;      /* Purple background color */
-  --sidebar-color: #322C4E;   /* Darker purple for the sidebar */
-  --primary-color: #B76FBF;   /* Purple primary color */
-  --primary-color-light: #735088; /* Lighter shade of purple */
+  --body-color: #0C101A;       /* Dark background color */
+  --sidebar-color: #004ac9;    /* Slightly lighter dark color for the sidebar */
+  --primary-color: #00B8D4;    /* Cyan primary color */
+  --primary-color-light: #00E5FF; /* Lighter shade of cyan */
   --toggle-color: #FFF;
-  --text-color: #CCC;
+  --text-color: #B3C5E0;       
   
-  
-    --tran-02: all 0.2s ease;
-    --tran-03: all 0.3s ease;
-    --tran-04: all 0.4s ease;
-    --tran-05: all 0.5s ease;
 }
 
 .dark {
   --body-color: #18191A;
-  --sidebar-color: #1b1b1b;
+  --sidebar-color: #c00707;
   --primary-color: #838383;
   --primary-color-light: #3A3B3C;
   --toggle-color: #FFF;

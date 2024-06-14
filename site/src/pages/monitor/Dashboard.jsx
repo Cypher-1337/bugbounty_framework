@@ -1,5 +1,6 @@
 import React from 'react'
 import { fetchMonitorData, formatMonitorData } from '../../data/monitorData';
+import { fetchMonitorNotifications } from '../../data/monitorNotifications';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Button, Modal } from '@mui/material';
 import { useQuery } from 'react-query';
@@ -42,16 +43,25 @@ function Dashboard() {
   fetchMonitorData()
   );
 
+  const { data: notificationsData, isLoading: isLoadingNotifications, isError: isErrorNotifications } = useQuery(
+    ['notificationsData'],
+    fetchMonitorNotifications,
+);
+  
+  
   if (isLoading) {
     return <h2>Loading...</h2>;
   }
-
+  
   if (isError) {
-          // Extract relevamnt information from the error object
-
-      return <h2>{"internal server error"}</h2>;
+    // Extract relevamnt information from the error object
+    
+    return <h2>{"internal server error"}</h2>;
   }
+  
 
+
+  
   const columns = [
     {
       field: 'count',
@@ -147,6 +157,15 @@ function Dashboard() {
 
   const formattedAlive = formatMonitorData(data);
   
+  if (!isLoadingNotifications && !isErrorNotifications && notificationsData) {
+    notificationsData.forEach((notification) => {
+      formattedAlive.forEach((row) => {
+        if (row.url === notification.base_url) {
+          row.count += 1;
+        }
+      });
+    });
+  }
 
   const handleDisplayClick = (url) =>{
     navigate(`/monitor/display?url=${encodeURIComponent(url)}`);
@@ -155,15 +174,12 @@ function Dashboard() {
 
   const gridStyles = {
     '& .super-app-theme--header': {
-      backgroundColor: '#3A3B3C',
       color: 'white',
     },
     '& .MuiDataGrid-row': {
       '&:hover': {
         backgroundColor: '#4D4D4D',
       },
-      backgroundColor: 'black',
-      border: '1px solid green',
       display: 'flex',  // Add this line
       justifyContent: 'center',  // Add this line
       alignItems: 'center',  // Add this line
@@ -189,7 +205,7 @@ function Dashboard() {
       color: 'white',
     },
     '.MuiDataGrid-withBorderColor': {
-      borderColor: "rgb(255 255 255 / 11%)",
+      borderColor: "var(--primary-color)",
     },
     '.css-1knaqv7-MuiButtonBase-root-MuiButton-root':{
       color: 'white',
@@ -200,8 +216,12 @@ function Dashboard() {
     '.red': {
       color: 'red', // Add this line
     },
+
     fontSize: '20px',
-    color: 'white'
+    color: 'white',
+    border: 'none',
+    padding: '10px',
+    margin: '20px 40px'
     //... other styles
   };
 
@@ -218,6 +238,8 @@ function Dashboard() {
             },
           }}
           pageSizeOptions={[5]}
+          sortModel={[{ field: 'count', sort: 'desc' }]} // Add this line
+
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
@@ -243,6 +265,7 @@ function Dashboard() {
         <Modal open={modalOpen} onClose={handleCloseEditModal}>
           <EditModal monitorId={monitorId} onClose={handleCloseEditModal}/>
         </Modal>
+
 
       </div>
   )

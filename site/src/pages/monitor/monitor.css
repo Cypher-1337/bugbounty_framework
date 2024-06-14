@@ -1,23 +1,26 @@
-.dark{
-    --body-color: #18191A;
-    --sidebar-color: #1b1b1b;
-    --primary-color: #838383;
-    --primary-color-light: #3A3B3C;
+.light{
+    --body-color: #0C101A;         /* Dark background color */
+    --sidebar-color: #0E141E;      /* Slightly lighter dark color for the sidebar */
+    --primary-color: #00B894;      /* Green primary color */
+    --primary-color-light: #00E5A8; /* Lighter shade of green */
+    --scrollbar-color: #118011;
     --toggle-color: #FFF;
-    --text-color: #CCC;
+    --text-color: #B3C5E0;  
 }
   
-.light{
-    --body-color: #2C2546;      /* Purple background color */
-    --sidebar-color: #322C4E;   /* Darker purple for the sidebar */
-    --primary-color: #B76FBF;   /* Purple primary color */
-    --primary-color-light: #735088; /* Lighter shade of purple */
+.dark{
+    --body-color: #0C101A;       /* Dark background color */
+    --sidebar-color: #0E141E;    /* Slightly lighter dark color for the sidebar */
+    --primary-color: #00B8D4;    /* Cyan primary color */
+    --primary-color-light: #00E5FF; /* Lighter shade of cyan */
+    --scrollbar-color: #179397;
+
     --toggle-color: #FFF;
-    --text-color: #CCC;
+    --text-color: #B3C5E0;       
 }
 
 .highlight {
-    color: red;
+    color: var(--primary-color);
     font-weight: bold;
   }
 
@@ -29,8 +32,8 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    padding: 40px 80px;
-    width: 100%;
+    width: 110%;
+    border: none;
 }
   
 .bloc-tabs {
@@ -54,34 +57,15 @@
     border: 1px solid transparent;
     border-bottom: 1px solid var(--primary-color);
     position: relative; /* Add this line */
-    border: 1px solid #555;
-
-
+    border: 2px solid var(--primary-color-light);
+    background-color: var(--primary-color);
 }
 
-.active-tabs::before {
-    content: "";
-    display: block;
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% + 2px);
-    height: 2px;
-    background-color: orange;
-    z-index: 1; /* Add this line */
-}
-
-
-/* .content-tabs{
-    margin-top: 80px;
-} */
 
 .content {
     background-color: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px); /* Add a blur filter for the frosted glass effect */
     background-clip: padding-box; /* Clip the background to the padding box to avoid affecting text */
-    padding: 20px;
     width: 100%;
     display: none;
   }
@@ -123,3 +107,29 @@
 }
 
   
+/* display  */
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--scrollbar-color);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--secondary-color);
+  border-radius: 3px;
+  border: 3px solid var(--secondary-color);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color-light);
+}
+
+
+
+.notification{
+    background-color: red;
+    border-radius: 50%;
+}

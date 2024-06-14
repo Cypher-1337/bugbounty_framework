@@ -1,12 +1,32 @@
-// get the client
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
-    host:'127.0.0.1',
+    host: '127.0.0.1',
     user: 'scanner',
     password: 'scanner',
     database: 'bugbounty'
 });
 
+function handleDisconnect(connection) {
+    connection.connect((err) => {
+        if (err) {
+            console.error('Error connecting to MySQL:', err);
+            setTimeout(() => handleDisconnect(connection), 2000); // Retry connection after 2 seconds
+        } else {
+            console.log('Connected to MySQL database');
+        }
+    });
 
-module.exports = connection
+    connection.on('error', (err) => {
+        console.error('MySQL connection error:', err);
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+            handleDisconnect(connection); // Reconnect if connection is lost
+        } else {
+            throw err;
+        }
+    });
+}
+
+handleDisconnect(connection);
+
+module.exports = connection;

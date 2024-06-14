@@ -293,15 +293,15 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
             },
           },
           '& .green-background': {
-            backgroundColor: '#1B4D3E',
+            backgroundColor: 'rgba(27, 77, 62)',  /* 70% opacity */
             color: 'white',
           },
           '& .red-background': {
-            backgroundColor: '#660000',
+            backgroundColor: 'rgba(90, 0, 0)',  /* 70% opacity */
             color: 'white',
           },
           '& .blue-background': {
-            backgroundColor: '#002244',
+            backgroundColor: 'rgba(0, 34, 68)',  /* 70% opacity */
             color: 'white',
           },
           '& .black-background': {
@@ -324,7 +324,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
             color: 'white',
           },
           '.MuiDataGrid-withBorderColor': {
-            borderColor: "rgb(255 255 255 / 11%)",
+            borderColor: 'var(--primary-color)',
           },
           '.css-1knaqv7-MuiButtonBase-root-MuiButton-root':{
             color: 'white',

@@ -95,6 +95,29 @@ const updateMonitor = async (req, res) => {
   }
 };
 
+const addMonitor = async (req, res) => {
+  try {
+  
+    const url = req.query.url;
+
+    connection.execute(
+      `Insert into monitor (url, monitor) values(?,10);`,
+      [url],
+      function(err, results, fields) {
+        if (err) {
+          console.error('Error updating data:', err);
+          return res.status(500).json({ message: 'Internal Server Error' });
+        }
+
+        res.json("Monitor Added Successfully");
+      }
+    );
+
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  
+  }
+}
 
 const deleteMonitor = async (req, res) => {
   try {
@@ -121,89 +144,114 @@ const deleteMonitor = async (req, res) => {
 }
 
 
+
 const displayMonitor = async (req, res) => {
   const url = req.query.url;
-  
-  // when you want to get specific diff_ file
-  let file = ''
+ 
+  let file = '';
   if(req.query.file){
     file = req.query.file
   }
 
-  const savedFolder = path.join('/home/kali/Desktop/saved_content', getDomainName(url));
-  const endpointPath = getEndpointPath(url);
-  const domainDirectory = path.join(savedFolder, endpointPath);
+  const parsedUrl = new URL(url);
 
-  try {
-    const savedHtmlPath = path.join(domainDirectory, `saved_html${endpointPath}.txt`);
-    const savedHtml = fs.existsSync(savedHtmlPath) ? fs.readFileSync(savedHtmlPath, 'utf-8') : '';
 
-    // Get all files in the directory
-    const files = fs.readdirSync(domainDirectory);
 
-    // Filter out files that don't match the expected format
-    const diffFiles = files.filter(file => file.includes('_diff'));
+  const savedFolder = path.join('/home/kali/Desktop/my_tools/html_monitor_project/results', parsedUrl.hostname, parsedUrl.pathname);
 
-    // Sort the files by modification time in descending order
-    diffFiles.sort((a, b) => {
-      const pathA = path.join(domainDirectory, a);
-      const pathB = path.join(domainDirectory, b);
-      return fs.statSync(pathB).mtime.getTime() - fs.statSync(pathA).mtime.getTime();
-    });
+  if (file){
 
-    let latestDifferences = '';
-    let diffFileNames = [];
+    // This try solve the probelm that if you requested non existed file it won't break the code
+    try{
 
-    // Check if there are any diff files
-    if (diffFiles.length > 0) {
-      const latestDifferencesFilePath = path.join(domainDirectory, diffFiles[0]);
-      latestDifferences = fs.existsSync(latestDifferencesFilePath)
-        ? fs.readFileSync(latestDifferencesFilePath, 'utf-8')
-        : '';
+      let fileContent = getFileContent(file)
 
-      diffFileNames = diffFiles.map(fileName => path.join(fileName));
 
+      let dir = path.dirname(file) + '/';
+
+      let newFiles = [];
+
+      // if the file doen't start with ( new_ )
+      if(!path.basename(file).startsWith("new_")){
+
+        newFiles = listNewFiles(dir, file)
+        res.status(200).json({fileContent, newFiles})
+      
+      }else{ /* if the file start with ( new_ ) */
+
+        // remove the new_{DATE} & .txt 
+        const match = file.match(/new_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_(.*)\.txt$/);
+        const extractedFile = match ? match[1] : '';
+        // extractedFile  eg(main.js)
+
+        newFiles = listNewFiles(dir, extractedFile)
+
+        res.status(200).json({fileContent, newFiles});
+
+      }
+
+    } catch (err) {
+      res.status(500).json({Error: err.message})
     }
+   
 
-    if (file && file !== ''){
-      const filePath = path.join(domainDirectory, file)
-      const getFile = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf-8') : 'File Not Found!';
-      res.json({ savedHtml, getFile, diffFileNames });
-      return
-    }
-
-    res.json({ savedHtml, latestDifferences, diffFileNames });
-  } catch (error) {
-    console.error('Error reading files:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
   }
+
+  else{
+
+    try{
+      const files = listFiles(savedFolder);
+      res.status(200).json({savedFolder, files})
+    } catch (err){
+      res.status(500).json({error:"Failed to read Direcotry", details: err.message})
+    } 
+
+  }
+
+  
 };
 
+function listFiles(dir, fileList = []){
+  let files = fs.readdirSync(dir);
+
+  files.forEach((file) => {
+    let filePath = path.join(dir, file);
+    if(fs.statSync(filePath).isDirectory()){
+      listFiles(filePath, fileList)
+    }else{
+       // Exclude files starting with 'new_' from the list
+      if (!file.startsWith('new_')) {
+        fileList.push(filePath);
+      }
+    }
+  })
+
+  return fileList
+}
 
 
-// getDomainName
-function getDomainName(urlString) {
-  try {
-    const parsedUrl = new URL(urlString);
-    return parsedUrl.hostname;
-  } catch (error) {
-    console.error(`Error parsing URL: ${error.message}`);
-    return null;
+
+function getFileContent(file) {
+  if (!fs.existsSync(file)) {
+    throw new Error("File not found");
   }
+  return fs.readFileSync(file, 'utf8');
 }
 
-// Getting endpoint path
-function getEndpointPath(urlString) {
-  const parsedUrl = new URL(urlString);
-  const pathSegments = parsedUrl.pathname.split('/').filter(Boolean); // Remove empty segments
 
-  // If there are path segments, join them with underscores
-  // Otherwise, use a default underscore
-  const endpointPath = pathSegments.length > 0
-    ? '_' + pathSegments.join('_')
-    : '_';
 
-  return endpointPath;
+function listNewFiles(dir, filename, fileList = []) {
+  let files = fs.readdirSync(dir);
+
+  files.forEach((file) => {
+      if (file.startsWith('new_') && file.includes(filename.split('/').pop())) {
+        fileList.push(dir + file);
+      }
+  });
+
+  return fileList;
 }
 
-module.exports = {getAllMonitor, updateMonitor, deleteMonitor, displayMonitor}
+
+
+module.exports = {getAllMonitor, updateMonitor, deleteMonitor, displayMonitor, addMonitor}

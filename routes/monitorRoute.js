@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { runningMonitor } = require('../monitor/monitorOps'); // Update the path
-const { getAllMonitor, deleteMonitor, updateMonitor, displayMonitor } = require('../controllers/monitorController')
-
+const { getAllMonitor, deleteMonitor, updateMonitor, displayMonitor, addMonitor} = require('../controllers/monitorController')
+const { getUnreadFiles, deleteReadFiles } = require('../controllers/monitorNotifications')
 
 router.route('/add')
   .get((req, res) => {
@@ -12,10 +11,8 @@ router.route('/add')
       return res.status(400).json({ error: 'URL parameter is required' });
     }
 
+    addMonitor(req, res)
 
-
-    runningMonitor(url);
-    res.status(200).json({ message: 'Monitoring script executed.' });
   });
 
 router.route('/')
@@ -25,6 +22,11 @@ router.route('/')
 router.route('/display')
   .get(displayMonitor)
   
+router.route('/display/notifications')
+  .get(getUnreadFiles)
+  .delete(deleteReadFiles)
+
+
 router.route('/delete/:id')
   .delete(deleteMonitor)
 

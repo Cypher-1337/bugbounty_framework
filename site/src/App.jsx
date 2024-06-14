@@ -1,9 +1,8 @@
 import './App.css';
 
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom'
 import Sidebar from './pages/global/sidebar/Sidebar';
 import Dashboard from './pages/dashboard/Dashboard';
-import Recon from './pages/recon/recon';
 import { createContext, useState, useEffect } from 'react';
 import Monitor from './pages/monitor/monitor';
 import Display from './pages/monitor/Display';
@@ -31,9 +30,9 @@ function App() {
         <div className='nav-dashboard'>
             <Routes>
               <Route path='/dashboard' element={<Dashboard />}></Route>
-              <Route path='/recon' element={<Recon />}></Route>
               <Route path='/monitor' element={<Monitor />}></Route>
               <Route path='/monitor/display' element={<Display />}></Route>
+              <Route path='/' element={<Navigate to='/dashboard' />}></Route>
             </Routes>
         </div>
       </Router>

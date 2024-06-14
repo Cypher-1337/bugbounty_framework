@@ -149,7 +149,7 @@ export default function DomainsData() {
           '& .super-app-theme--header': {
           },
           '& .css-levciy-MuiTablePagination-displayedRows':{
-            color: 'white',
+            color: 'green',
           },
           '& .MuiDataGrid-row': {
             '&:hover': {
@@ -163,6 +163,9 @@ export default function DomainsData() {
           },
           '& .css-ptiqhd-MuiSvgIcon-root': {
             color: 'blue',
+          },
+          ' .MuiDataGrid-withBorderColor':{
+            borderColor: "var(--primary-color)"
           },
           fontSize: '20px',
           color: 'white'

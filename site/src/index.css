@@ -1,10 +1,10 @@
 :root{
-  --body-color: #18191A;
-  --sidebar-color: #1b1b1b;
-  --primary-color: #838383;
-  --primary-color-light: #3A3B3C;
+  --body-color: #0C101A;       /* Dark background color */
+  --sidebar-color: #0E141E;    /* Slightly lighter dark color for the sidebar */
+  --primary-color: #00B8D4;    /* Cyan primary color */
+  --primary-color-light: #00E5FF; /* Lighter shade of cyan */
   --toggle-color: #FFF;
-  --text-color: #CCC;
+  --text-color: #B3C5E0;  
 }
 
 

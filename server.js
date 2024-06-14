@@ -4,9 +4,7 @@ const domainRoute = require('./routes/domainRoute');
 const aliveRoute = require('./routes/aliveRoute');
 const subdomainsRoute = require('./routes/subdomainsRoute');
 const monitorRoute = require('./routes/monitorRoute'); 
-const reconRoute = require('./routes/reconRoute');
 const downloadRoute = require('./routes/downloadRoute')
-const notificationRoute = require('./routes/notificationRoute')
 // require('./monitor/change_detection')
 const http = require('http');
 
@@ -25,8 +23,6 @@ app.use('/api/v1/domains', domainRoute);
 app.use('/api/v1/alive', aliveRoute);
 app.use('/api/v1/subdomains', subdomainsRoute);
 app.use('/api/v1/monitor', monitorRoute); 
-app.use('/api/v1/recon', reconRoute); 
-app.use('/api/v1/notifications', notificationRoute); 
 app.use('/api/v1/download', downloadRoute); 
 
 

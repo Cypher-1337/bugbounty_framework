@@ -129,8 +129,7 @@ export default function SubDomainsData() {
             '&:hover': {
               backgroundColor: '#4D4D4D',
             },
-            backgroundColor: "black",
-            border: '1px solid green',
+            border: '1px solid var(--primary-color)',
           },
           '& .css-tptqer-MuiDataGrid-root':{
             border: 'none',
