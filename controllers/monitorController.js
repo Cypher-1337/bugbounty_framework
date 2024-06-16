@@ -157,7 +157,7 @@ const displayMonitor = async (req, res) => {
 
 
 
-  const savedFolder = path.join('/home/kali/Desktop/my_tools/html_monitor_project/results', parsedUrl.hostname, parsedUrl.pathname);
+  const savedFolder = path.join('/home/kali/bugbounty_framework_tools/html_monitor_project/results', parsedUrl.hostname, parsedUrl.pathname);
 
   if (file){
 
@@ -171,25 +171,34 @@ const displayMonitor = async (req, res) => {
 
       let newFiles = [];
 
-      // if the file doen't start with ( new_ )
-      if(!path.basename(file).startsWith("new_")){
+      // Determine maximum file size limit (e.g., 1MB)
+      const maxFileSizeBytes = 1024 * 1024; // 1MB
 
+      if (fileContent.length > maxFileSizeBytes) {
+        // File is too large
         newFiles = listNewFiles(dir, file)
+        fileContent = "[-] File too large"
         res.status(200).json({fileContent, newFiles})
-      
-      }else{ /* if the file start with ( new_ ) */
+      }else{
+        // if the file doen't start with ( new_ )
+        if(!path.basename(file).startsWith("new_")){
 
-        // remove the new_{DATE} & .txt 
-        const match = file.match(/new_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_(.*)\.txt$/);
-        const extractedFile = match ? match[1] : '';
-        // extractedFile  eg(main.js)
+          newFiles = listNewFiles(dir, file)
+          res.status(200).json({fileContent, newFiles})
+        
+        }else{ /* if the file start with ( new_ ) */
 
-        newFiles = listNewFiles(dir, extractedFile)
+          // remove the new_{DATE} & .txt 
+          const match = file.match(/new_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_(.*)\.txt$/);
+          const extractedFile = match ? match[1] : '';
+          // extractedFile  eg(main.js)
 
-        res.status(200).json({fileContent, newFiles});
+          newFiles = listNewFiles(dir, extractedFile)
 
+          res.status(200).json({fileContent, newFiles});
+
+        }
       }
-
     } catch (err) {
       res.status(500).json({Error: err.message})
     }

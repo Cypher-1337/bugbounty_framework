@@ -130,6 +130,5 @@
 
 
 .notification{
-    background-color: red;
-    border-radius: 50%;
+    background-color: rgb(165, 18, 18) !important;
 }
