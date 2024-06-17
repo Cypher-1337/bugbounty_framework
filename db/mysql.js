@@ -4,7 +4,8 @@ const connection = mysql.createConnection({
     host: '127.0.0.1',
     user: 'scanner',
     password: 'scanner',
-    database: 'bugbounty'
+    database: 'bugbounty',
+    connectTimeout: 10000 // Increase connection timeout
 });
 
 function handleDisconnect(connection) {
@@ -19,7 +20,7 @@ function handleDisconnect(connection) {
 
     connection.on('error', (err) => {
         console.error('MySQL connection error:', err);
-        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+        if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNRESET') {
             handleDisconnect(connection); // Reconnect if connection is lost
         } else {
             throw err;
