@@ -66,7 +66,7 @@ function Dashboard() {
     {
       field: 'count',
       headerName: 'Count',
-      width: 80,
+      width: 100,
       type: 'number',
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
@@ -77,7 +77,7 @@ function Dashboard() {
     {
         field: 'url',
         headerName: 'Url',
-        width: 600,
+        width: 916,
         type: 'string',
         headerClassName: 'super-app-theme--header',
         headerAlign: 'center',
@@ -91,24 +91,25 @@ function Dashboard() {
               variant="outlined"
               color="warning"  // You can customize the color as needed
               onClick={() => handleDisplayClick(params.row.url)}
-              style={{ marginLeft: 'auto' }}
+              style={{ marginLeft: 'auto'}}
             >
               Display
             </Button>
           </div>
         ),
+  
+},
+    //,{
+    //   field: 'monitor',
+    //   headerName: 'Monitor',
+    //   width: 150,
+    //   type: 'number',
+    //   headerClassName: 'super-app-theme--header',
+    //   headerAlign: 'center',
+    //   cellClassName: 'custom-cell', // Add this line
 
-    },{
-      field: 'monitor',
-      headerName: 'Monitor',
-      width: 150,
-      type: 'number',
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      cellClassName: 'custom-cell', // Add this line
 
-
-    },
+    // },
     
     {
         field: 'date',
@@ -116,15 +117,15 @@ function Dashboard() {
         type: 'Date',
         headerClassName: 'super-app-theme--header',
         headerAlign: 'center',
-        width: 350,
+        width: 450,
         cellClassName: 'custom-cell', // Add this line
-        valueFormatter: (params) => format(new Date(params.value), 'dd/MM/yy, HH:mm a'), // Format the date
+        valueFormatter: (params) => format(new Date(params.value), 'dd-MM-yyyy'), // Format the date
 
     },
     {
       field: 'edit', // You can customize this field name
       headerName: 'Edit',
-      width: 90,
+      width: 125,
       headerClassName: 'super-app-theme--header',
       renderCell: (params) => (
         <Button
@@ -139,7 +140,7 @@ function Dashboard() {
     {
       field: 'delete', // You can customize this field name
       headerName: 'Delete',
-      width: 90,
+      width: 125,
       headerClassName: 'super-app-theme--header',
       renderCell: (p) => (
         <Button
@@ -197,6 +198,10 @@ function Dashboard() {
       color: 'black',
       borderRadius: '4px', // Adjust as needed
     },
+    '& .MuiDataGrid-cellContent': {
+      margin: '0 auto',
+    },
+
     '& .css-ptiqhd-MuiSvgIcon-root': {
       color: 'green',
 

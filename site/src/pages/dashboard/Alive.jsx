@@ -307,6 +307,8 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
           '& .black-background': {
             backgroundColor: '#000',
             color: 'white',
+          },'& .MuiDataGrid-cellContent': {
+            margin: '0 auto',
           },
           '& .custom-cell': {
             fontSize: '18px',

@@ -99,7 +99,7 @@
 
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', mt: 4, margin: '8px' }}>
-        <Typography variant="h5" sx={{ mb: 2 }}>Files in {folder}</Typography>
+        <Typography variant="h5" sx={{ mb: 2 }}>{fileName(clickedFile)}</Typography>
         <Box sx={{ display: 'flex', width: '100%', maxWidth: 2200 }}>
           
           <Paper className='custom-scrollbar' sx={{ flex: 1, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--primary-color)' }}>
