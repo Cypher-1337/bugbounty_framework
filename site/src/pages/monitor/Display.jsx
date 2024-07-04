@@ -1,7 +1,7 @@
   import React, { useState, useEffect } from 'react';
   import { useLocation } from 'react-router-dom';
   import axios from 'axios';
-  import { List, ListItemText, ListItem, Typography, Box, Paper } from '@mui/material';
+  import { List, ListItemText, ListItem, Typography, Box, Paper, Button } from '@mui/material';
 
   function Display() {
     const [files, setFiles] = useState([]);
@@ -9,8 +9,9 @@
     const [folder, setFolder] = useState('');
     const [fileContent, setFileContent] = useState('');
     const [note, setNote] = useState([]);
+    const [size, setSize] = useState([]);
     const [clickedFile, setClickedFile] = useState('');  /* this is used to change the background when you click on the file */
-
+    const [theFile, setTheFile] = useState('');
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const url = query.get('url');
@@ -38,6 +39,7 @@
     }, [url]);
 
     const getFile = (file) => {
+      setTheFile(file)
       axios.get(`/api/v1/monitor/display?url=${url}&file=${file}`)
         .then(response => {
           setFileContent(response.data.fileContent);
@@ -80,13 +82,22 @@
       }
     };
 
+    const handleFileDownload = (file) => {
+      const downloadUrl = `/api/v1/download?file=${file}`;
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', fileName(file)); // Set the download attribute with the filename
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    };
 
     // hightlight add content + and removed content - 
     const renderHighlightedContent = (content) => {
       if (!content) return null;
 
       return content.split('\n').map((line, index) => {
-        if (line.startsWith('+')) {
+        if (line.startsWith('+')) { 
           return <span key={index} style={{ backgroundColor: 'green' }}>{line}<br /></span>;
         } else if (line.startsWith('-')) {
           return <span key={index} style={{ backgroundColor: 'red' }}>{line}<br /></span>;
@@ -127,15 +138,22 @@
           {fileContent && (
             <Paper className='custom-scrollbar' sx={{ flex: 4, p: 3, fontSize: '18px',border: '1px solid var(--primary-color)', backgroundColor: "var(--secondary-color)", color: 'white', overflow: "auto", maxHeight: '85vh', margin: "0 20px" }}>
               <Typography variant="h6">File Content </Typography>
+              {fileContent === "[-] File too large" ? (
+              <Button variant='contained' color='success' onClick={() => handleFileDownload(theFile)} >Download file</Button>  
+              ):(
+
               <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
                 {renderHighlightedContent(fileContent)}
               </pre>
+
+              )}
             </Paper>
           )}
 
+
           <Paper className='custom-scrollbar' sx={{ flex: 2, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--primary-color)' }}>
             <List>
-              {newFiles.map((newFile, index) => (
+              {newFiles.slice().reverse().map((newFile, index) => (
                 <ListItem
                   key={index}
                   onClick={() => handleFileClick(newFile)}

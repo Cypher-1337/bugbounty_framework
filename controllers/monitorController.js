@@ -169,36 +169,41 @@ const displayMonitor = async (req, res) => {
 
       let dir = path.dirname(file) + '/';
 
-      let newFiles = [];
+
+      function handleFileRequest(dir, file) {
+        let newFiles;
+        
+        if (!path.basename(file).startsWith("new_")) {
+          newFiles = listNewFiles(dir, file);
+        } else {
+          const match = file.match(/new_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_(.*)\.txt$/);
+          const extractedFile = match ? match[1] : '';
+          newFiles = listNewFiles(dir, extractedFile);
+        }
+      
+        return newFiles
+      }
 
       // Determine maximum file size limit (e.g., 1MB)
       const maxFileSizeBytes = 1024 * 1024; // 1MB
 
+      
       if (fileContent.length > maxFileSizeBytes) {
-        // File is too large
-        newFiles = listNewFiles(dir, file)
-        fileContent = "[-] File too large"
-        res.status(200).json({fileContent, newFiles})
-      }else{
-        // if the file doen't start with ( new_ )
-        if(!path.basename(file).startsWith("new_")){
-
-          newFiles = listNewFiles(dir, file)
-          res.status(200).json({fileContent, newFiles})
         
-        }else{ /* if the file start with ( new_ ) */
+        fileContent = "[-] File too large";
+        let newFiles = handleFileRequest(dir, file);
 
-          // remove the new_{DATE} & .txt 
-          const match = file.match(/new_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_(.*)\.txt$/);
-          const extractedFile = match ? match[1] : '';
-          // extractedFile  eg(main.js)
+        res.status(200).json({ fileContent, newFiles });
 
-          newFiles = listNewFiles(dir, extractedFile)
 
-          res.status(200).json({fileContent, newFiles});
+      } else {
+        let newFiles = handleFileRequest(dir, file);
 
-        }
+        res.status(200).json({ fileContent, newFiles });
+
       }
+
+
     } catch (err) {
       res.status(500).json({Error: err.message})
     }
