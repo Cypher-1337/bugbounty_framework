@@ -2,6 +2,7 @@
   import { useLocation } from 'react-router-dom';
   import axios from 'axios';
   import { List, ListItemText, ListItem, Typography, Box, Paper, Button } from '@mui/material';
+  import { Helmet } from 'react-helmet';
 
   function Display() {
     const [files, setFiles] = useState([]);
@@ -110,6 +111,9 @@
 
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', mt: 4, margin: '8px' }}>
+        <Helmet>
+            <title>{url}</title>
+        </Helmet>
         <Typography variant="h5" sx={{ mb: 2 }}>{fileName(clickedFile)}</Typography>
         <Box sx={{ display: 'flex', width: '100%', maxWidth: 2200 }}>
           

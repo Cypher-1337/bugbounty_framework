@@ -7,6 +7,7 @@ import { useQuery } from 'react-query';
 import DeleteModal from '../../modal/monitor/DelModal';
 import EditModal from '../../modal/monitor/EditModal';
 import { format } from 'date-fns'; // Import the format function
+import { Helmet } from 'react-helmet';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -232,6 +233,9 @@ function Dashboard() {
 
   return (
     <div className='table-content'>
+      <Helmet>
+          <title>Monitor</title>
+      </Helmet>
         <DataGrid
           rows={formattedAlive}
           columns={columns}

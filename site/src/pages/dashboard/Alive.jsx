@@ -8,6 +8,9 @@ import { Button, Modal } from '@mui/material';
 import EditModal from '../../modal/alive/EditModal';
 import DeleteModal from '../../modal/alive/DelModal';
 import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+
 
 export default function AliveData() {
   
@@ -19,6 +22,7 @@ export default function AliveData() {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = React.useState(false); // New state for delete modal
 
+  const navigate = useNavigate();
 
 
 // ----------------------- Edit & Delete -------------------------
@@ -68,10 +72,15 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
 };
 
   // Fetch data based on inputFilter using useQuery
-  const { data, isLoading, isError } = useQuery(['aliveData', inputFilter], () =>
-    fetchAliveData(inputFilter)
-  );
+  const { data, isLoading, isError } = useQuery(['aliveData', inputFilter], async () => {
+    const response = await fetchAliveData(inputFilter);
+    console.log(response); // Log the raw response data
+    return response;
+  });
 
+  const handleDetailsClick = (url) =>{
+    navigate(`/fuzz?url=${encodeURIComponent(url)}`);
+  }
 
   const columns = [
   
@@ -84,9 +93,20 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
       headerAlign: 'center',
       renderCell: (params) => (
         <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-          <a style={{ textDecoration: 'none', color: 'white' }} href={params.value} target="_blank" rel="noopener noreferrer">
+          <a style={{ textDecoration: 'none', color: 'white', width:'10px' }} href={params.value} target="_blank" rel="noopener noreferrer">
             {params.value}
           </a>
+          {(params.row.nuclei_scan == 1) &&(
+            <Button
+              variant="contained"
+              color="warning"  // You can customize the color as needed
+              onClick={() => handleDetailsClick(params.value)} 
+              style={{ marginLeft: 'auto'}}
+            >
+              Details
+            </Button>
+          )}
+          
         </div>
       ),
       cellClassName: 'custom-cell',
@@ -243,6 +263,9 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
 
   return (
     <div className='table-content'>
+      <Helmet>
+          <title>Dashboard</title>
+      </Helmet>
       <div className='filter-area'>
         <TextField
         sx={{ color: 'white', backgroundColor: '#f5f5f5', borderRadius: '4px', width: '50%px' }}

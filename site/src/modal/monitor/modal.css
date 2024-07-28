@@ -5,6 +5,8 @@
     --primary-color-light: #00E5A8; /* Lighter shade of green */
     --toggle-color: #FFF;
     --text-color: #B3C5E0;  
+    --odd-color: #00614e;
+    --even-color: #0a6b58;
 }
   
 .dark{
@@ -14,6 +16,8 @@
     --primary-color-light: #00E5FF; /* Lighter shade of cyan */
     --toggle-color: #FFF;
     --text-color: #B3C5E0;       /* Light blue text color */
+    --odd-color: rgb(2, 119, 128);
+    --even-color: #0b5a63;
 }
 
 

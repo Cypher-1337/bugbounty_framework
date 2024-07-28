@@ -27,7 +27,8 @@ export const formatAliveData = (data) => {
     waf: alive.waf,
     comment: alive.comment,
     date: alive.date,
-    scanned: alive.scanned
-    // Add more fields as needed
+    scanned: alive.scanned,
+    nuclei_scan: alive.nuclei_scan
+        // Add more fields as needed
   }));
 };

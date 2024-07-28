@@ -6,6 +6,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import { createContext, useState, useEffect } from 'react';
 import Monitor from './pages/monitor/monitor';
 import Display from './pages/monitor/Display';
+import Fuzz from './pages/fuzzing/Fuzz';
 
 export const AppContext = createContext()
 
@@ -31,6 +32,7 @@ function App() {
             <Routes>
               <Route path='/dashboard' element={<Dashboard />}></Route>
               <Route path='/monitor' element={<Monitor />}></Route>
+              <Route path='/fuzz' element={<Fuzz />}></Route>
               <Route path='/monitor/display' element={<Display />}></Route>
               <Route path='/' element={<Navigate to='/dashboard' />}></Route>
             </Routes>
