@@ -117,27 +117,60 @@
         <Typography variant="h5" sx={{ mb: 2 }}>{fileName(clickedFile)}</Typography>
         <Box sx={{ display: 'flex', width: '100%', maxWidth: 2200 }}>
           
-          <Paper className='custom-scrollbar' sx={{ flex: 1, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--primary-color)' }}>
-            <List>
-              {files.map((file, index) => (
-                <ListItem
-                  key={index}
-                  onClick={() => getFile(file)}
-                  className={note.some(n => n.includes(fileName(file))) ? 'notification' : ''}
-                  sx={{
-                    backgroundColor: clickedFile === file ? 'var(--primary-color)' : 'inherit',
-                    cursor: 'pointer',
-                    padding: '2px 20px',
-                    border: '1px solid var(--primary-color)',
-                    borderRadius: '50px',
-                    margin: '10px 0'
-                  }}
-                >
-                  <ListItemText primary={`${fileName(file)} ${countHighlighted(fileName(file))}`}  />
-                </ListItem>
-              ))}
-            </List>
-          </Paper>
+          <div>
+            
+            <Paper className='custom-scrollbar' sx={{ flex: 1, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--primary-color)', marginBottom: '30px' }}>
+              <List>
+                {files.map((file, index) => (
+                  (fileName(file) === "html_endpoints.txt" || fileName(file) === "js_endpoints.txt") && (
+                    <ListItem
+                      key={index}
+                      onClick={() => getFile(file)}
+                      className={note.some(n => n.includes(fileName(file))) ? 'notification' : ''}
+                      sx={{
+                        backgroundColor: clickedFile === file ? 'var(--primary-color)' : 'inherit',
+                        cursor: 'pointer',
+                        padding: '2px 20px',
+                        border: '1px solid var(--primary-color)',
+                        borderRadius: '50px',
+                        margin: '10px 0'
+                      }}
+                    >
+                      <ListItemText primary={`${fileName(file)} ${countHighlighted(fileName(file))}`}  />
+                    </ListItem>
+                  )
+                ))}
+              </List>
+            </Paper>
+            
+
+            <Paper className='custom-scrollbar' sx={{ flex: 1, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--primary-color)' }}>
+              <List>
+                {files.map((file, index) => (
+                  fileName(file) !== "html_endpoints.txt" && fileName(file) !== "js_endpoints.txt" && (
+
+                    <ListItem
+                      key={index}
+                      onClick={() => getFile(file)}
+                      className={note.some(n => n.includes(fileName(file))) ? 'notification' : ''}
+                      sx={{
+                        backgroundColor: clickedFile === file ? 'var(--primary-color)' : 'inherit',
+                        cursor: 'pointer',
+                        padding: '2px 20px',
+                        border: '1px solid var(--primary-color)',
+                        borderRadius: '50px',
+                        margin: '10px 0'
+                      }}
+                    >
+                      <ListItemText primary={`${fileName(file)} ${countHighlighted(fileName(file))}`}  />
+                    </ListItem>
+                  )))
+                  }
+              </List>
+            </Paper>
+
+            
+          </div>
 
           {fileContent && (
             <Paper className='custom-scrollbar' sx={{ flex: 4, p: 3, fontSize: '18px',border: '1px solid var(--primary-color)', backgroundColor: "var(--secondary-color)", color: 'white', overflow: "auto", maxHeight: '85vh', margin: "0 20px" }}>
