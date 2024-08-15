@@ -74,7 +74,6 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
   // Fetch data based on inputFilter using useQuery
   const { data, isLoading, isError } = useQuery(['aliveData', inputFilter], async () => {
     const response = await fetchAliveData(inputFilter);
-    console.log(response); // Log the raw response data
     return response;
   });
 

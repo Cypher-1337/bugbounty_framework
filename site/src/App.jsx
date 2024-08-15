@@ -7,7 +7,10 @@ import { createContext, useState, useEffect } from 'react';
 import Monitor from './pages/monitor/monitor';
 import Display from './pages/monitor/Display';
 import Fuzz from './pages/fuzzing/Fuzz';
-
+import Login from './pages/login/Login';
+import { AuthProvider } from './auth';
+import ProtectedRoute from './components/protectedRoute';
+import Register from './pages/login/register';
 export const AppContext = createContext()
 
 
@@ -24,23 +27,41 @@ function App() {
 
   
   return (
-  <AppContext.Provider value={{data, setData, darkMode, setDarkMode, isSidebarCollapsed, setIsSidebarCollapsed, inputFilter, setInputFilter}}>
-    <div className={darkMode === 'dark' ? "App dark" : "App light"}>
-      <Router>
-        <Sidebar />
-        <div className='nav-dashboard'>
+  <AuthProvider>     {/* To check if you authenticated or not */}
+
+    <AppContext.Provider value={{data, setData, darkMode, setDarkMode, isSidebarCollapsed, setIsSidebarCollapsed, inputFilter, setInputFilter}}>
+      <div className={darkMode === 'dark' ? "App dark" : "App light"}>
+        <Router>
+          <Sidebar />
+            <div className='nav-dashboard'>
             <Routes>
-              <Route path='/dashboard' element={<Dashboard />}></Route>
-              <Route path='/monitor' element={<Monitor />}></Route>
-              <Route path='/fuzz' element={<Fuzz />}></Route>
-              <Route path='/monitor/display' element={<Display />}></Route>
-              <Route path='/' element={<Navigate to='/dashboard' />}></Route>
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+                <Route
+                    path='/dashboard'
+                    element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
+                />
+                <Route
+                    path='/monitor'
+                    element={<ProtectedRoute><Monitor /></ProtectedRoute>}
+                />
+                <Route
+                    path='/fuzz'
+                    element={<ProtectedRoute><Fuzz /></ProtectedRoute>}
+                />
+                <Route
+                    path='/monitor/display'
+                    element={<ProtectedRoute><Display /></ProtectedRoute>}
+                />
+                <Route path='/' element={<Navigate to='/dashboard' />} />
             </Routes>
-        </div>
-      </Router>
-      
-    </div>
-  </AppContext.Provider>
+            </div>
+        </Router>
+        
+      </div>
+    </AppContext.Provider>
+
+  </AuthProvider>
   );
 }
 

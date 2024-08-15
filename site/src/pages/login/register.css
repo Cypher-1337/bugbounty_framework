@@ -1,0 +1,90 @@
+.register_div{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;   
+}
+
+
+.register_form{
+    border: 2px solid var(--primary-color);
+    padding: 175px 200px;
+    border-radius: 20px;
+    position: relative; /* Allow positioning of pseudo-element */
+
+}
+
+
+.register_form::before {
+    content: "Register";
+    position: absolute;
+    top: -1%; /* Center vertically */
+    left: 22%; /* Center horizontally */
+    transform: translate(-80%, -50%); /* Adjust to exactly center */
+    background-color: var(--body-color);
+    font-size: 36px; /* Adjust as needed */
+    font-weight: bold; /* Adjust as needed */
+    color: var(--primary-color); /* Same color as the border */
+    padding: 0 10px; /* Padding for better visibility */
+    z-index: 1; /* Ensure text is above other content */
+}
+
+
+.input_div {
+    margin-bottom: 20px; /* Added margin between input fields */
+}
+
+label {
+    display: inline-block;
+    width: 100px; /* Adjusted to ensure uniform width */
+    margin-right: 100px;
+}
+
+.register_submit{
+    width: 100%;
+    margin: 40px 0 0;
+    cursor: pointer;
+
+}
+
+.register_submit:hover{
+    background-color: var(--primary-color);
+    color: white;
+}
+
+
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    text-align: center;
+    font-size: 16px;
+    animation: fadeInOut 4s ease-in-out;
+}
+
+.toast.success {
+    background-color: #4BB543; /* Green for success */
+    color: white;
+}
+
+.toast.error {
+    background-color: #FF4B4B; /* Red for error */
+    color: white;
+}
+
+@keyframes fadeInOut {
+    0%, 100% {
+        opacity: 0;
+    }
+    10%, 90% {
+        opacity: 1;
+    }
+}
+

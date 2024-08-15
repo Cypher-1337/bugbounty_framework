@@ -1,11 +1,18 @@
 const express = require('express');
 const cors = require('cors');
+
+const cookieParser = require("cookie-parser")
+const {validateToken} = require("./controllers/auth/JWT")
 const domainRoute = require('./routes/domainRoute');
 const aliveRoute = require('./routes/aliveRoute');
 const subdomainsRoute = require('./routes/subdomainsRoute');
 const monitorRoute = require('./routes/monitorRoute'); 
 const downloadRoute = require('./routes/downloadRoute')
 const fuzzRoute = require('./routes/fuzzRoute')
+const registerRoute = require('./routes/auth/registerRoute')
+const loginRoute = require('./routes/auth/loginRoute')
+const checkRoute = require('./routes/auth/checkRoute')
+
 // require('./monitor/change_detection')
 const http = require('http');
 
@@ -17,9 +24,17 @@ const server = http.createServer(app); // Create an HTTP server using Express ap
 
 
 
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: '*',credentials: true }));
 app.use(express.json());
- 
+app.use(cookieParser()) 
+
+app.use('/api/v1/auth/register', registerRoute)
+app.use('/api/v1/auth/login', loginRoute)
+app.use('/api/v1/auth/check', checkRoute)
+
+// Apply validateToken middleware to all routes after the above exclusions
+app.use(validateToken);
+
 app.use('/api/v1/domains', domainRoute);
 app.use('/api/v1/alive', aliveRoute);
 app.use('/api/v1/subdomains', subdomainsRoute);
