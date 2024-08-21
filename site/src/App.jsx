@@ -6,7 +6,6 @@ import Dashboard from './pages/dashboard/Dashboard';
 import { createContext, useState, useEffect } from 'react';
 import Monitor from './pages/monitor/monitor';
 import Display from './pages/monitor/Display';
-import Fuzz from './pages/fuzzing/Fuzz';
 import Login from './pages/login/Login';
 import { AuthProvider } from './auth';
 import ProtectedRoute from './components/protectedRoute';
@@ -46,13 +45,11 @@ function App() {
                     element={<ProtectedRoute><Monitor /></ProtectedRoute>}
                 />
                 <Route
-                    path='/fuzz'
-                    element={<ProtectedRoute><Fuzz /></ProtectedRoute>}
-                />
-                <Route
                     path='/monitor/display'
                     element={<ProtectedRoute><Display /></ProtectedRoute>}
                 />
+
+
                 <Route path='/' element={<Navigate to='/dashboard' />} />
             </Routes>
             </div>

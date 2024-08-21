@@ -28,7 +28,9 @@ body{
   display: flex;
   flex-direction: column;
   height:120% !important;
+  padding: 5px;
   border: 1px solid var(--primary-color);
+  border-radius: 10px;
 }
 
 

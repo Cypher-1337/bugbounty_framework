@@ -13,7 +13,8 @@
   padding: 10px 15px;
   background-color: var(--sidebar-color);
   transition: var(--tran-04);
-  border: 1px solid var(--primary-color);
+  border: 0.1px solid var(--primary-color);
+  border-radius: 8px;
 }
 
 .sidebar.collapsed {

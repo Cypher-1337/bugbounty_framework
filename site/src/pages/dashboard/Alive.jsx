@@ -1,3 +1,4 @@
+import "./dashboard.css"
 import * as React from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { fetchAliveData, formatAliveData } from '../../data/allAliveData';
@@ -10,6 +11,7 @@ import DeleteModal from '../../modal/alive/DelModal';
 import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+
 
 
 export default function AliveData() {
@@ -77,10 +79,6 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
     return response;
   });
 
-  const handleDetailsClick = (url) =>{
-    navigate(`/fuzz?url=${encodeURIComponent(url)}`);
-  }
-
   const columns = [
   
     
@@ -90,25 +88,56 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
       width: 550,
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
-      renderCell: (params) => (
-        <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-          <a style={{ textDecoration: 'none', color: 'white', width:'10px' }} href={params.value} target="_blank" rel="noopener noreferrer">
-            {params.value}
-          </a>
-          {(params.row.nuclei_scan == 1) &&(
-            <Button
-              variant="contained"
-              color="warning"  // You can customize the color as needed
-              onClick={() => handleDetailsClick(params.value)} 
-              style={{ marginLeft: 'auto'}}
-            >
-              Details
-            </Button>
-          )}
-          
-        </div>
-      ),
-      cellClassName: 'custom-cell',
+      renderCell: (params) => {
+
+        const url = new URL(params.value);
+        const hostname = url.hostname;
+
+        return(
+          <div >
+            <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <a style={{ textDecoration: 'none', color: 'white', width:'10px' }} href={params.value} target="_blank" rel="noopener noreferrer">
+                {params.value}
+              </a>     
+            </div>
+
+                      
+              <div className='links'>
+
+                <a href={`https://github.com/search?q=${hostname}&type=code`} target="_blank" rel="noopener noreferrer" className="link">
+                  <img src="https://github.com/favicon.ico" alt="" className="imageIcon" />
+                </a>
+
+                <a href={`https://www.google.com/search?q=site%3A${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
+                  <img src="https://www.google.com/favicon.ico" alt="" className="imageIcon" />
+                </a>
+
+                <a href={`http://web.archive.org/cdx/search/cdx?url=${hostname}/*&output=text&fl=original&collapse=urlkey&from=`} target="_blank" rel="noopener noreferrer" className="link">
+                  <img src="https://archive.org/favicon.ico" alt="" className="imageIcon" />
+                </a>
+                
+                <a href={`https://www.bing.com/search?q=site%3A${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
+                  <img src="https://www.bing.com/favicon.ico" alt="" className="imageIcon" />
+                </a>
+
+                <a href={`https://www.shodan.io/search?query=hostname%3A%22${hostname}%22`} target="_blank" rel="noopener noreferrer" className="link">
+                  <img src="https://www.shodan.io/static/img/favicon-60c1b1cd.png" alt="" className="imageIcon" />
+                </a>
+                
+                <a href={`https://search.censys.io/search?resource=hosts&q=${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
+                  <img src="https://search.censys.io/static/img/favicon-32x32.png" alt="" className="imageIcon" />
+                </a>
+                
+
+                <a href={`https://en.fofa.info/result?qbase64=${btoa(hostname)}`} target="_blank" rel="noopener noreferrer" className="link">
+                  <img src="https://en.fofa.info/favicon.ico" alt="" className="imageIcon" />
+                </a>
+
+              </div>
+          </div>
+        )
+      },
+      cellClassName: 'custom-cell, alive_column',
     },
     {
         field: 'status',
@@ -291,7 +320,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 50,
+              pageSize: 25,
             },
           },
         }}
@@ -309,21 +338,23 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
             backgroundColor: '#3A3B3C',
             color: 'white',
           },
+          '& .MuiDataGrid-row:hover': {
+              backgroundColor: "#636363",
+          },
           '& .MuiDataGrid-row': {
-            '&:hover': {
-              backgroundColor: '#4D4D4D',
-            },
+            
+            minHeight: "85px !important" ,
           },
           '& .green-background': {
-            backgroundColor: 'rgba(27, 77, 62)',  /* 70% opacity */
+            backgroundColor: '#1e481f',  /* 70% opacity */
             color: 'white',
           },
           '& .red-background': {
-            backgroundColor: 'rgba(90, 0, 0)',  /* 70% opacity */
+            backgroundColor: '#591410',  /* 70% opacity */
             color: 'white',
           },
           '& .blue-background': {
-            backgroundColor: 'rgba(0, 34, 68)',  /* 70% opacity */
+            backgroundColor: '#0c3659',  /* 70% opacity */
             color: 'white',
           },
           '& .black-background': {
@@ -335,6 +366,14 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
           '& .custom-cell': {
             fontSize: '18px',
             textAlign: 'center',
+          },
+          '& .alive_column': {
+            // minHeight: "100% !important",
+
+          },
+          '& .MuiDataGrid-cell':{
+            minHeight: "100px !important",
+            
           },
           '& .css-v4u5dn-MuiInputBase-root-MuiInput-root': {
             backgroundColor: 'white',
@@ -348,7 +387,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
             color: 'white',
           },
           '.MuiDataGrid-withBorderColor': {
-            borderColor: 'var(--primary-color)',
+            border:'0'
           },
           '.css-1knaqv7-MuiButtonBase-root-MuiButton-root':{
             color: 'white',

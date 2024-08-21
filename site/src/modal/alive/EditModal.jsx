@@ -86,7 +86,7 @@ function EditModal({ aliveId, onClose }) {
   }
 
   return (
-    <div className={darkMode === 'dark' ? 'modal-background dark' : 'modal-background light'}>
+    <div className="dark">
       <div className='modal-content'>
         <div className='titleCloseBtn'>
           <Button onClick={onClose}>&times;</Button>

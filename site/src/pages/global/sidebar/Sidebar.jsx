@@ -83,8 +83,7 @@ export default function Sidebar() {
           
                 {isAuth && (
                     <li>
-                        <FormControl className={darkMode === 'dark' ? 'dark data-form' : 'light data-form'}>
-                            <InputLabel id="demo-simple-select-label" sx={{color: 'white'}}>Data</InputLabel>
+                        <FormControl className="dark">
                             <Select
                             labelId="grap data"
                             id="data-grap"
@@ -101,18 +100,7 @@ export default function Sidebar() {
                     </li>
                 )}
 
-                <li className='mode'>
-
-
-                    <div className={darkMode === 'dark' ? 'dark toggle-switch' : 'light toggle-switch'}>
-                        <Switch defaultChecked={darkMode === 'dark'}
-                            checked={darkMode === 'dark'}
-                            onChange={toggleDarkMode}
-                            inputProps={{ 'aria-label': 'Toggle dark mode'}}
-                            color="warning" 
-                        />
-                    </div>
-                </li>
+              
             </div>
         </div>
     </nav>
