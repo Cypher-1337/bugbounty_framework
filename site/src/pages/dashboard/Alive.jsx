@@ -9,8 +9,8 @@ import { Button, Modal } from '@mui/material';
 import EditModal from '../../modal/alive/EditModal';
 import DeleteModal from '../../modal/alive/DelModal';
 import Axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { AuthContext } from "../../auth";
 
 
 
@@ -24,7 +24,8 @@ export default function AliveData() {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = React.useState(false); // New state for delete modal
 
-  const navigate = useNavigate();
+  const {authData} = React.useContext(AuthContext)
+
 
 
 // ----------------------- Edit & Delete -------------------------
@@ -48,6 +49,7 @@ export default function AliveData() {
 
 
 //------------------- Filter Input ---------------------
+
   const handleChange = (e) => {
     setLocalInputFilter(e.target.value);
   };
@@ -56,6 +58,7 @@ export default function AliveData() {
       setInputFilter(localInputFilter);
     }
   };
+
 // ------------------------------------------------------
 
 const  handleScannedButtonClick = async (id ,scannedValue) => {
@@ -294,23 +297,24 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
       <Helmet>
           <title>Dashboard</title>
       </Helmet>
-      <div className='filter-area'>
-        <TextField
-        sx={{ color: 'white', backgroundColor: '#f5f5f5', borderRadius: '4px', width: '50%px' }}
-        value={localInputFilter}
-        onChange={handleChange}
-        size='small'
-        placeholder='Filter...'
-        onKeyDown={handleKeyDown} />
+      {authData.role === "admin" &&(
+        <div className='filter-area'>
+          <TextField
+          sx={{ color: 'white', backgroundColor: '#f5f5f5', borderRadius: '4px', width: '50%px' }}
+          value={localInputFilter}
+          onChange={handleChange}
+          size='small'
+          placeholder='Filter...'
+          onKeyDown={handleKeyDown} />
 
-        { (inputFilter) &&
-        <p style={{color:'white', fontSize: '22px', marginLeft: '80px' }}>
-          Searched for: <b>{inputFilter}</b>
-        </p>
-        }
+          { (inputFilter) &&
+          <p style={{color:'white', fontSize: '22px', marginLeft: '80px' }}>
+            Searched for: <b>{inputFilter}</b>
+          </p>
+          }
 
-      </div>
-
+        </div>
+      )}
 
       <DataGrid
         rows={formattedAlive}

@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 
 const cookieParser = require("cookie-parser")
-const {validateToken} = require("./controllers/auth/JWT")
+const {validateToken, checkAdmin} = require("./controllers/auth/JWT")
 const domainRoute = require('./routes/domainRoute');
 const aliveRoute = require('./routes/aliveRoute');
 const subdomainsRoute = require('./routes/subdomainsRoute');
@@ -38,7 +38,7 @@ app.use(validateToken);
 app.use('/api/v1/domains', domainRoute);
 app.use('/api/v1/alive', aliveRoute);
 app.use('/api/v1/subdomains', subdomainsRoute);
-app.use('/api/v1/monitor', monitorRoute); 
+app.use('/api/v1/monitor', validateToken, checkAdmin, monitorRoute); 
 app.use('/api/v1/download', downloadRoute); 
 app.use('/api/v1/fuzz', fuzzRoute); 
 

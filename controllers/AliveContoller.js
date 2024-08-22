@@ -14,11 +14,37 @@ const formatDateTime = (dateTimeString) => {
 
 const getAllAlive = async (req, res) => {
   try {
+    
+    // Define user role
+    const userRole = req.user.role;
+
+
     // Read the 'limit' query parameter with a default value of 500
     const limit = parseInt(req.query.limit, 10) || 10000;
     const filter = req.query.filter;
 
+
+    // Define the SQL query based on user role
+    let sqlQuery = '';
+    let queryParams = [];
     
+    if (userRole === 'admin') {
+      // Admins can see all records with the optional limit
+      sqlQuery = `SELECT * FROM live order by id desc limit ?`;
+      queryParams = [limit];
+    } 
+    
+    if (userRole === 'sergey') {
+      // Regular users see filtered records based on 'filter'
+      sqlQuery = `SELECT * FROM live WHERE alive LIKE ? order by id desc`;
+      queryParams = [`%${filter || 'dyson'}%`]; // Default filter value 'dyson' if not provided
+    }
+
+    if (userRole === 'dell') {
+      // Regular users see filtered records based on 'filter'
+      sqlQuery = `SELECT * FROM live WHERE alive LIKE ? order by id desc`;
+      queryParams = [`%${filter || 'dell'}%`]; // Default filter value 'dyson' if not provided
+    }
 
     if (filter && filter !== ''){
 
@@ -41,26 +67,21 @@ const getAllAlive = async (req, res) => {
 
 
     }else{
-      connection.query(
-        `SELECT * FROM live order by id desc limit ${limit}`,
-        function(err, results, fields) {
-
-          if (err){
-            console.log(err)
-          }
-          
-          // Format the date in each result
-          const formattedResults = results.map((result) => ({
-            ...result,
-            date: formatDateTime(result.date), // Assuming 'date' is the column with the date string
-          }));
-
-          
-          res.json(formattedResults);
-
-
+      connection.query(sqlQuery, queryParams, function(err, results, fields) {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ message: 'Internal Server Error' });
         }
-      )
+  
+        // Format the date in each result
+        const formattedResults = results.map((result) => ({
+          ...result,
+          date: formatDateTime(result.date), // Assuming 'date' is the column with the date string
+        }));
+  
+        res.json(formattedResults);
+      });
+      
     }
   } catch (error) {
     res.status(500).json({ message: error });

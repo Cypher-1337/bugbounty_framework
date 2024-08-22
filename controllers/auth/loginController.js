@@ -26,7 +26,7 @@ const login = async (req, res) => {
                     maxAge: 60*60*24*3*1000   // session expires after 3 days
                 })
 
-                res.status(200).json({session: accessToken, user: results[0].username})
+                res.status(200).json({session: accessToken, user: results[0].username, role: results[0].role})
             }
         )
 

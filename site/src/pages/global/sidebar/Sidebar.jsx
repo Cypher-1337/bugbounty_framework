@@ -16,12 +16,9 @@ export default function Sidebar() {
 
 
     // Getting the data from useContext
-    const {data, setData, darkMode, setDarkMode} = useContext(AppContext)
-    const {isAuth, loading} = useContext(AuthContext)
+    const {data, setData} = useContext(AppContext)
+    const {isAuth, loading, authData} = useContext(AuthContext)
 
-    const toggleDarkMode = () => {  
-        setDarkMode(darkMode === 'dark' ? 'light' : 'dark');
-      };
 
     const handleChange = (event) => {
     setData(event.target.value);
@@ -33,7 +30,7 @@ export default function Sidebar() {
 
 
   return ( 
-    <nav className={`sidebar ${darkMode === 'dark' ? 'dark' : 'light'}`}>
+    <nav className="sidebar dark">
         <header>
             <div className='image-text'>
                 <IconButton> 
@@ -53,11 +50,14 @@ export default function Sidebar() {
                                         <DashboardOutlinedIcon className='link-icon' />
                                     </Link>
                                 </li>
-                                <li className='nav-link'>
-                                    <Link to="/monitor" className='link-a'>
-                                        <MonitorIcon className='link-icon' />
-                                    </Link>
-                                </li>
+                                { authData.role === "admin" && ( // Only show the "Monitor" link if the user is an admin
+                                    <li className='nav-link'>
+                                        <Link to="/monitor" className='link-a'>
+                                            <MonitorIcon className='link-icon' />
+                                        </Link>
+                                    </li>
+                                )
+                                }
                             </>
                         ) : (
                             <>
@@ -81,7 +81,8 @@ export default function Sidebar() {
             <div className='bottom-content'>
 
           
-                {isAuth && (
+                {isAuth && authData.role === 'admin' && (
+                    
                     <li>
                         <FormControl className="dark">
                             <Select
@@ -89,7 +90,7 @@ export default function Sidebar() {
                             id="data-grap"
                             value={data}
                             onChange={handleChange}
-                            className={darkMode === 'dark' ? 'dark data-form' : 'light data-form'}
+                            className="dark data-form"
                             color='warning'
                             >
                                 <MenuItem  value='alive' selected>Alive</MenuItem>
