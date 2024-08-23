@@ -36,14 +36,17 @@ const getAllAlive = async (req, res) => {
     
     if (userRole === 'sergey') {
       // Regular users see filtered records based on 'filter'
-      sqlQuery = `SELECT * FROM live WHERE alive LIKE ? order by id desc`;
-      queryParams = [`%${filter || 'dyson'}%`]; // Default filter value 'dyson' if not provided
+      sqlQuery = `SELECT * FROM live WHERE alive LIKE '%dyson%' order by id desc`;
     }
 
     if (userRole === 'dell') {
       // Regular users see filtered records based on 'filter'
-      sqlQuery = `SELECT * FROM live WHERE alive LIKE ? order by id desc`;
-      queryParams = [`%${filter || 'dell'}%`]; // Default filter value 'dyson' if not provided
+      sqlQuery = `SELECT * FROM live WHERE alive LIKE '%dell%' order by id desc`;
+    }
+
+    if (userRole === 'preyer') {
+      // Regular users see filtered records based on 'filter'
+      sqlQuery = `SELECT * FROM live WHERE alive LIKE '%t-mobile%' or alive LIKE '%sprint.com' order by id desc`;
     }
 
     if (filter && filter !== ''){
