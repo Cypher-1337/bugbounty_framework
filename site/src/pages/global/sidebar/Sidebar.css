@@ -98,7 +98,7 @@
 }
 
 .sidebar li:hover {
-  background: var(--primary-color);
+  background-color: var(--primary-color)
 }
 
 .sidebar li:hover .text,

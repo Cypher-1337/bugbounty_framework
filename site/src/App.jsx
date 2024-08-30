@@ -3,6 +3,7 @@ import './App.css';
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom'
 import Sidebar from './pages/global/sidebar/Sidebar';
 import Dashboard from './pages/dashboard/Dashboard';
+import ChangesData from './pages/changes/Changes'
 import { createContext, useState, useEffect } from 'react';
 import Monitor from './pages/monitor/monitor';
 import Display from './pages/monitor/Display';
@@ -39,6 +40,10 @@ function App() {
                 <Route
                     path='/dashboard'
                     element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
+                />  
+                 <Route
+                    path='/changes'
+                    element={<ProtectedRoute><ChangesData /></ProtectedRoute>}
                 />
                 <Route
                     path='/monitor'

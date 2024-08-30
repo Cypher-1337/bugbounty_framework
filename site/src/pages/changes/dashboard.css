@@ -1,0 +1,19 @@
+
+.links{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.link{
+    margin: 0 20px;
+    margin-bottom: 10px;
+}
+
+.link:hover{
+background-color: rgb(160, 160, 160);}
+
+.imageIcon{
+    width: 25px;
+    height: 25px;
+}

@@ -12,6 +12,41 @@ const formatDateTime = (dateTimeString) => {
   return formattedDate;
 };
 
+
+const getAllChanges = async (req, res) => {
+
+  try {
+    
+    const userRole = req.user.role;
+
+    if (userRole === 'admin') {
+      
+      connection.execute(
+        'SELECT * FROM `live` WHERE comment like "Changed%" order by id desc',
+        function(err, results, fields) {
+ 
+          if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ message: 'Internal Server Error' });
+          }
+
+          // Format the date in each result
+          const formattedResults = results.map((result) => ({
+            ...result,
+            date: formatDateTime(result.date), // Assuming 'date' is the column with the date string
+          }));
+
+          res.json(formattedResults);  
+
+        }
+      );
+
+    } 
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+}
+
 const getAllAlive = async (req, res) => {
   try {
     
@@ -36,7 +71,7 @@ const getAllAlive = async (req, res) => {
     
     if (userRole === 'sergey') {
       // Regular users see filtered records based on 'filter'
-      sqlQuery = `SELECT * FROM live WHERE alive LIKE '%dyson%' order by id desc`;
+      sqlQuery = `SELECT * FROM live WHERE alive LIKE '%tidal%' and alive LIKE '%wimpmusic.com' AND alive like '%tdl.sh' order by id desc`;
     }
 
     if (userRole === 'dell') {
@@ -209,7 +244,7 @@ const updateScanned = async (req, res) => {
 
 
 
-module.exports = {getAllAlive, getAlive, updateAlive, deleteAlive, updateScanned}
+module.exports = {getAllAlive, getAlive, updateAlive, deleteAlive, updateScanned, getAllChanges}
 
 
 

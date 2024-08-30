@@ -4,6 +4,7 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import { IconButton } from '@mui/material';
 import MonitorIcon from '@mui/icons-material/Monitor';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import UpdateIcon from '@mui/icons-material/Update';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';import Switch from '@mui/material/Switch';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import "./Sidebar.css"
@@ -51,11 +52,22 @@ export default function Sidebar() {
                                     </Link>
                                 </li>
                                 { authData.role === "admin" && ( // Only show the "Monitor" link if the user is an admin
-                                    <li className='nav-link'>
-                                        <Link to="/monitor" className='link-a'>
-                                            <MonitorIcon className='link-icon' />
-                                        </Link>
-                                    </li>
+                                    <>
+                                        
+                                        <li className='nav-link'>
+                                            <Link to="/changes" className='link-a'>
+                                                <UpdateIcon className='link-icon' />
+                                            </Link>
+                                        </li>
+                                        
+                                        <li className='nav-link'>
+                                            <Link to="/monitor" className='link-a'>
+                                                <MonitorIcon className='link-icon' />
+                                            </Link>
+                                        </li>
+
+                                       
+                                    </>
                                 )
                                 }
                             </>
@@ -66,12 +78,15 @@ export default function Sidebar() {
                                         <AccountCircleIcon className='link-icon' />
                                     </Link>
                                 </li>
+                                {isAuth && authData.role === 'admin' && (
 
-                                <li className='nav-link'>
-                                    <Link to="/register" className='link-a'>
-                                        <PersonAddIcon className='link-icon' />
-                                    </Link>
-                                </li>
+                                    <li className='nav-link'>
+                                        <Link to="/register" className='link-a'>
+                                            <PersonAddIcon className='link-icon' />
+                                        </Link>
+                                    </li>
+                                )}
+
                             </> 
                         )}
 

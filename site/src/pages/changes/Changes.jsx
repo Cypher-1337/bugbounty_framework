@@ -1,33 +1,25 @@
 import "./dashboard.css"
 import * as React from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { fetchAliveData, formatAliveData } from '../../data/allAliveData';
+import { fetchAliveData, formatAliveData } from '../../data/changesData';
 import { useQuery } from 'react-query';
-import { AppContext } from '../../App';
-import TextField from '@mui/material/TextField';
 import { Button, Modal } from '@mui/material';
 import EditModal from '../../modal/alive/EditModal';
 import DeleteModal from '../../modal/alive/DelModal';
 import Axios from 'axios';
 import { Helmet } from 'react-helmet';
-import { AuthContext } from "../../auth";
 
 
 
-export default function AliveData() {
+export default function ChangesData() {
   
+    const [ aliveId, setAliveId ] = React.useState(null);
+    const [modalOpen, setModalOpen] = React.useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = React.useState(false); // New state for delete modal
   
-  const { inputFilter, setInputFilter } = React.useContext(AppContext);
-  const [localInputFilter, setLocalInputFilter] = React.useState(inputFilter);
-
-  const [ aliveId, setAliveId ] = React.useState(null);
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false); // New state for delete modal
-
-  const {authData} = React.useContext(AuthContext)
 
 
-
+ 
 // ----------------------- Edit & Delete -------------------------
   const handleEditButtonClick = (id) => {
     setAliveId(id);
@@ -48,18 +40,7 @@ export default function AliveData() {
 // ---------------------------------------------------------------
 
 
-//------------------- Filter Input ---------------------
 
-  const handleChange = (e) => {
-    setLocalInputFilter(e.target.value);
-  };
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      setInputFilter(localInputFilter);
-    }
-  };
-
-// ------------------------------------------------------
 
 const  handleScannedButtonClick = async (id ,scannedValue) => {
   const oppositeValue = scannedValue === 'true' ? 'false' : 'true';
@@ -70,15 +51,15 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
 
   try {
     const response = await Axios.patch(url, requestBody);
-    console.log(`${response.data}`);
+    console(`${response.data}`);
   } catch (error) {
     alert(`Error: ${error.message}`);
   }  
 };
 
   // Fetch data based on inputFilter using useQuery
-  const { data, isLoading, isError } = useQuery(['aliveData', inputFilter], async () => {
-    const response = await fetchAliveData(inputFilter);
+  const { data, isLoading, isError } = useQuery(['aliveData'], async () => {
+    const response = await fetchAliveData();
     return response;
   });
 
@@ -175,7 +156,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
       headerName: 'Tech',
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
-      width: 150,
+      width: 75,
       cellClassName: 'custom-cell', // Add this line
 
     },
@@ -184,7 +165,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
       headerName: 'Waf',
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
-      width: 150,
+      width: 75,
       cellClassName: 'custom-cell', // Add this line
 
     },
@@ -193,7 +174,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
       headerName: 'Comment',
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
-      width: 100,
+      width: 350,
       cellClassName: 'custom-cell', // Add this line
 
     },
@@ -293,132 +274,119 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
   const formattedAlive = formatAliveData(data);
 
   return (
-    <div className='table-content'>
-      <Helmet>
-          <title>Dashboard</title>
-      </Helmet>
-      {authData.role === "admin" &&(
-        <div className='filter-area'>
-          <TextField
-          sx={{ color: 'white', backgroundColor: '#f5f5f5', borderRadius: '4px', width: '50%px' }}
-          value={localInputFilter}
-          onChange={handleChange}
-          size='small'
-          placeholder='Filter...'
-          onKeyDown={handleKeyDown} />
 
-          { (inputFilter) &&
-          <p style={{color:'white', fontSize: '22px', marginLeft: '80px' }}>
-            Searched for: <b>{inputFilter}</b>
-          </p>
-          }
+    <div className='dashboard'>
+
+        <div className='table-content'>
+        <Helmet>
+            <title>Changes</title>
+        </Helmet>
+        
+
+        <DataGrid
+            rows={formattedAlive}
+            columns={columns}
+            getRowId={getRowId}
+            getRowClassName={getRowClassName}
+            initialState={{
+            pagination: {
+                paginationModel: {
+                pageSize: 25,
+                },
+            },
+            }}
+            pageSizeOptions={[5]}
+            slots={{ toolbar: GridToolbar}}
+            slotProps={{
+            toolbar: {
+                showQuickFilter: true,
+            },
+            }}
+            disableRowSelectionOnClick
+            sx={{
+        
+            '& .super-app-theme--header': {
+                backgroundColor: '#3A3B3C',
+                color: 'white',
+            },
+            '& .MuiDataGrid-row:hover': {
+                backgroundColor: "#636363",
+            },
+            '& .MuiDataGrid-row': {
+                
+                minHeight: "85px !important" ,
+            },
+            '& .green-background': {
+                backgroundColor: '#1e481f',  /* 70% opacity */
+                color: 'white',
+            },
+            '& .red-background': {
+                backgroundColor: '#591410',  /* 70% opacity */
+                color: 'white',
+            },
+            '& .blue-background': {
+                backgroundColor: '#0c3659',  /* 70% opacity */
+                color: 'white',
+            },
+            '& .black-background': {
+                backgroundColor: '#000',
+                color: 'white',
+            },'& .MuiDataGrid-cellContent': {
+                margin: '0 auto',
+            },
+            '& .custom-cell': {
+                fontSize: '18px',
+                textAlign: 'center',
+            },
+            '& .alive_column': {
+                // minHeight: "100% !important",
+
+            },
+            '& .MuiDataGrid-cell':{
+                minHeight: "100px !important",
+                
+            },
+            '& .css-v4u5dn-MuiInputBase-root-MuiInput-root': {
+                backgroundColor: 'white',
+                color: 'black',
+                borderRadius: '4px', // Adjust as needed
+            },
+            '& .css-ptiqhd-MuiSvgIcon-root': {
+                color: 'blue',
+            },
+            '& .css-levciy-MuiTablePagination-displayedRows':{
+                color: 'white',
+            },
+            '.MuiDataGrid-withBorderColor': {
+                border:'0'
+            },
+            '.css-1knaqv7-MuiButtonBase-root-MuiButton-root':{
+                color: 'white',
+            },
+
+            }}
+            style={{
+            height: '50%', // Set the height to 50%
+            border: 'none', // Set the border color to grey
+            fontSize: '20px',
+
+            }}
+            />
+
+            <Modal open={deleteModalOpen} onClose={handleCloseDeleteModal}>
+
+            <DeleteModal
+            aliveId={aliveId}
+            onClose={handleCloseDeleteModal}
+            />
+            </Modal>
+
+
+            <Modal open={modalOpen} onClose={handleCloseEditModal}>
+            <EditModal aliveId={aliveId} onClose={handleCloseEditModal}/>
+            </Modal>
 
         </div>
-      )}
-
-      <DataGrid
-        rows={formattedAlive}
-        columns={columns}
-        getRowId={getRowId}
-        getRowClassName={getRowClassName}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 25,
-            },
-          },
-        }}
-        pageSizeOptions={[5]}
-        slots={{ toolbar: GridToolbar}}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        disableRowSelectionOnClick
-        sx={{
-    
-          '& .super-app-theme--header': {
-            backgroundColor: '#3A3B3C',
-            color: 'white',
-          },
-          '& .MuiDataGrid-row:hover': {
-              backgroundColor: "#636363",
-          },
-          '& .MuiDataGrid-row': {
-            
-            minHeight: "85px !important" ,
-          },
-          '& .green-background': {
-            backgroundColor: '#1e481f',  /* 70% opacity */
-            color: 'white',
-          },
-          '& .red-background': {
-            backgroundColor: '#591410',  /* 70% opacity */
-            color: 'white',
-          },
-          '& .blue-background': {
-            backgroundColor: '#0c3659',  /* 70% opacity */
-            color: 'white',
-          },
-          '& .black-background': {
-            backgroundColor: '#000',
-            color: 'white',
-          },'& .MuiDataGrid-cellContent': {
-            margin: '0 auto',
-          },
-          '& .custom-cell': {
-            fontSize: '18px',
-            textAlign: 'center',
-          },
-          '& .alive_column': {
-            // minHeight: "100% !important",
-
-          },
-          '& .MuiDataGrid-cell':{
-            minHeight: "100px !important",
-            
-          },
-          '& .css-v4u5dn-MuiInputBase-root-MuiInput-root': {
-            backgroundColor: 'white',
-            color: 'black',
-            borderRadius: '4px', // Adjust as needed
-          },
-          '& .css-ptiqhd-MuiSvgIcon-root': {
-            color: 'blue',
-          },
-          '& .css-levciy-MuiTablePagination-displayedRows':{
-            color: 'white',
-          },
-          '.MuiDataGrid-withBorderColor': {
-            border:'0'
-          },
-          '.css-1knaqv7-MuiButtonBase-root-MuiButton-root':{
-            color: 'white',
-          },
-
-        }}
-        style={{
-          height: '50%', // Set the height to 50%
-          border: 'none', // Set the border color to grey
-          fontSize: '20px',
-
-        }}
-        />
-
-        <Modal open={deleteModalOpen} onClose={handleCloseDeleteModal}>
-
-        <DeleteModal
-          aliveId={aliveId}
-          onClose={handleCloseDeleteModal}
-        />
-        </Modal>
-
-
-        <Modal open={modalOpen} onClose={handleCloseEditModal}>
-          <EditModal aliveId={aliveId} onClose={handleCloseEditModal}/>
-        </Modal>
-
-      </div>
+    </div>
   );
 }
