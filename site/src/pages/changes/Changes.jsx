@@ -76,49 +76,55 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
 
         const url = new URL(params.value);
         const hostname = url.hostname;
+        const redirect = params.row.redirect
 
         return(
-          <div >
-            <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-              <a style={{ textDecoration: 'none', color: 'white', width:'10px' }} href={params.value} target="_blank" rel="noopener noreferrer">
+          <div>
+            <div style={{ marginTop: redirect ? '18px' : '10px',marginBottom: redirect ? '7px' : '20px', display: 'flex', flexDirection: 'column', width: '100%', display: 'flex',  justifyContent: 'space-between'}}>
+              <a style={{ textDecoration: 'none', color: 'white', width: '10px', fontSize:'22px' }} href={params.value} target="_blank" rel="noopener noreferrer">
                 {params.value}
               </a>     
+              {redirect && ( // Show redirect if it exists
+                
+                <a style={{ textDecoration: 'none', color: 'orange', marginTop: '3px', width: "10px" }} href={redirect} target="_blank" rel="noopener noreferrer">{redirect}</a>
+                
+              )}
             </div>
 
                       
-              <div className='links'>
+            <div className="links">
 
-                <a href={`https://github.com/search?q=${hostname}&type=code`} target="_blank" rel="noopener noreferrer" className="link">
-                  <img src="https://github.com/favicon.ico" alt="" className="imageIcon" />
-                </a>
+              <a href={`https://github.com/search?q=${hostname}&type=code`} target="_blank" rel="noopener noreferrer" className="link">
+                <img src="https://github.com/favicon.ico" alt="" className="imageIcon" />
+              </a>
 
-                <a href={`https://www.google.com/search?q=site%3A${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
-                  <img src="https://www.google.com/favicon.ico" alt="" className="imageIcon" />
-                </a>
+              <a href={`https://www.google.com/search?q=site%3A${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
+                <img src="https://www.google.com/favicon.ico" alt="" className="imageIcon" />
+              </a>
 
-                <a href={`http://web.archive.org/cdx/search/cdx?url=${hostname}/*&output=text&fl=original&collapse=urlkey&from=`} target="_blank" rel="noopener noreferrer" className="link">
-                  <img src="https://archive.org/favicon.ico" alt="" className="imageIcon" />
-                </a>
-                
-                <a href={`https://www.bing.com/search?q=site%3A${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
-                  <img src="https://www.bing.com/favicon.ico" alt="" className="imageIcon" />
-                </a>
+              <a href={`http://web.archive.org/cdx/search/cdx?url=${hostname}/*&output=text&fl=original&collapse=urlkey&from=`} target="_blank" rel="noopener noreferrer" className="link">
+                <img src="https://archive.org/favicon.ico" alt="" className="imageIcon" />
+              </a>
+              
+              <a href={`https://www.bing.com/search?q=site%3A${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
+                <img src="https://www.bing.com/favicon.ico" alt="" className="imageIcon" />
+              </a>
 
-                <a href={`https://www.shodan.io/search?query=hostname%3A%22${hostname}%22`} target="_blank" rel="noopener noreferrer" className="link">
-                  <img src="https://www.shodan.io/static/img/favicon-60c1b1cd.png" alt="" className="imageIcon" />
-                </a>
-                
-                <a href={`https://search.censys.io/search?resource=hosts&q=${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
-                  <img src="https://search.censys.io/static/img/favicon-32x32.png" alt="" className="imageIcon" />
-                </a>
-                
+              <a href={`https://www.shodan.io/search?query=hostname%3A%22${hostname}%22`} target="_blank" rel="noopener noreferrer" className="link">
+                <img src="https://www.shodan.io/static/img/favicon-60c1b1cd.png" alt="" className="imageIcon" />
+              </a>
+              
+              <a href={`https://search.censys.io/search?resource=hosts&q=${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
+                <img src="https://search.censys.io/static/img/favicon-32x32.png" alt="" className="imageIcon" />
+              </a>
+              
 
-                <a href={`https://en.fofa.info/result?qbase64=${btoa(hostname)}`} target="_blank" rel="noopener noreferrer" className="link">
-                  <img src="https://en.fofa.info/favicon.ico" alt="" className="imageIcon" />
-                </a>
+              <a href={`https://en.fofa.info/result?qbase64=${btoa(hostname)}`} target="_blank" rel="noopener noreferrer" className="link">
+                <img src="https://en.fofa.info/favicon.ico" alt="" className="imageIcon" />
+              </a>
 
-              </div>
-          </div>
+            </div>
+        </div>
         )
       },
       cellClassName: 'custom-cell, alive_column',
@@ -156,16 +162,16 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
       headerName: 'Tech',
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
-      width: 75,
+      width: 250,
       cellClassName: 'custom-cell', // Add this line
 
     },
     {
-      field: 'waf',
-      headerName: 'Waf',
+      field: 'apps',
+      headerName: 'apps',
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
-      width: 75,
+      width: 150,
       cellClassName: 'custom-cell', // Add this line
 
     },
@@ -175,6 +181,24 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
       width: 350,
+      cellClassName: 'custom-cell', // Add this line
+
+    },
+    {
+      field: 'ip',
+      headerName: 'IP',
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      width: 150,
+      cellClassName: 'custom-cell', // Add this line
+
+    },
+    {
+      field: 'cname',
+      headerName: 'CName',
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      width: 250,
       cellClassName: 'custom-cell', // Add this line
 
     },
@@ -314,7 +338,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
             },
             '& .MuiDataGrid-row': {
                 
-                minHeight: "85px !important" ,
+                minHeight: "125px !important" ,
             },
             '& .green-background': {
                 backgroundColor: '#1e481f',  /* 70% opacity */
@@ -336,14 +360,13 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
             },
             '& .custom-cell': {
                 fontSize: '18px',
-                textAlign: 'center',
             },
             '& .alive_column': {
                 // minHeight: "100% !important",
 
             },
             '& .MuiDataGrid-cell':{
-                minHeight: "100px !important",
+                minHeight: "125px !important",
                 
             },
             '& .css-v4u5dn-MuiInputBase-root-MuiInput-root': {
