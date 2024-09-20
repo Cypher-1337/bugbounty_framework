@@ -119,7 +119,7 @@
           
           <div>
             
-            <Paper className='custom-scrollbar' sx={{ flex: 1, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--primary-color)', marginBottom: '30px' }}>
+            <Paper className='custom-scrollbar' sx={{ flex: 1, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--border-color)', marginBottom: '30px' }}>
               <List>
                 {files.map((file, index) => (
                   (fileName(file) === "html_endpoints.txt" || fileName(file) === "js_endpoints.txt") && (
@@ -131,7 +131,7 @@
                         backgroundColor: clickedFile === file ? 'var(--primary-color)' : 'inherit',
                         cursor: 'pointer',
                         padding: '2px 20px',
-                        border: '1px solid var(--primary-color)',
+                        border: '1px solid var(--border-color)',
                         borderRadius: '50px',
                         margin: '10px 0'
                       }}
@@ -144,7 +144,7 @@
             </Paper>
             
 
-            <Paper className='custom-scrollbar' sx={{ flex: 1, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--primary-color)' }}>
+            <Paper className='custom-scrollbar' sx={{ flex: 1, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--border-color)' }}>
               <List>
                 {files.map((file, index) => (
                   fileName(file) !== "html_endpoints.txt" && fileName(file) !== "js_endpoints.txt" && (
@@ -157,7 +157,7 @@
                         backgroundColor: clickedFile === file ? 'var(--primary-color)' : 'inherit',
                         cursor: 'pointer',
                         padding: '2px 20px',
-                        border: '1px solid var(--primary-color)',
+                        border: '1px solid var(--border-color)',
                         borderRadius: '50px',
                         margin: '10px 0'
                       }}
@@ -173,7 +173,7 @@
           </div>
 
           {fileContent && (
-            <Paper className='custom-scrollbar' sx={{ flex: 4, p: 3, fontSize: '18px',border: '1px solid var(--primary-color)', backgroundColor: "var(--secondary-color)", color: 'white', overflow: "auto", maxHeight: '85vh', margin: "0 20px" }}>
+            <Paper className='custom-scrollbar' sx={{ flex: 4, p: 3, fontSize: '18px',border: '1px solid var(--border-color)', backgroundColor: "var(--secondary-color)", color: 'white', overflow: "auto", maxHeight: '85vh', margin: "0 20px" }}>
               <Typography variant="h6">File Content </Typography>
               {fileContent === "[-] File too large" ? (
               <Button variant='contained' color='success' onClick={() => handleFileDownload(theFile)} >Download file</Button>  
@@ -188,7 +188,7 @@
           )}
 
 
-          <Paper className='custom-scrollbar' sx={{ flex: 2, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--primary-color)' }}>
+          <Paper className='custom-scrollbar' sx={{ flex: 2, mr: 2, p: 2, overflow: 'auto', maxHeight: '90vh', backgroundColor: "var(--secondary-color)", color: 'white', border: '1px solid var(--border-color)' }}>
             <List>
               {newFiles.slice().reverse().map((newFile, index) => (
                 <ListItem
@@ -199,7 +199,7 @@
                     backgroundColor: clickedFile === newFile ? 'var(--primary-color)' : 'inherit',
                     cursor: 'pointer',
                     padding: '2px 20px',
-                    border: '1px solid var(--primary-color)',
+                    border: '1px solid var(--border-color)',
                     borderRadius: '50px',
                     margin: '10px 0'
                   }}

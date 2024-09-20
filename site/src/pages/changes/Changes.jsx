@@ -377,6 +377,9 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
             '& .css-ptiqhd-MuiSvgIcon-root': {
                 color: 'blue',
             },
+            '& .MuiButtonBase-root':{
+              color: 'white'
+            },
             '& .css-levciy-MuiTablePagination-displayedRows':{
                 color: 'white',
             },

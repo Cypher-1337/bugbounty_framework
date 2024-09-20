@@ -7,6 +7,7 @@ import ChangesData from './pages/changes/Changes'
 import { createContext, useState, useEffect } from 'react';
 import Monitor from './pages/monitor/monitor';
 import Display from './pages/monitor/Display';
+import Endpoint from './pages/endpoints/Endpoint';
 import Login from './pages/login/Login';
 import { AuthProvider } from './auth';
 import ProtectedRoute from './components/protectedRoute';
@@ -52,6 +53,10 @@ function App() {
                 <Route
                     path='/monitor/display'
                     element={<ProtectedRoute><Display /></ProtectedRoute>}
+                />
+                <Route
+                    path='/endpoints'
+                    element={<ProtectedRoute><Endpoint /></ProtectedRoute>}
                 />
 
 

@@ -1,0 +1,32 @@
+
+.endpoint-bar{
+    display: flex;
+    justify-content: space-between;
+    width: 96%;
+    border: 2px solid var(--border-color);
+    padding: 0 30px;
+    overflow: hidden;
+}
+
+.endpoint-msg{
+    color: gray
+}
+
+.endpoint-main{
+    display:flex;
+    flex-direction: column;
+}
+
+
+
+.end-content{
+    width: 90vw;
+    display: flex;
+}
+
+
+
+
+.MuiPaper-root{
+
+}

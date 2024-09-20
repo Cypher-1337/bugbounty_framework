@@ -48,7 +48,7 @@
     font-weight: bold;
     text-align: center;
     cursor: pointer;
-    border: 1px solid #555;
+    border: 1px solid var(--border-color);
     flex: 1;
 }
 
@@ -102,7 +102,7 @@
 
 .add-results{
     height: 800px;
-    border: 2px solid grey;
+    border: 1px solid var(--border-color);
     background-color: #aaa;
 }
 

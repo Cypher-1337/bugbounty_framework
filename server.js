@@ -8,9 +8,9 @@ const aliveRoute = require('./routes/aliveRoute');
 const subdomainsRoute = require('./routes/subdomainsRoute');
 const monitorRoute = require('./routes/monitorRoute'); 
 const downloadRoute = require('./routes/downloadRoute')
-const fuzzRoute = require('./routes/fuzzRoute')
 const registerRoute = require('./routes/auth/registerRoute')
 const loginRoute = require('./routes/auth/loginRoute')
+const endpointsRoute = require('./routes/endpointsRoute')
 const checkRoute = require('./routes/auth/checkRoute')
 const changesRoute = require('./routes/changesRoute')
 
@@ -41,8 +41,8 @@ app.use('/api/v1/alive', aliveRoute);
 app.use('/api/v1/subdomains', subdomainsRoute);
 app.use('/api/v1/monitor', validateToken, checkAdmin, monitorRoute); 
 app.use('/api/v1/download', downloadRoute); 
-app.use('/api/v1/fuzz', fuzzRoute); 
 app.use('/api/v1/changes', changesRoute )
+app.use('/api/v1/endpoints', endpointsRoute )
 
 
 

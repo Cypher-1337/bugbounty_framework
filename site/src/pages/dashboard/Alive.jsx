@@ -378,6 +378,9 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
             backgroundColor: '#1e481f',  /* 70% opacity */
             color: 'white',
           },
+          '& .MuiButtonBase-root':{
+            color: 'white'
+          },
           '& .red-background': {
             backgroundColor: '#591410',  /* 70% opacity */
             color: 'white',
@@ -416,7 +419,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
             color: 'white',
           },
           '.MuiDataGrid-withBorderColor': {
-            border:'0'
+            border:'none'
           },
           '.css-1knaqv7-MuiButtonBase-root-MuiButton-root':{
             color: 'white',

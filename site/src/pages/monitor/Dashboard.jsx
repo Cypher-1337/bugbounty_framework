@@ -210,8 +210,11 @@ function Dashboard() {
     '& .css-levciy-MuiTablePagination-displayedRows':{
       color: 'white',
     },
+    '& .MuiButtonBase-root':{
+      color: 'white'
+    },
     '.MuiDataGrid-withBorderColor': {
-      borderColor: "var(--primary-color)",
+      borderColor: "var(--border-color)",
     },
     '.css-1knaqv7-MuiButtonBase-root-MuiButton-root':{
       color: 'white',
@@ -226,8 +229,7 @@ function Dashboard() {
     fontSize: '20px',
     color: 'white',
     border: 'none',
-    padding: '10px',
-    margin: '20px 40px'
+
     //... other styles
   };
 
@@ -249,12 +251,6 @@ function Dashboard() {
           pageSizeOptions={[5]}
           sortModel={[{ field: 'count', sort: 'desc' }]} // Add this line
 
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
           disableRowSelectionOnClick
           sx={{
               ...gridStyles

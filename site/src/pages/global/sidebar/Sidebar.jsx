@@ -5,6 +5,7 @@ import { IconButton } from '@mui/material';
 import MonitorIcon from '@mui/icons-material/Monitor';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import UpdateIcon from '@mui/icons-material/Update';
+import LinkIcon from '@mui/icons-material/Link';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';import Switch from '@mui/material/Switch';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import "./Sidebar.css"
@@ -53,6 +54,12 @@ export default function Sidebar() {
                                 </li>
                                 { authData.role === "admin" && ( // Only show the "Monitor" link if the user is an admin
                                     <>
+
+                                        <li className='nav-link'>
+                                            <Link to="/endpoints" className='link-a'>
+                                                <LinkIcon className='link-icon' />
+                                            </Link>
+                                        </li>
                                         
                                         <li className='nav-link'>
                                             <Link to="/changes" className='link-a'>
