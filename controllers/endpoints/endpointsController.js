@@ -2,7 +2,45 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-const folderPath = '/home/kali/framework/recon';
+const folderPath = '/home/kali/Desktop/my_tools/framework/recon';
+
+
+function get_all_urls(domain, dirPath, callback) {
+    const urlsFolderPath = path.join(dirPath, domain, 'urls'); // Path to the 'new_urls' folder
+    const filePath = path.join(urlsFolderPath, 'all_urls.txt');
+
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            return callback(`File not found: ${filePath}`, null);
+        }
+
+        const urls = [];
+        const stream = fs.createReadStream(filePath, { encoding: 'utf8' });
+        const rl = readline.createInterface({
+            input: stream,
+            crlfDelay: Infinity,
+        });
+
+        const tempUrls = [];
+
+        rl.on('line', (line) => {
+            tempUrls.push(line);
+        });
+
+        rl.on('close', () => {
+            const reversedUrls = tempUrls.reverse();
+            const limitedUrls = reversedUrls.slice(0, 100000);
+            callback(null, filePath, limitedUrls);
+        });
+
+        rl.on('error', (err) => {
+            callback(`Error reading file: ${err}`, null);
+        });
+    });
+}
+
+
+
 
 // Function to get the latest 'new_urls' file for a specific domain
 const getLatestNewUrlsFile = (dirPath, callback) => {
@@ -117,7 +155,7 @@ const getDomains = (req, res) => {
 
                                     directories.push({
                                         domain: file,
-                                        latestNewUrlsFile: latestNewUrlsFilePath,
+                                        latestUrlsFile: latestNewUrlsFilePath,
                                         urls: limitedUrls // Array of URLs from the latest file
                                     });
 
@@ -130,7 +168,7 @@ const getDomains = (req, res) => {
                             } else {
                                 directories.push({
                                     domain: file,
-                                    latestNewUrlsFile: 'No new_urls file found',
+                                    latestUrlsFile: 'No new_urls file found',
                                     urls: [] // No URLs
                                 });
 
@@ -158,7 +196,16 @@ const getDomains = (req, res) => {
         // Check if the specific domain's new_urls directory exists
         fs.stat(specificDomainPath, (err, stats) => {
             if (err || !stats.isDirectory()) {
-                return res.status(404).json({ error: `Domain ${domain} not found` });
+                return get_all_urls(domain, folderPath, (err,filePath, urls) => {
+                    if (err) {
+                        return res.status(500).json({ error: err });
+                    }
+                    return res.json({
+                        domain: domain,
+                        latestUrlsFile: '',
+                        urls,
+                    });
+                });
             }
     
             // Read all 'new_urls_' files in the specific domain's new_urls directory
@@ -173,7 +220,7 @@ const getDomains = (req, res) => {
                 if (newUrlsFiles.length === 0) {
                     return res.json({
                         domain: domain,
-                        latestNewUrlsFile: 'No new_urls files found',
+                        latestUrlsFile: 'No new_urls files found',
                         urls: [] // No URLs
                     });
                 }
@@ -220,7 +267,7 @@ const getDomains = (req, res) => {
     
                                 return res.json({
                                     domain: domain,
-                                    latestNewUrlsFile: latestFiles.map(f => f.file), // Return the latest new_urls files
+                                    latestUrlsFile: latestFiles.map(f => f.file), // Return the latest new_urls files
                                     urls: limitedUrls // Combined array of limited URLs
                                 });
                             }
@@ -234,6 +281,10 @@ const getDomains = (req, res) => {
     
     
 };
+
+
+
+
 
 module.exports = { getDomains };
 

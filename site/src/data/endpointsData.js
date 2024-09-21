@@ -15,7 +15,7 @@ export const fetchEndpointData = async () => {
 export const formatDomainData = (data) => {
   return data.map((domain) => ({
     domain: domain.domain,
-    latestNewUrlsFile: domain.latestNewUrlsFile,
+    latestUrlsFile: domain.latestUrlsFile,
     urls: domain.urls, // Array of URLs from the latest file
   }));
 };

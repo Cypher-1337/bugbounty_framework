@@ -4,10 +4,14 @@ import './endpoint.css';
 
 function EndpointBar({ domains, onDomainSelect }) {
   const [selectedDomain, setSelectedDomain] = useState('');
+  const [latestUrlsFile, setLatestUrlsFile] = useState(''); // Add state for latestUrlsFile
 
   const handleChange = (event) => {
     const domain = event.target.value;
+    const selectedDomainData = domains.find((d) => d.domain === domain); // Find the selected domain data
+
     setSelectedDomain(domain);
+    setLatestUrlsFile(selectedDomainData?.latestUrlsFile || ''); // Set latestUrlsFile if available
     onDomainSelect(domain); // Call the callback with the selected domain
   };
 
@@ -23,6 +27,8 @@ function EndpointBar({ domains, onDomainSelect }) {
             'New Endpoints'
           )}
         </h3>
+
+
       </div>
       <FormControl sx={{ width: '200px' }}>
         <Select
@@ -59,6 +65,8 @@ function EndpointBar({ domains, onDomainSelect }) {
               {domain.domain}
             </MenuItem>
           ))}
+
+          
         </Select>
       </FormControl>
     </div>
