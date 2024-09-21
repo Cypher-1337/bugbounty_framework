@@ -14,23 +14,22 @@ function get_all_urls(domain, dirPath, callback) {
             return callback(`File not found: ${filePath}`, null);
         }
 
-        const urls = [];
         const stream = fs.createReadStream(filePath, { encoding: 'utf8' });
         const rl = readline.createInterface({
             input: stream,
             crlfDelay: Infinity,
-        });
+        }); 
 
-        const tempUrls = [];
+        const urls = [];
 
         rl.on('line', (line) => {
-            tempUrls.push(line);
+            if (urls.length < 1000000) { // Limit to 100,000 URLs
+                urls.push(line);
+            }
         });
 
         rl.on('close', () => {
-            const reversedUrls = tempUrls.reverse();
-            const limitedUrls = reversedUrls.slice(0, 100000);
-            callback(null, filePath, limitedUrls);
+            callback(null, filePath, urls.reverse());
         });
 
         rl.on('error', (err) => {
@@ -95,7 +94,7 @@ function readUrlsFromFile(filePath, callback) {
     });
 
     rl.on('line', (line) => {
-        if (urls.length < 100000) { // Limit to 100,000 URLs
+        if (urls.length < 10000000) { // Limit to 100,000 URLs
             urls.push(line);
         }
     });
@@ -150,16 +149,13 @@ const getDomains = (req, res) => {
                                         return res.status(500).json({ error: `Unable to read new_urls file: ${err}` });
                                     }
 
-                                     // Limit the number of URLs to 100,000
-                                    const limitedUrls = urls.slice(0, 35000);
-
                                     directories.push({
                                         domain: file,
                                         latestUrlsFile: latestNewUrlsFilePath,
-                                        urls: limitedUrls // Array of URLs from the latest file
+                                        urls: urls.slice(0, 35000) // Limit to 35,000 URLs
                                     });
 
-                                    pending--; // Decrement pending count
+                                    pending--;
 
                                     if (!pending) {
                                         return res.json({ directories });
@@ -225,55 +221,40 @@ const getDomains = (req, res) => {
                     });
                 }
     
-                // Get modification times for sorting
-                const fileStatsPromises = newUrlsFiles.map(file => {
-                    return new Promise((resolve) => {
-                        const filePath = path.join(specificDomainPath, file);
-                        fs.stat(filePath, (err, stats) => {
-                            if (err) {
-                                return resolve({ file, mtime: 0 }); // Use 0 if error
-                            }
-                            resolve({ file, mtime: stats.mtime });
-                        });
+                const allUrls = [];
+                let pendingFiles = newUrlsFiles.length;
+
+                newUrlsFiles.forEach(file => {
+                    const filePath = path.join(specificDomainPath, file);
+                    const stream = fs.createReadStream(filePath);
+                    const rl = readline.createInterface({
+                        input: stream,
+                        crlfDelay: Infinity,
+                    });
+
+                    rl.on('line', (line) => {
+                        if (allUrls.length < 1000000) {
+                            allUrls.push(line);
+                        }
+                    });
+
+                    rl.on('close', () => {
+                        pendingFiles--;
+                        if (!pendingFiles) {
+                            return res.json({
+                                domain: domain,
+                                latestUrlsFile: newUrlsFiles,
+                                urls: allUrls,
+                            });
+                        }
+                    });
+
+                    rl.on('error', (err) => {
+                        console.error(`Unable to read new_urls file (${file}): ${err}`);
+                        pendingFiles--; // Still decrement count even if there's an error
                     });
                 });
-    
-                // Wait for all stats to be retrieved
-                Promise.all(fileStatsPromises).then(fileStats => {
-                    // Sort files by modification time (latest first)
-                    fileStats.sort((a, b) => b.mtime - a.mtime);
-    
-                    // Get the last 5 files (newest)
-                    const latestFiles = fileStats.slice(0, 5);
-                    const allUrls = [];
-                    let pendingFiles = latestFiles.length;
-    
-                    // Read URLs from each of the latest new_urls files
-                    latestFiles.forEach(({ file }) => {
-                        const filePath = path.join(specificDomainPath, file);
-                        readUrlsFromFile(filePath, (err, urls) => {
-                            if (err) {
-                                console.error(`Unable to read new_urls file (${file}): ${err}`);
-                                pendingFiles--; // Still decrement count even if there's an error
-                            } else {
-                                allUrls.push(...urls); // Add URLs to the allUrls array
-                            }
-    
-                            pendingFiles--; // Decrement pending count
-    
-                            if (!pendingFiles) {
-                                // Limit the total number of URLs to 100,000
-                                const limitedUrls = allUrls.slice(0, 100000);
-    
-                                return res.json({
-                                    domain: domain,
-                                    latestUrlsFile: latestFiles.map(f => f.file), // Return the latest new_urls files
-                                    urls: limitedUrls // Combined array of limited URLs
-                                });
-                            }
-                        });
-                    });
-                });
+                
             });
         });
     }
