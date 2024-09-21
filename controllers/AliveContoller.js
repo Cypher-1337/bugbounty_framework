@@ -71,7 +71,7 @@ const getAllAlive = async (req, res) => {
     
     if (userRole === 'sergey') {
       // Regular users see filtered records based on 'filter'
-      sqlQuery = `SELECT * FROM live WHERE alive LIKE '%tidal%' and alive LIKE '%wimpmusic.com' AND alive like '%tdl.sh' order by id desc`;
+      sqlQuery = `SELECT * FROM live WHERE alive LIKE '%caesarsgames.com' OR alive LIKE '%houseoffun.com' OR alive like '%boardkingsgame.com' OR alive like '%serious.li' OR alive like '%1v1.lol' OR alive like '%justplay.lol' OR alive like '%justfall.lol' OR alive like '%redecor.com' OR alive like '%seriously.com' OR alive like '%playwsop.com' OR alive like '%slotomania.com' OR alive like '%bingoblitz.com' OR alive like '%wooga.com' OR alive like '%playtika.com' order by id desc`;
     }
 
     if (userRole === 'dell') {

@@ -27,10 +27,43 @@ body{
 .table-content{
   display: flex;
   flex-direction: column;
-  height:120% !important;
+  height: 900px !important;
   padding: 5px;
   border: 1px solid var(--border-color);
   border-radius: 10px;
+}
+
+/* Scrollbar Styling */
+.table-content::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+}
+
+.table-content::-webkit-scrollbar-thumb {
+  background-color: #888; /* Scrollbar color */
+  border-radius: 10px; /* Rounded edges */
+  border: 2px solid transparent; /* Adds space around the thumb */
+  background-clip: padding-box; /* Clip the background within the border */
+}
+
+.table-content::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Darker color on hover */
+}
+
+.table-content::-webkit-scrollbar-track {
+  background-color: #222; /* Background color of the scrollbar track */
+  border-radius: 10px;
+}
+
+/* For Firefox */
+.table-content {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #222; /* Thumb color and track color */
+}
+
+/* General Table Styling */
+.table-content {
+  height: 100%; /* Ensure the table container takes full height */
+  overflow-y: auto; /* Add vertical scrolling */
 }
 
 

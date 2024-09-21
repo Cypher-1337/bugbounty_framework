@@ -353,7 +353,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
             },
           },
         }}
-        pageSizeOptions={[5]}
+        pageSizeOptions={[25]}
         slots={{ toolbar: GridToolbar}}
         slotProps={{
           toolbar: {
@@ -427,11 +427,15 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
 
         }}
         style={{
-          height: '50%', // Set the height to 50%
+          height: '100%', // Set the height to 50%
           border: 'none', // Set the border color to grey
-          fontSize: '20px',
+          fontSize: '18px',
 
         }}
+        rowBuffer={25}  // Render extra rows outside the visible area for smoother scrolling
+        disableVirtualization={true}  // Make sure virtualization is enabled (this is default)
+        pagination
+        scrollEndThreshold={1}  // Adjust threshold if the problem persists
         />
 
         <Modal open={deleteModalOpen} onClose={handleCloseDeleteModal}>
