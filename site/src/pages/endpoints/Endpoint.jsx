@@ -31,9 +31,8 @@ function Endpoint() {
   }, []);
 
   useEffect(() => {
-    console.log('Domains:', domains); // Check the domains here
+    console.log('Domains:', domains);
   }, [domains]);
-
 
   const handleDomainSelect = async (domain) => {
     try {
@@ -51,7 +50,7 @@ function Endpoint() {
         if (done) break;
         result += decoder.decode(value, { stream: true });
       }
-  
+
       const data = JSON.parse(result);
   
       if (data.urls && data.urls.length > 0) {
@@ -66,7 +65,7 @@ function Endpoint() {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className='endpoint-main'>
       {loading && <p>Loading...</p>}

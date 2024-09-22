@@ -6,44 +6,42 @@ EventEmitter.defaultMaxListeners = 20;
 
 const folderPath = '/home/kali/Desktop/my_tools/framework/recon';
 
-// Function to read all lines, reverse them, and then return a chunk of URLs
+// Function to read the file and stream a chunk of URLs based on page and limit
 const getAllUrlsStream = (domain, dirPath, page, limit) => {
     const urlsFolderPath = path.join(dirPath, domain, 'urls');
     const filePath = path.join(urlsFolderPath, 'all_urls.txt');
 
     return new Promise((resolve, reject) => {
-        const allLines = [];
+        const readStream = fs.createReadStream(filePath, { encoding: 'utf8' });
+        const rl = readline.createInterface({
+            input: readStream,
+            crlfDelay: Infinity
+        });
 
-        // Check if the file exists
-        fs.access(filePath, fs.constants.F_OK, (err) => {
-            if (err) {
-                // If the file doesn't exist, resolve with an empty array
-                return resolve([]);
+        let currentLine = 0;
+        const chunk = [];
+        const startLine = (page - 1) * limit;
+        const endLine = startLine + limit;
+
+        rl.on('line', (line) => {
+            // Reverse the order of lines by pushing to the start of the array
+            if (currentLine >= startLine && currentLine < endLine) {
+                chunk.unshift(line); // Add the line to the chunk in reverse order
             }
 
-            const rl = readline.createInterface({
-                input: fs.createReadStream(filePath, { encoding: 'utf8' }),
-                crlfDelay: Infinity
-            });
+            if (currentLine >= endLine) {
+                rl.close(); // Stop reading when we reach the end of the chunk
+            }
 
-            rl.on('line', (line) => {
-                allLines.push(line); // Store all lines in an array
-            });
+            currentLine++;
+        });
 
-            rl.on('close', () => {
-                // Reverse the array to get the last lines first
-                const reversedLines = allLines.reverse();
+        rl.on('close', () => {
+            resolve(chunk); // Resolve with the collected chunk
+        });
 
-                // Calculate starting index based on page and limit
-                const startLine = (page - 1) * limit;
-                const chunk = reversedLines.slice(startLine, startLine + limit); // Slice the chunk
-
-                resolve(chunk);
-            });
-
-            rl.on('error', (err) => {
-                reject(err);
-            });
+        rl.on('error', (err) => {
+            reject(err);
         });
     });
 };
