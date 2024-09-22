@@ -7,43 +7,72 @@ import './endpoint.css';
 function Endpoint() {
   const [domains, setDomains] = useState([]);
   const [urls, setUrls] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const getData = async () => {
       try {
+        setLoading(true);
         const data = await fetchEndpointData();
         const formattedData = formatDomainData(data);
         setDomains(formattedData);
-        // Extract URLs from all domains (you can modify this logic based on your needs)
         const allUrls = formattedData.flatMap(domain => domain.urls);
-        setUrls(allUrls);        
+        setUrls(allUrls);
       } catch (error) {
+        setError('Error fetching endpoint data');
         console.error('Error fetching endpoint data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     getData();
   }, []);
 
+  useEffect(() => {
+    console.log('Domains:', domains); // Check the domains here
+  }, [domains]);
+
+
   const handleDomainSelect = async (domain) => {
     try {
-      const response = await fetch(`/api/v1/endpoints?domain=${domain}`);
-      const data = await response.json();
+      setLoading(true);
+      const response = await fetch(`/api/v1/endpoints?domain=${domain}`, { 
+        method: 'GET', 
+        headers: { 'Accept': 'application/json' } 
+      });
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let result = '';
+  
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        result += decoder.decode(value, { stream: true });
+      }
+  
+      const data = JSON.parse(result);
   
       if (data.urls && data.urls.length > 0) {
-        setUrls(data.urls); // Update URLs based on the fetched data
+        setUrls(data.urls);
       } else {
-        setUrls([]); // Clear URLs if none are found
+        setUrls([]);
       }
     } catch (error) {
+      setError(`Error fetching URLs for domain ${domain}`);
       console.error('Error fetching URLs:', error);
+    } finally {
+      setLoading(false);
     }
   };
   
   return (
     <div className='endpoint-main'>
-      <EndpointBar domains={domains} onDomainSelect={handleDomainSelect} /> {/* Pass the callback */}
-      <Urls urls={urls} /> {/* Pass URLs to Urls */}
+      {loading && <p>Loading...</p>}
+      {error && <p className="error-message">{error}</p>}
+      <EndpointBar domains={domains} onDomainSelect={handleDomainSelect} />
+      <Urls urls={urls} />
     </div>
   );
 }

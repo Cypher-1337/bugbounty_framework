@@ -4,15 +4,15 @@ import './endpoint.css';
 
 function EndpointBar({ domains, onDomainSelect }) {
   const [selectedDomain, setSelectedDomain] = useState('');
-  const [latestUrlsFile, setLatestUrlsFile] = useState(''); // Add state for latestUrlsFile
+  const [latestUrlsFile, setLatestUrlsFile] = useState('');
 
   const handleChange = (event) => {
     const domain = event.target.value;
-    const selectedDomainData = domains.find((d) => d.domain === domain); // Find the selected domain data
+    const selectedDomainData = domains.find((d) => d.domain === domain);
 
     setSelectedDomain(domain);
-    setLatestUrlsFile(selectedDomainData?.latestUrlsFile || ''); // Set latestUrlsFile if available
-    onDomainSelect(domain); // Call the callback with the selected domain
+    setLatestUrlsFile(selectedDomainData?.latestUrlsFile || '');
+    onDomainSelect(domain);
   };
 
   return (
@@ -22,14 +22,14 @@ function EndpointBar({ domains, onDomainSelect }) {
           {selectedDomain ? (
             <>
               New Endpoints for <span style={{ color: 'white', fontSize: '22px' }}>{selectedDomain}</span>
+              {latestUrlsFile && <p style={{ fontSize: '16px' }}>Latest File: {latestUrlsFile}</p>}
             </>
           ) : (
             'New Endpoints'
           )}
         </h3>
-
-
       </div>
+
       <FormControl sx={{ width: '200px' }}>
         <Select
           labelId="endpoint-select-label"
@@ -60,13 +60,17 @@ function EndpointBar({ domains, onDomainSelect }) {
             },
           }}
         >
-          {domains.map((domain, index) => (
-            <MenuItem key={index} value={domain.domain} sx={{ color: 'white' }}>
-              {domain.domain}
+          {domains.length > 0 ? (
+            domains.map((domain, index) => (
+              <MenuItem key={index} value={domain.domain} sx={{ color: 'white' }}>
+                {domain.domain}
+              </MenuItem>
+            ))
+          ) : (
+            <MenuItem value="" disabled>
+              No domains available
             </MenuItem>
-          ))}
-
-          
+          )}
         </Select>
       </FormControl>
     </div>

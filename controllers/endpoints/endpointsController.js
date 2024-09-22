@@ -1,272 +1,89 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const EventEmitter = require('events');
+EventEmitter.defaultMaxListeners = 20;
 
-const folderPath = '/home/kali/Desktop/my_tools/framework/recon';
+const folderPath = '/home/kali/framework/recon';
 
 
-function get_all_urls(domain, dirPath, callback) {
-    const urlsFolderPath = path.join(dirPath, domain, 'urls'); // Path to the 'new_urls' folder
+
+
+// Function to read all lines, reverse them, and then return a chunk of URLs
+const getAllUrlsStream = (domain, dirPath, page, limit) => {
+    const urlsFolderPath = path.join(dirPath, domain, 'urls');
     const filePath = path.join(urlsFolderPath, 'all_urls.txt');
 
-    fs.access(filePath, fs.constants.F_OK, (err) => {
-        if (err) {
-            return callback(`File not found: ${filePath}`, null);
-        }
+    return new Promise((resolve, reject) => {
+        const allLines = [];
 
-        const stream = fs.createReadStream(filePath, { encoding: 'utf8' });
         const rl = readline.createInterface({
-            input: stream,
-            crlfDelay: Infinity,
-        }); 
-
-        const urls = [];
+            input: fs.createReadStream(filePath, { encoding: 'utf8' }),
+            crlfDelay: Infinity
+        });
 
         rl.on('line', (line) => {
-            if (urls.length < 1000000) { // Limit to 100,000 URLs
-                urls.push(line);
-            }
+            allLines.push(line);  // Store all lines in an array
         });
 
         rl.on('close', () => {
-            callback(null, filePath, urls.reverse());
+            // Reverse the array to get the last lines first
+            const reversedLines = allLines.reverse();
+
+            // Calculate starting index based on page and limit
+            const startLine = (page - 1) * limit;
+            const chunk = reversedLines.slice(startLine, startLine + limit); // Slice the chunk
+
+            resolve(chunk);
         });
 
         rl.on('error', (err) => {
-            callback(`Error reading file: ${err}`, null);
-        });
-    });
-}
-
-
-
-
-// Function to get the latest 'new_urls' file for a specific domain
-const getLatestNewUrlsFile = (dirPath, callback) => {
-    const urlsFolderPath = path.join(dirPath, 'urls', 'new_urls'); // Path to the 'new_urls' folder
-
-    // Check if the new_urls folder exists
-    fs.access(urlsFolderPath, fs.constants.F_OK, (err) => {
-        if (err) {
-            return callback(null, null); // Skip if the directory does not exist
-        }
-
-        fs.readdir(urlsFolderPath, (err, files) => {
-            if (err) {
-                return callback(err, null);
-            }
-
-            // Filter to only include files starting with 'new_urls_'
-            const newUrlsFiles = files.filter(file => file.startsWith('new_urls_'));
-
-            if (newUrlsFiles.length === 0) {
-                return callback(null, null); // No 'new_urls_' files found
-            }
-
-            let latestFile = newUrlsFiles[0];
-            let latestMtime = fs.statSync(path.join(urlsFolderPath, latestFile)).mtime;
-
-            // Loop through files to find the latest based on modification time
-            newUrlsFiles.forEach(file => {
-                const filePath = path.join(urlsFolderPath, file);
-                const fileMtime = fs.statSync(filePath).mtime;
-
-                if (fileMtime > latestMtime) {
-                    latestFile = file;
-                    latestMtime = fileMtime;
-                }
-            });
-
-            callback(null, path.join(urlsFolderPath, latestFile)); // Return full file path of latest 'new_urls' file
+            reject(err);
         });
     });
 };
 
+// Function to get the URLs in chunks for the frontend based on domain, page, and limit
+const getDomains = async (req, res) => {
+    const domain = req.query.domain;
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+    const limit = parseInt(req.query.limit) || 50; // Default to 50 URLs per chunk
 
-// Function to read the content of the latest 'new_urls' file and return the URLs
+    if (!domain) {
+        try {
+            const directories = await fs.promises.readdir(folderPath);
+            const results = await Promise.all(directories.map(async (dir) => {
+                const domainPath = path.join(folderPath, dir);
+                const stats = await fs.promises.stat(domainPath);
+                if (stats.isDirectory()) {
+                    // Fetch URLs for each domain
+                    const urls = await getAllUrlsStream(dir, folderPath, page, limit);
+                    return { domain: dir, urls };
+                }
+            }));
 
-function readUrlsFromFile(filePath, callback) {
-    const urls = [];
-    const stream = fs.createReadStream(filePath);
-    const rl = readline.createInterface({
-        input: stream,
-        crlfDelay: Infinity
-    });
+            // Filter out undefined results (in case of non-directory entries)
+            const filteredResults = results.filter(result => result !== undefined);
 
-    rl.on('line', (line) => {
-        if (urls.length < 10000000) { // Limit to 100,000 URLs
-            urls.push(line);
-        }
-    });
-
-    rl.on('close', () => {
-        callback(null, urls);
-    });
-
-    rl.on('error', (err) => {
-        callback(err);
-    });
-}
-
-// Main function to get the latest 'new_urls' file for each domain and send the URLs to frontend
-const getDomains = (req, res) => {
-
-    domain = req.query.domain 
-
-    if( !domain ){
-        let directories = [];
-
-        fs.readdir(folderPath, (err, files) => {
-            if (err) {
-                return res.status(500).json({ error: `Unable to read the folder: ${err}` });
-            }
-
-            let pending = files.length; // Number of directories to check
-
-            if (!pending) {
-                return res.json({ directories });
-            }
-
-            files.forEach(file => {
-                const domainPath = path.join(folderPath, file);
-
-                fs.stat(domainPath, (err, stats) => {
-                    if (err) {
-                        return res.status(500).json({ error: `Unable to get stats for file: ${err}` });
-                    }
-
-                    if (stats.isDirectory()) {
-                        // Get the latest 'new_urls' file for each domain
-                        getLatestNewUrlsFile(domainPath, (err, latestNewUrlsFilePath) => {
-                            if (err) {
-                                return res.status(500).json({ error: `Unable to get latest new_urls file: ${err}` });
-                            }
-
-                            if (latestNewUrlsFilePath) {
-                                // Read the URLs from the latest 'new_urls' file
-                                readUrlsFromFile(latestNewUrlsFilePath, (err, urls) => {
-                                    if (err) {
-                                        return res.status(500).json({ error: `Unable to read new_urls file: ${err}` });
-                                    }
-
-                                    directories.push({
-                                        domain: file,
-                                        latestUrlsFile: latestNewUrlsFilePath,
-                                        urls: urls.slice(0, 35000) // Limit to 35,000 URLs
-                                    });
-
-                                    pending--;
-
-                                    if (!pending) {
-                                        return res.json({ directories });
-                                    }
-                                });
-                            } else {
-                                directories.push({
-                                    domain: file,
-                                    latestUrlsFile: 'No new_urls file found',
-                                    urls: [] // No URLs
-                                });
-
-                                pending--; // Decrement pending count
-
-                                if (!pending) {
-                                    return res.json({ directories });
-                                }
-                            }
-                        });
-                    } else {
-                        pending--; // Decrement pending count for non-directory files
-
-                        if (!pending) {
-                            return res.json({ directories });
-                        }
-                    }
-                });
+            res.json({
+                directories: filteredResults
             });
-        });
-
+        } catch (err) {
+            res.status(500).json({ error: `Unable to read directories: ${err.message}` });
+        }
     } else {
-        const specificDomainPath = path.join(folderPath, domain, 'urls', 'new_urls');
-    
-        // Check if the specific domain's new_urls directory exists
-        fs.stat(specificDomainPath, (err, stats) => {
-            if (err || !stats.isDirectory()) {
-                return get_all_urls(domain, folderPath, (err,filePath, urls) => {
-                    if (err) {
-                        return res.status(500).json({ error: err });
-                    }
-                    return res.json({
-                        domain: domain,
-                        latestUrlsFile: '',
-                        urls,
-                    });
-                });
-            }
-    
-            // Read all 'new_urls_' files in the specific domain's new_urls directory
-            fs.readdir(specificDomainPath, (err, files) => {
-                if (err) {
-                    return res.status(500).json({ error: `Unable to read new_urls directory: ${err}` });
-                }
-    
-                // Filter to include only files starting with 'new_urls_'
-                const newUrlsFiles = files.filter(file => file.startsWith('new_urls_'));
-    
-                if (newUrlsFiles.length === 0) {
-                    return res.json({
-                        domain: domain,
-                        latestUrlsFile: 'No new_urls files found',
-                        urls: [] // No URLs
-                    });
-                }
-    
-                const allUrls = [];
-                let pendingFiles = newUrlsFiles.length;
-
-                newUrlsFiles.forEach(file => {
-                    const filePath = path.join(specificDomainPath, file);
-                    const stream = fs.createReadStream(filePath);
-                    const rl = readline.createInterface({
-                        input: stream,
-                        crlfDelay: Infinity,
-                    });
-
-                    rl.on('line', (line) => {
-                        if (allUrls.length < 1000000) {
-                            allUrls.push(line);
-                        }
-                    });
-
-                    rl.on('close', () => {
-                        pendingFiles--;
-                        if (!pendingFiles) {
-                            return res.json({
-                                domain: domain,
-                                latestUrlsFile: newUrlsFiles,
-                                urls: allUrls,
-                            });
-                        }
-                    });
-
-                    rl.on('error', (err) => {
-                        console.error(`Unable to read new_urls file (${file}): ${err}`);
-                        pendingFiles--; // Still decrement count even if there's an error
-                    });
-                });
-                
+        try {
+            const urls = await getAllUrlsStream(domain, folderPath, page, limit);
+            res.json({
+                domain,
+                page,
+                limit,
+                urls, // Send the chunk of URLs
             });
-        });
+        } catch (err) {
+            res.status(500).json({ error: `Unable to read URLs for domain ${domain}: ${err.message}` });
+        }
     }
-    
-    
-    
 };
-
-
-
-
 
 module.exports = { getDomains };
-
-
