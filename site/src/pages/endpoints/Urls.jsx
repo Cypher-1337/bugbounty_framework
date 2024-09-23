@@ -9,7 +9,6 @@ function Urls({ initialUrls, domain }) {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-
   const debounce = (func, delay) => {
     let timeoutId;
     return (...args) => {
@@ -20,29 +19,22 @@ function Urls({ initialUrls, domain }) {
     };
   };
 
-  const handlePageChange = (newPage) => {
-    // Reset scroll position to the top
-    window.scrollTo(0, 0);
-    setPage(newPage);
-  };
-
-  // Function to load more URLs
   const loadMoreUrls = useCallback(async () => {
     if (loading || !hasMore || !domain) return; // Ensure domain is defined
-  
+
     setLoading(true);
-  
+
     try {
-      const response = await fetch(`/api/v1/endpoints?domain=${domain}&page=${page}&limit=100`);
+      const response = await fetch(`/api/v1/endpoints?domain=${domain}&page=${page}&limit=500`);
       const reader = response.body.getReader();
       const decoder = new TextDecoder('utf-8');
       let newUrls = [];
       let done = false;
-  
+
       while (!done) {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;
-  
+
         const decodedValue = decoder.decode(value, { stream: true });
         const ndjsonLines = decodedValue.trim().split('\n');
         ndjsonLines.forEach((line) => {
@@ -54,11 +46,11 @@ function Urls({ initialUrls, domain }) {
           }
         });
       }
-  
+
       if (newUrls.length === 0) {
         setHasMore(false);
       }
-  
+
       setUrls((prevUrls) => [...prevUrls, ...newUrls]);
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
@@ -67,23 +59,32 @@ function Urls({ initialUrls, domain }) {
       setLoading(false);
     }
   }, [page, loading, hasMore, domain]);
-  
 
   // Infinite scroll effect
   useEffect(() => {
     const handleScroll = debounce(() => {
-      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-      if (scrollTop + clientHeight >= scrollHeight - 5) {
-        loadMoreUrls();
+      const virtualScroller = document.querySelector('.MuiDataGrid-virtualScroller');
+      if (virtualScroller) {
+        const { scrollTop, scrollHeight, clientHeight } = virtualScroller;
+        if (scrollTop + clientHeight >= scrollHeight - 5 && !loading && hasMore) {
+          loadMoreUrls();
+        }
       }
     }, 300); // Adjust the delay as needed
-  
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadMoreUrls]);
-  
 
-   // Fetch new URLs when the domain changes
+    const virtualScroller = document.querySelector('.MuiDataGrid-virtualScroller');
+    if (virtualScroller) {
+      virtualScroller.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (virtualScroller) {
+        virtualScroller.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [loadMoreUrls]);
+
+  // Fetch new URLs when the domain changes
   useEffect(() => {
     if (domain) {
       setUrls([]);  // Reset URLs
@@ -136,9 +137,6 @@ function Urls({ initialUrls, domain }) {
       <DataGrid
         rows={rows}
         columns={columns}
-
-        onPageChange={handlePageChange} // Add this line
-
         slots={{ toolbar: GridToolbar }}
         slotProps={{
           toolbar: {
@@ -151,8 +149,7 @@ function Urls({ initialUrls, domain }) {
               pageSize: 100,
             },
           },
-        }}      
-
+        }}
         pageSizeOptions={[100]}
         sx={{
           '& .MuiDataGrid-withBorderColor': {
@@ -167,7 +164,7 @@ function Urls({ initialUrls, domain }) {
             backgroundColor: '#1d1d1d',
             color: 'white',
           },
-          '& .MuiInputBase-root':{
+          '& .MuiInputBase-root': {
             background: 'white'
           },
           '& .MuiButtonBase-root': {
@@ -181,7 +178,6 @@ function Urls({ initialUrls, domain }) {
           },
           border: '1px solid var(--border-color)',
           height: '850px',
-
         }}
       />
       {loading && <div style={{ color: 'white', textAlign: 'center' }}>Loading more URLs...</div>}
