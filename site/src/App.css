@@ -8,6 +8,7 @@ body{
   height:fit-content;
   background-color: grey;
   max-width: 100vw;
+  overflow: hidden;
 }
 
 .App{

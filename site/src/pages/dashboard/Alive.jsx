@@ -20,12 +20,15 @@ export default function AliveData() {
   
   const { inputFilter, setInputFilter } = React.useContext(AppContext);
   const [localInputFilter, setLocalInputFilter] = React.useState(inputFilter);
+  // const [page, setPage] = React.useState(1);
 
   const [ aliveId, setAliveId ] = React.useState(null);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = React.useState(false); // New state for delete modal
 
   const {authData} = React.useContext(AuthContext)
+
+
 
 
 

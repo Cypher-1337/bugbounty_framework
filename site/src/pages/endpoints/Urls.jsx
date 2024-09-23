@@ -9,6 +9,23 @@ function Urls({ initialUrls, domain }) {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
+
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func.apply(null, args);
+      }, delay);
+    };
+  };
+
+  const handlePageChange = (newPage) => {
+    // Reset scroll position to the top
+    window.scrollTo(0, 0);
+    setPage(newPage);
+  };
+
   // Function to load more URLs
   const loadMoreUrls = useCallback(async () => {
     if (loading || !hasMore || !domain) return; // Ensure domain is defined
@@ -16,7 +33,7 @@ function Urls({ initialUrls, domain }) {
     setLoading(true);
   
     try {
-      const response = await fetch(`/api/v1/endpoints?domain=${domain}&page=${page}&limit=50`);
+      const response = await fetch(`/api/v1/endpoints?domain=${domain}&page=${page}&limit=100`);
       const reader = response.body.getReader();
       const decoder = new TextDecoder('utf-8');
       let newUrls = [];
@@ -54,16 +71,17 @@ function Urls({ initialUrls, domain }) {
 
   // Infinite scroll effect
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = debounce(() => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - 5) {
         loadMoreUrls();
       }
-    };
-
+    }, 300); // Adjust the delay as needed
+  
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [loadMoreUrls]);
+  
 
    // Fetch new URLs when the domain changes
   useEffect(() => {
@@ -74,6 +92,7 @@ function Urls({ initialUrls, domain }) {
       loadMoreUrls(); // Fetch new URLs for the selected domain
     }
   }, [domain]);  // This effect depends on domain
+  
   // Map URLs to rows for the DataGrid
   const rows = urls.map((url, index) => ({
     id: index + 1,
@@ -117,13 +136,24 @@ function Urls({ initialUrls, domain }) {
       <DataGrid
         rows={rows}
         columns={columns}
+
+        onPageChange={handlePageChange} // Add this line
+
         slots={{ toolbar: GridToolbar }}
         slotProps={{
           toolbar: {
             showQuickFilter: true,
           },
         }}
-        pageSizeOptions={[50]}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 100,
+            },
+          },
+        }}      
+
+        pageSizeOptions={[100]}
         sx={{
           '& .MuiDataGrid-withBorderColor': {
             border: '1px solid var(--border-color)',
@@ -137,6 +167,9 @@ function Urls({ initialUrls, domain }) {
             backgroundColor: '#1d1d1d',
             color: 'white',
           },
+          '& .MuiInputBase-root':{
+            background: 'white'
+          },
           '& .MuiButtonBase-root': {
             color: 'white',
           },
@@ -147,6 +180,8 @@ function Urls({ initialUrls, domain }) {
             backgroundColor: '#333',
           },
           border: '1px solid var(--border-color)',
+          height: '850px',
+
         }}
       />
       {loading && <div style={{ color: 'white', textAlign: 'center' }}>Loading more URLs...</div>}

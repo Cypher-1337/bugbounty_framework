@@ -67,7 +67,7 @@ function Dashboard() {
     {
       field: 'count',
       headerName: 'Count',
-      width: 100,
+      width: 120,
       type: 'number',
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
@@ -246,6 +246,13 @@ function Dashboard() {
               paginationModel: {
                 pageSize: 100,
               },
+            },
+          }}
+          slots={{ toolbar: GridToolbar}}
+
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
             },
           }}
           pageSizeOptions={[5]}
