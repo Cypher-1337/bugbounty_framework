@@ -12,7 +12,7 @@ function EndpointBar({ domains, onDomainSelect }) {
 
     setSelectedDomain(domain);
     setLatestUrlsFile(selectedDomainData?.latestUrlsFile || '');
-    onDomainSelect(domain);
+    onDomainSelect(domain);  // Pass the selected domain to the parent
   };
 
   return (

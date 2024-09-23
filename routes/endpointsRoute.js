@@ -5,5 +5,5 @@ const router = express.Router()
 router.route('/')
     .get(getDomains)
 
-    
+
 module.exports = router
