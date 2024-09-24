@@ -1,13 +1,44 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter ,GridToolbar} from '@mui/x-data-grid';
+
 import './endpoint.css';
+
+
+
+function CustomToolbar({ exclude, setExclude }) {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarQuickFilter />
+      <input
+        type="text"
+        value={exclude}
+        onChange={(e) => setExclude(e.target.value)}
+        placeholder="Exclude URLs containing... (comma-separated)"
+        style={{
+          width: '300px',
+          padding: '8px',
+          fontSize: '16px',
+          marginLeft: '10px',
+          backgroundColor: '#333',
+          color: 'white',
+          border: '1px solid var(--border-color)',
+          borderRadius: '0'
+        }}
+      />
+    </GridToolbarContainer>
+  );
+}
+
 
 function Urls({ initialUrls, domain }) {
   const [urls, setUrls] = useState(initialUrls || []);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [filteredUrls, setFilteredUrls] = useState([]);
+  const [exclude, setExclude] = useState(""); // State for exclusion input
+
 
   const debounce = (func, delay) => {
     let timeoutId;
@@ -60,6 +91,20 @@ function Urls({ initialUrls, domain }) {
     }
   }, [page, loading, hasMore, domain]);
 
+
+  
+
+  // Filter URLs based on the exclusion input (allow multiple exclusion terms)
+  useEffect(() => {
+    const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
+    
+    if (excludeTerms.length > 0 && excludeTerms[0] !== "") {
+      setFilteredUrls(urls.filter(url => !excludeTerms.some(term => url.toLowerCase().includes(term))));
+    } else {
+      setFilteredUrls(urls); // No exclusion, show all URLs
+    }
+  }, [exclude, urls]);
+
   // Infinite scroll effect
   useEffect(() => {
     const handleScroll = debounce(() => {
@@ -94,8 +139,8 @@ function Urls({ initialUrls, domain }) {
     }
   }, [domain]);  // This effect depends on domain
   
-  // Map URLs to rows for the DataGrid
-  const rows = urls.map((url, index) => ({
+  // Map filtered URLs to rows for the DataGrid
+  const rows = filteredUrls.map((url, index) => ({
     id: index + 1,
     url,
   }));
@@ -134,15 +179,20 @@ function Urls({ initialUrls, domain }) {
       <Helmet>
         <title>Endpoints</title>
       </Helmet>
+
+
+
       <DataGrid
         rows={rows}
         columns={columns}
-        slots={{ toolbar: GridToolbar }}
+        slots={{ toolbar: GridToolbar, toolbar: CustomToolbar  }}
         slotProps={{
           toolbar: {
+            exclude, setExclude ,
             showQuickFilter: true,
           },
         }}
+
         initialState={{
           pagination: {
             paginationModel: {
@@ -164,8 +214,9 @@ function Urls({ initialUrls, domain }) {
             backgroundColor: '#1d1d1d',
             color: 'white',
           },
-          '& .MuiInputBase-root': {
-            background: 'white'
+          '& .css-v4u5dn-MuiInputBase-root-MuiInput-root': {
+            background: 'white',
+            color: 'black'
           },
           '& .MuiButtonBase-root': {
             color: 'white',
@@ -175,6 +226,11 @@ function Urls({ initialUrls, domain }) {
           },
           '& .MuiDataGrid-root': {
             backgroundColor: '#333',
+          },
+          '& .MuiDataGrid-toolbarContainer':{
+            display: 'flex',
+            justifyContent: 'space-between',
+            margin: '5px'
           },
           border: '1px solid var(--border-color)',
           height: '850px',

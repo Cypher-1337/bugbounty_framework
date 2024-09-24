@@ -17,7 +17,7 @@ function Endpoint() {
     const getDomains = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/v1/endpoints');
+        const response = await fetch('/api/v1/endpoints/metadata');
         const data = await response.json();
         setDomains(data.directories); // Assuming the backend sends a 'directories' field
       } catch (error) {

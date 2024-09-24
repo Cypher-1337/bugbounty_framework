@@ -7,33 +7,50 @@ EventEmitter.defaultMaxListeners = 20;
 const folderPath = '/home/kali/Desktop/my_tools/framework/recon';
 
 
-// Function to get the last 3 new_urls files for all domains
-const getAllDomainsNewUrls = async (res) => {
+const metadata = async (req,res) => {
     try {
-        const directories = await fs.promises.readdir(folderPath);
-        const results = await Promise.all(directories.map(async (dir) => {
-            const domainPath = path.join(folderPath, dir);
-            const stats = await fs.promises.stat(domainPath);
-            if (stats.isDirectory()) {
-                // Check for new_urls within the domain's urls directory
-                const urlsFolderPath = path.join(domainPath, 'urls');
-                const lastNewUrlsFiles = await getLastNewUrlsFiles(urlsFolderPath, 3); // Get last 3 new_urls files
+        fdirectories =  await getDirectories()
+        res.status(200).json({directories: fdirectories})
 
-                // Only return the domain if it has new URLs files
-                if (lastNewUrlsFiles.length > 0) {
-                    return { domain: dir, newUrlsFiles: lastNewUrlsFiles };
-                }
-            }
+    } catch (error) {
+     res.status(500).json({ error: `Unable to read directories: ${err.message}` });
+        
+    }
+}
+
+const getDirectories = async () => {
+ try{    // await getAllDomainsNewUrls(res);
+
+     const directories = await fs.promises.readdir(folderPath);
+     const results = await Promise.all(directories.map(async (dir) => {
+         const domainPath = path.join(folderPath, dir);
+         const stats = await fs.promises.stat(domainPath);
+         if (stats.isDirectory()) {
+            return { domain: dir, fullPath: domainPath }; // Return both name and full path
+        }
+     }));
+
+     // Filter out undefined results (in case of non-directory entries)
+     const filteredResults = results.filter(result => result !== undefined);
+
+     return filteredResults
+ } catch (err) {
+     res.status(500).json({ error: `Unable to read directories: ${err.message}` });
+ }
+}
+
+// Function to get latest 3 new_urls files for each domain directory
+const getLatestNewUrlsForAllDomains = async () => {
+    try {
+        const directories = await getDirectories();
+        const results = await Promise.all(directories.map(async ({ domain, fullPath }) => {
+            const latestNewUrlsFiles = await getLastNewUrlsFiles(path.join(fullPath, 'urls'), 3);
+            return { fullPath, latestNewUrlsFiles };
         }));
 
-        // Filter out undefined results (in case of non-directory entries)
-        const filteredResults = results.filter(result => result !== undefined);
-
-        res.json({
-            domains: filteredResults
-        });
+        return results;
     } catch (err) {
-        res.status(500).json({ error: `Unable to read directories: ${err.message}` });
+        throw new Error(`Unable to get latest new_urls files: ${err.message}`);
     }
 };
 
@@ -43,25 +60,87 @@ const getLastNewUrlsFiles = async (urlsFolderPath, count = 5) => {
     try {
         const newUrlsFolderPath = path.join(urlsFolderPath, 'new_urls');
 
-        // Check if the new_urls folder exists
+        console.log(`Checking new_urls folder: ${newUrlsFolderPath}`); // Debug log
+
         if (!fs.existsSync(newUrlsFolderPath)) {
+            console.warn(`Folder does not exist: ${newUrlsFolderPath}`); // Debug log
             return [];
         }
 
         const files = await fs.promises.readdir(newUrlsFolderPath);
 
-        // Filter for files matching the 'new_urls_' naming pattern
+        console.log(`Files found: ${files}`); // Log files in the folder
+
         const newUrlFiles = files.filter(file => file.startsWith('new_urls_'));
 
-        // Sort files by name (assuming filenames include the date-time info)
+        console.log(`Filtered new_urls files: ${newUrlFiles}`); // Log filtered files
+
         const sortedFiles = newUrlFiles.sort((a, b) => b.localeCompare(a));
 
-        // Return the last N files
         return sortedFiles.slice(0, count);
     } catch (err) {
         throw new Error(`Unable to get new_urls files: ${err.message}`);
     }
 };
+
+
+
+// Function to stream the latest 3 new_urls files for all domains
+const streamLatestNewUrls = async (res) => {
+    try {
+        const domainsData = await getLatestNewUrlsForAllDomains(); // Get the latest new_urls files
+
+        for (const domain of domainsData) {
+            const { fullPath, latestNewUrlsFiles } = domain;
+
+            // Filter to get the latest 3 files if available
+            const filesToStream = latestNewUrlsFiles.slice(0, 3);
+            console.log(`Streaming files for domain: ${fullPath}`);
+
+            for (const file of filesToStream) {
+                const filePath = path.join(fullPath, 'urls', 'new_urls', file);
+
+                // Check if the file exists
+                if (fs.existsSync(filePath)) {
+                    const readStream = fs.createReadStream(filePath, { encoding: 'utf8' });
+                    const rl = readline.createInterface({
+                        input: readStream,
+                        crlfDelay: Infinity
+                    });
+
+                    rl.on('line', (line) => {
+                        console.log(`Read line: ${line}`); // Debug log
+                        if (line.trim() === '') {
+                            console.warn(`Empty line found in file: ${filePath}`); // Log empty line
+                            return; // Skip empty lines
+                        }
+                        res.write(JSON.stringify({ url: line }) + '\n');
+                    });
+
+                    rl.on('close', () => {
+                        console.log(`Finished streaming file: ${filePath}`);
+                    });
+
+                    rl.on('error', (err) => {
+                        console.error(`Error reading file ${filePath}:`, err);
+                        res.status(500).json({ error: `Unable to read URLs: ${err.message}` });
+                    });
+                } else {
+                    console.warn(`File not found: ${filePath}`);
+                }
+            }
+        }
+
+        res.end(); // End the response after all domains are processed
+    } catch (error) {
+        console.error(`Error streaming latest new_urls files:`, error);
+        if (!res.headersSent) {
+            res.status(500).json({ error: `Unable to stream latest new_urls files: ${error.message}` });
+        }
+    }
+};
+
+
 
 // Function to stream URLs from the last 5 new_urls files in NDJSON format
 const streamUrlsFromNewFiles = async (res, domain, dirPath, page, limit) => {
@@ -72,8 +151,8 @@ const streamUrlsFromNewFiles = async (res, domain, dirPath, page, limit) => {
         console.log(`Last new_urls files for ${domain}:`, lastNewUrlsFiles); // Log the files being processed
 
         if (lastNewUrlsFiles.length === 0) {
-            res.status(404).json({ error: 'No new_urls files found' });
-            return;
+            console.log(`No new_urls files found for ${domain}. Skipping...`); // Log that this domain is being skipped
+            return; // Skip processing for this domain
         }
 
         let currentLine = 0;
@@ -135,36 +214,17 @@ const getDomains = async (req, res) => {
     const domain = req.query.domain;
     const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
     const limit = parseInt(req.query.limit) || 50; // Default to 50 URLs per chunk
+    res.setHeader('Content-Type', 'application/x-ndjson');
 
     if (!domain) {
-        if (req.path === '/api/v1/endpoints') {
-            // If the request is for /api/v1/endpoints without parameters
-            await getAllDomainsNewUrls(res);
-        } else {
-            try {
-                const directories = await fs.promises.readdir(folderPath);
-                const results = await Promise.all(directories.map(async (dir) => {
-                    const domainPath = path.join(folderPath, dir);
-                    const stats = await fs.promises.stat(domainPath);
-                    if (stats.isDirectory()) {
-                        return { domain: dir };
-                    }
-                }));
 
-                // Filter out undefined results (in case of non-directory entries)
-                const filteredResults = results.filter(result => result !== undefined);
+        await streamLatestNewUrls(res); // Stream URLs for all domains
+ 
+        
 
-                res.json({
-                    directories: filteredResults
-                });
-            } catch (err) {
-                res.status(500).json({ error: `Unable to read directories: ${err.message}` });
-            }
-        }
     } else {
         try {
             // Set the header for NDJSON streaming response
-            res.setHeader('Content-Type', 'application/x-ndjson');
             await streamUrlsFromNewFiles(res, domain, folderPath, page, limit); // Stream URLs from last 5 new_urls files in NDJSON format
         } catch (err) {
             res.status(500).json({ error: `Unable to stream URLs for domain ${domain}: ${err.message}` });
@@ -172,4 +232,4 @@ const getDomains = async (req, res) => {
     }
 };
 
-module.exports = { getDomains };
+module.exports = { getDomains, metadata };
