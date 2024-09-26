@@ -253,15 +253,15 @@ function Urls({ initialUrls, domain }) {
 
 
   // Filter URLs based on the exclusion input
-  // useEffect(() => {
-  //   const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
+  useEffect(() => {
+    const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
 
-  //   if (excludeTerms.length > 0 && excludeTerms[0] !== "") {
-  //     setFilteredUrls(urls.filter(url => !excludeTerms.some(term => url.toLowerCase().includes(term))));
-  //   } else {
-  //     setFilteredUrls(urls); // No exclusion, show all URLs
-  //   }
-  // }, [exclude, urls]);
+    if (excludeTerms.length > 0 && excludeTerms[0] !== "") {
+      setFilteredUrls(urls.filter(url => !excludeTerms.some(term => url.toLowerCase().includes(term))));
+    } else {
+      setFilteredUrls(urls); // No exclusion, show all URLs
+    }
+  }, [exclude, urls]);
 
   useEffect(() => {
     const loadKeyWords = async () => {
