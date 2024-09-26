@@ -7,37 +7,60 @@ EventEmitter.defaultMaxListeners = 20;
 const folderPath = '/home/kali/Desktop/my_tools/framework/recon';
 
 
-const metadata = async (req,res) => {
+const metadata = async (req, res) => {
     try {
-        fdirectories =  await getDirectories()
-        res.status(200).json({directories: fdirectories})
-
+        const fdirectories = await getDirectories();
+        const domainData = await getLatestNewUrlsForAllDomains(); // Get latest URLs and counts
+        res.status(200).json({ directories: fdirectories, domainData });
     } catch (error) {
-     res.status(500).json({ error: `Unable to read directories: ${err.message}` });
-        
+        res.status(500).json({ error: `Unable to read directories: ${error.message}` });
     }
-}
+};
+
+
+// Function to count URLs in given files
+const countUrlsInFiles = async (newUrlsFolderPath, files) => {
+    let count = 0;
+    for (const file of files) {
+        const filePath = path.join(newUrlsFolderPath, file);
+        const fileExists = fs.existsSync(filePath);
+        if (!fileExists) continue;
+
+        const readStream = fs.createReadStream(filePath, { encoding: 'utf8' });
+        const rl = readline.createInterface({
+            input: readStream,
+            crlfDelay: Infinity
+        });
+
+        // Count lines (URLs) in the file
+        for await (const line of rl) {
+            if (line.trim()) count++;
+        }
+    }
+    return count;
+};
+
 
 const getDirectories = async () => {
- try{    // await getAllDomainsNewUrls(res);
+    try {
+      const directories = await fs.promises.readdir(folderPath);
+      
+      const results = await Promise.all(directories.map(async (dir) => {
+        const domainPath = path.join(folderPath, dir);
+        const stats = await fs.promises.stat(domainPath);
 
-     const directories = await fs.promises.readdir(folderPath);
-     const results = await Promise.all(directories.map(async (dir) => {
-         const domainPath = path.join(folderPath, dir);
-         const stats = await fs.promises.stat(domainPath);
-         if (stats.isDirectory()) {
-            return { domain: dir, fullPath: domainPath }; // Return both name and full path
+        if (stats.isDirectory()) {
+          return { domain: dir, fullPath: domainPath }; // Return both name and full path
         }
-     }));
+      }));
+  
+      const filteredResults = results.filter(result => result !== undefined);
 
-     // Filter out undefined results (in case of non-directory entries)
-     const filteredResults = results.filter(result => result !== undefined);
-
-     return filteredResults
- } catch (err) {
-     res.status(500).json({ error: `Unable to read directories: ${err.message}` });
- }
-}
+      return filteredResults;
+    } catch (err) {
+      throw new Error(`Unable to read directories: ${err.message}`);
+    }
+  };
 
 // Function to get latest 3 new_urls files for each domain directory
 const getLatestNewUrlsForAllDomains = async () => {
@@ -45,7 +68,8 @@ const getLatestNewUrlsForAllDomains = async () => {
         const directories = await getDirectories();
         const results = await Promise.all(directories.map(async ({ domain, fullPath }) => {
             const latestNewUrlsFiles = await getLastNewUrlsFiles(path.join(fullPath, 'urls'), 3);
-            return { fullPath, latestNewUrlsFiles };
+            const urlCount = await countUrlsInFiles(path.join(fullPath, 'urls', 'new_urls'), latestNewUrlsFiles);
+            return { domain, fullPath, latestNewUrlsFiles, urlCount }; // Include URL count
         }));
 
         return results;
@@ -55,83 +79,105 @@ const getLatestNewUrlsForAllDomains = async () => {
 };
 
 
-// Helper function to get the last N new_urls files in a directory
-const getLastNewUrlsFiles = async (urlsFolderPath, count = 5) => {
+const getLastNewUrlsFiles = async (urlsFolderPath, count = 3) => {
     try {
         const newUrlsFolderPath = path.join(urlsFolderPath, 'new_urls');
-
-        console.log(`Checking new_urls folder: ${newUrlsFolderPath}`); // Debug log
-
         if (!fs.existsSync(newUrlsFolderPath)) {
-            console.warn(`Folder does not exist: ${newUrlsFolderPath}`); // Debug log
+            console.warn(`Folder does not exist: ${newUrlsFolderPath}`);
             return [];
         }
 
         const files = await fs.promises.readdir(newUrlsFolderPath);
-
-        console.log(`Files found: ${files}`); // Log files in the folder
-
         const newUrlFiles = files.filter(file => file.startsWith('new_urls_'));
-
-        console.log(`Filtered new_urls files: ${newUrlFiles}`); // Log filtered files
-
-        const sortedFiles = newUrlFiles.sort((a, b) => b.localeCompare(a));
-
-        return sortedFiles.slice(0, count);
+        return newUrlFiles.sort((a, b) => b.localeCompare(a)).slice(0, count);
     } catch (err) {
         throw new Error(`Unable to get new_urls files: ${err.message}`);
     }
 };
+  
 
 
-
-// Function to stream the latest 3 new_urls files for all domains
-const streamLatestNewUrls = async (res) => {
+const streamLatestNewUrls = async (res, page = 1, limit = 50) => {
     try {
-        const domainsData = await getLatestNewUrlsForAllDomains(); // Get the latest new_urls files
+        const domainsData = await getLatestNewUrlsForAllDomains(); // Get latest new_urls files for all domains
+        res.setHeader('Content-Type', 'application/x-ndjson'); // Set header for NDJSON format
 
+        let totalFiles = 0;
+        const allFiles = [];
+
+        // Collect all the files for streaming later
         for (const domain of domainsData) {
             const { fullPath, latestNewUrlsFiles } = domain;
-
-            // Filter to get the latest 3 files if available
-            const filesToStream = latestNewUrlsFiles.slice(0, 3);
-            console.log(`Streaming files for domain: ${fullPath}`);
-
-            for (const file of filesToStream) {
-                const filePath = path.join(fullPath, 'urls', 'new_urls', file);
-
-                // Check if the file exists
-                if (fs.existsSync(filePath)) {
-                    const readStream = fs.createReadStream(filePath, { encoding: 'utf8' });
-                    const rl = readline.createInterface({
-                        input: readStream,
-                        crlfDelay: Infinity
-                    });
-
-                    rl.on('line', (line) => {
-                        console.log(`Read line: ${line}`); // Debug log
-                        if (line.trim() === '') {
-                            console.warn(`Empty line found in file: ${filePath}`); // Log empty line
-                            return; // Skip empty lines
-                        }
-                        res.write(JSON.stringify({ url: line }) + '\n');
-                    });
-
-                    rl.on('close', () => {
-                        console.log(`Finished streaming file: ${filePath}`);
-                    });
-
-                    rl.on('error', (err) => {
-                        console.error(`Error reading file ${filePath}:`, err);
-                        res.status(500).json({ error: `Unable to read URLs: ${err.message}` });
-                    });
-                } else {
-                    console.warn(`File not found: ${filePath}`);
+            if (latestNewUrlsFiles.length > 0) {
+                for (const file of latestNewUrlsFiles) {
+                    const filePath = path.join(fullPath, 'urls', 'new_urls', file);
+                    allFiles.push(filePath);
                 }
             }
         }
 
-        res.end(); // End the response after all domains are processed
+        let currentLine = 0;
+        const startLine = (page - 1) * limit;
+        const endLine = startLine + limit;
+
+        let fileIndex = 0;
+        let linesStreamed = 0;
+
+        const streamFile = (filePath) => {
+            if (!fs.existsSync(filePath)) {
+                fileIndex++;
+                if (fileIndex >= allFiles.length) {
+                    res.end(); // End response if no more files
+                } else {
+                    streamFile(allFiles[fileIndex]); // Move to the next file
+                }
+                return;
+            }
+
+            const readStream = fs.createReadStream(filePath, { encoding: 'utf8' });
+            const rl = readline.createInterface({
+                input: readStream,
+                crlfDelay: Infinity
+            });
+
+            rl.on('line', (line) => {
+                if (currentLine >= startLine && currentLine < endLine && line.trim()) {
+                    res.write(JSON.stringify({ url: line }) + '\n'); // Write the line to the response
+                    linesStreamed++;
+                }
+
+                if (currentLine >= endLine || linesStreamed >= limit) {
+                    rl.close(); // Stop reading once we've streamed enough lines
+                }
+
+                currentLine++;
+            });
+
+            rl.on('close', () => {
+                if (linesStreamed >= limit || fileIndex >= allFiles.length - 1) {
+                    res.end(); // End response after limit is reached or all files are processed
+                } else {
+                    fileIndex++;
+                    streamFile(allFiles[fileIndex]); // Move to the next file
+                }
+            });
+
+            rl.on('error', (err) => {
+                console.error(`Error reading file ${filePath}:`, err);
+                fileIndex++;
+                if (fileIndex >= allFiles.length) {
+                    res.end(); // End response after all files are processed
+                } else {
+                    streamFile(allFiles[fileIndex]); // Move to the next file
+                }
+            });
+        };
+
+        if (allFiles.length > 0) {
+            streamFile(allFiles[0]); // Start streaming from the first file
+        } else {
+            res.end(); // End response if no files are found
+        }
     } catch (error) {
         console.error(`Error streaming latest new_urls files:`, error);
         if (!res.headersSent) {
@@ -142,13 +188,16 @@ const streamLatestNewUrls = async (res) => {
 
 
 
+
+
+
+
 // Function to stream URLs from the last 5 new_urls files in NDJSON format
 const streamUrlsFromNewFiles = async (res, domain, dirPath, page, limit) => {
     try {
         const urlsFolderPath = path.join(dirPath, domain, 'urls');
         const lastNewUrlsFiles = await getLastNewUrlsFiles(urlsFolderPath);
 
-        console.log(`Last new_urls files for ${domain}:`, lastNewUrlsFiles); // Log the files being processed
 
         if (lastNewUrlsFiles.length === 0) {
             console.log(`No new_urls files found for ${domain}. Skipping...`); // Log that this domain is being skipped
@@ -214,16 +263,16 @@ const getDomains = async (req, res) => {
     const domain = req.query.domain;
     const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
     const limit = parseInt(req.query.limit) || 50; // Default to 50 URLs per chunk
-    res.setHeader('Content-Type', 'application/x-ndjson');
-
+    
     if (!domain) {
-
-        await streamLatestNewUrls(res); // Stream URLs for all domains
- 
         
-
+        await streamLatestNewUrls(res, page, limit); // Stream URLs for all domains
+        
+        
+        
     } else {
         try {
+            res.setHeader('Content-Type', 'application/x-ndjson');
             // Set the header for NDJSON streaming response
             await streamUrlsFromNewFiles(res, domain, folderPath, page, limit); // Stream URLs from last 5 new_urls files in NDJSON format
         } catch (err) {
@@ -232,4 +281,23 @@ const getDomains = async (req, res) => {
     }
 };
 
-module.exports = { getDomains, metadata };
+
+
+const getInterestingWords = async (req, res) => {
+    try {
+        const keywordsFilePath = path.join(__dirname, 'keywords.txt'); // Path to the keywords file
+        const keywordsData = await fs.promises.readFile(keywordsFilePath, 'utf8'); // Read the file
+
+        const keywordsArray = keywordsData.split('\n').map(word => word.trim()).filter(Boolean); // Split by line and trim
+
+        // Create an array of objects, each containing the keyword
+        const keywordsJson = keywordsArray.map(word => ({ word: word }));
+
+        res.status(200).json(keywordsJson); // Send the JSON response
+    } catch (error) {
+        console.error(`Error reading keywords file:`, error);
+        res.status(500).json({ error: `Unable to read keywords file: ${error.message}` });
+    }
+};
+
+module.exports = { getDomains, metadata, getInterestingWords };

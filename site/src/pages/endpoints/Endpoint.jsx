@@ -7,10 +7,11 @@ import './endpoint.css';
 
 function Endpoint() {
   const [domains, setDomains] = useState([]);
-  const [urls, setUrls] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [count, setCount] = useState(0)
   const [selectedDomain, setSelectedDomain] = useState(''); // Store the selected domain
+  const [domainData, setDomainData] = useState([]); // New state to store domain data
 
   // Fetch all domains initially
   useEffect(() => {
@@ -20,6 +21,7 @@ function Endpoint() {
         const response = await fetch('/api/v1/endpoints/metadata');
         const data = await response.json();
         setDomains(data.directories); // Assuming the backend sends a 'directories' field
+        setDomainData(data.domainData); // Store the domain data for counts
       } catch (error) {
         setError('Error fetching domains');
         console.error(error);
@@ -34,6 +36,11 @@ function Endpoint() {
   // Handle domain selection and streaming
   const handleDomainSelect = async (domain) => {
     setSelectedDomain(domain); // Set the selected domain
+
+    // Find the selected domain's data to set the count
+    const selectedDomainData = domainData.find((d) => d.domain === domain);
+    setCount(selectedDomainData ? selectedDomainData.urlCount : 0); // Update the count based on selected domain
+
     try {
       setLoading(true);
     } catch (error) {
@@ -48,8 +55,8 @@ function Endpoint() {
     <div className='endpoint-main'>
       {loading && <p>Loading...</p>}
       {error && <p className="error-message">{error}</p>}
-      <EndpointBar domains={domains} onDomainSelect={handleDomainSelect} />
-      <Urls urls={urls} domain={selectedDomain} /> {/* Pass domain to Urls component */}
+      <EndpointBar domains={domains} onDomainSelect={handleDomainSelect} count={count} />
+      <Urls initialUrls={[]} domain={selectedDomain} /> {/* Pass domain to Urls component */}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 .endpoint-bar{
     display: flex;
     justify-content: space-between;
-    width: 96%;
+    width: 105.25%;
     border: 2px solid var(--border-color);
     padding: 0 30px;
     overflow: hidden;

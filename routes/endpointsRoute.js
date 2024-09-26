@@ -1,5 +1,5 @@
 const express = require('express')
-const {getDomains, metadata} = require('../controllers/endpoints/endpointsController')
+const {getDomains, metadata, getInterestingWords} = require('../controllers/endpoints/endpointsController')
 const router = express.Router()
 
 router.route('/')
@@ -7,5 +7,8 @@ router.route('/')
 
 router.route('/metadata')
     .get(metadata)
+
+router.route('/words')
+    .get(getInterestingWords)
 
 module.exports = router 

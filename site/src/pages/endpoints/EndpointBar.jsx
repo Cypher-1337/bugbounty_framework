@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Select, MenuItem, FormControl } from '@mui/material';
 import './endpoint.css';
 
-function EndpointBar({ domains, onDomainSelect }) {
+function EndpointBar({ domains, onDomainSelect, count }) {
   const [selectedDomain, setSelectedDomain] = useState('');
   const [latestUrlsFile, setLatestUrlsFile] = useState('');
 
@@ -21,7 +21,7 @@ function EndpointBar({ domains, onDomainSelect }) {
         <h3>
           {selectedDomain ? (
             <>
-              New Endpoints for <span style={{ color: 'white', fontSize: '22px' }}>{selectedDomain}</span>
+             <span style={{color: 'green', fontSize:'22px'}}>{count}</span> New Endpoints for <span style={{ color: 'white', fontSize: '22px' }}>{selectedDomain}</span>
               {latestUrlsFile && <p style={{ fontSize: '16px' }}>Latest File: {latestUrlsFile}</p>}
             </>
           ) : (

@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
-import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter ,GridToolbar} from '@mui/x-data-grid';
-
+import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import './endpoint.css';
-
-
 
 function CustomToolbar({ exclude, setExclude }) {
   return (
@@ -23,22 +20,21 @@ function CustomToolbar({ exclude, setExclude }) {
           backgroundColor: '#333',
           color: 'white',
           border: '1px solid var(--border-color)',
-          borderRadius: '0'
+          borderRadius: '0',
         }}
       />
     </GridToolbarContainer>
   );
 }
 
-
 function Urls({ initialUrls, domain }) {
   const [urls, setUrls] = useState(initialUrls || []);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1); // Keep using page state
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [filteredUrls, setFilteredUrls] = useState([]);
   const [exclude, setExclude] = useState(""); // State for exclusion input
-
+  const [keywords, setKeywords] = useState([]); // State for keywords
 
   const debounce = (func, delay) => {
     let timeoutId;
@@ -50,13 +46,35 @@ function Urls({ initialUrls, domain }) {
     };
   };
 
-  const loadMoreUrls = useCallback(async () => {
-    if (loading || !hasMore || !domain) return; // Ensure domain is defined
+
+  // Reset state on domain change
+  useEffect(() => {
+    setUrls([]);
+    setPage(1); // Reset page
+    setHasMore(true);
+
+    if (domain) {
+      loadMoreUrlsWithDomain(1); // Fetch first page of URLs for the new domain
+    } else{
+      loadMoreUrlsWithoutDomain(1);
+    }
+  }, [domain]);
+
+
+
+  const loadMoreUrlsWithDomain = useCallback(async (currentPage) => {
+    if (loading || !hasMore || !domain) return;
 
     setLoading(true);
-
     try {
-      const response = await fetch(`/api/v1/endpoints?domain=${domain}&page=${page}&limit=500`);
+      const response = await fetch(`/api/v1/endpoints?domain=${domain}&page=${currentPage}&limit=500`);
+
+      if (!response.ok) {
+        console.error('Network response was not ok:', response.statusText);
+        setHasMore(false);
+        return;
+      }
+
       const reader = response.body.getReader();
       const decoder = new TextDecoder('utf-8');
       let newUrls = [];
@@ -65,12 +83,11 @@ function Urls({ initialUrls, domain }) {
       while (!done) {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;
-
         const decodedValue = decoder.decode(value, { stream: true });
         const ndjsonLines = decodedValue.trim().split('\n');
         ndjsonLines.forEach((line) => {
           try {
-            const parsed = JSON.parse(line); // Ensure parsing is safe
+            const parsed = JSON.parse(line);
             newUrls.push(parsed.url);
           } catch (error) {
             console.error('Error parsing line:', line, error);
@@ -80,24 +97,68 @@ function Urls({ initialUrls, domain }) {
 
       if (newUrls.length === 0) {
         setHasMore(false);
+      } else {
+        setUrls((prevUrls) => currentPage === 1 ? newUrls : [...prevUrls, ...newUrls]);
       }
-
-      setUrls((prevUrls) => [...prevUrls, ...newUrls]);
-      setPage((prevPage) => prevPage + 1);
     } catch (error) {
       console.error('Error loading more URLs:', error);
     } finally {
       setLoading(false);
     }
-  }, [page, loading, hasMore, domain]);
+  }, [loading, hasMore, domain]);
 
 
-  
+  // Function to load more URLs when no domain is specified
+  const loadMoreUrlsWithoutDomain = useCallback(async (currentPage) => {
+    if (loading || !hasMore) return;
 
-  // Filter URLs based on the exclusion input (allow multiple exclusion terms)
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/v1/endpoints?page=${currentPage}&limit=500`);
+
+      if (!response.ok) {
+        console.error('Network response was not ok:', response.statusText);
+        setHasMore(false);
+        return;
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let newUrls = [];
+      let done = false;
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        const decodedValue = decoder.decode(value, { stream: true });
+        const ndjsonLines = decodedValue.trim().split('\n');
+        ndjsonLines.forEach((line) => {
+          try {
+            const parsed = JSON.parse(line);
+            newUrls.push(parsed.url);
+          } catch (error) {
+            console.error('Error parsing line:', line, error);
+          }
+        });
+      }
+
+      if (newUrls.length === 0) {
+        setHasMore(false);
+      } else {
+        setUrls((prevUrls) => currentPage === 1 ? newUrls : [...prevUrls, ...newUrls]);
+      }
+    } catch (error) {
+      console.error('Error loading more URLs:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, hasMore]);
+
+
+  // Filter URLs based on the exclusion input
   useEffect(() => {
     const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
-    
+
     if (excludeTerms.length > 0 && excludeTerms[0] !== "") {
       setFilteredUrls(urls.filter(url => !excludeTerms.some(term => url.toLowerCase().includes(term))));
     } else {
@@ -105,17 +166,42 @@ function Urls({ initialUrls, domain }) {
     }
   }, [exclude, urls]);
 
-  // Infinite scroll effect
   useEffect(() => {
-    const handleScroll = debounce(() => {
-      const virtualScroller = document.querySelector('.MuiDataGrid-virtualScroller');
-      if (virtualScroller) {
-        const { scrollTop, scrollHeight, clientHeight } = virtualScroller;
-        if (scrollTop + clientHeight >= scrollHeight - 5 && !loading && hasMore) {
-          loadMoreUrls();
+    const loadKeyWords = async () => {
+        try {
+            const response = await fetch("/api/v1/endpoints/words"); // Updated URL
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json(); // Parse the JSON response
+            setKeywords(data.map(item => item.word.toLowerCase())); // Map to an array of keywords
+        } catch (error) {
+            console.error("Error loading keywords:", error);
         }
+    }
+
+    loadKeyWords();
+  }, []);
+
+  // Infinite scroll effect (only increments page when the user scrolls)
+  useEffect(() => {
+  const handleScroll = debounce(() => {
+    const virtualScroller = document.querySelector('.MuiDataGrid-virtualScroller');
+    if (virtualScroller) {
+      const { scrollTop, scrollHeight, clientHeight } = virtualScroller;
+      if (scrollTop + clientHeight >= scrollHeight - 5 && !loading && hasMore) {
+        setPage((prevPage) => {
+          const nextPage = prevPage + 1;
+          if (domain) {
+            loadMoreUrlsWithDomain(nextPage); // Fetch the next page for domain
+          } else {
+            loadMoreUrlsWithoutDomain(nextPage); // Fetch the next page without domain
+          }
+          return nextPage;
+        });
       }
-    }, 300); // Adjust the delay as needed
+    }
+  }, 200);
 
     const virtualScroller = document.querySelector('.MuiDataGrid-virtualScroller');
     if (virtualScroller) {
@@ -127,18 +213,8 @@ function Urls({ initialUrls, domain }) {
         virtualScroller.removeEventListener('scroll', handleScroll);
       }
     };
-  }, [loadMoreUrls]);
+  }, [loading, hasMore, domain, loadMoreUrlsWithDomain, loadMoreUrlsWithoutDomain]);
 
-  // Fetch new URLs when the domain changes
-  useEffect(() => {
-    if (domain) {
-      setUrls([]);  // Reset URLs
-      setPage(1);   // Reset page count
-      setHasMore(true); // Allow more URL fetches
-      loadMoreUrls(); // Fetch new URLs for the selected domain
-    }
-  }, [domain]);  // This effect depends on domain
-  
   // Map filtered URLs to rows for the DataGrid
   const rows = filteredUrls.map((url, index) => ({
     id: index + 1,
@@ -149,18 +225,40 @@ function Urls({ initialUrls, domain }) {
     {
       field: 'url',
       headerName: 'Url',
-      width: 1750,
+      width: 1850,
       type: 'string',
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
       renderCell: (params) => {
-        const hasParams = params.value.includes('?');
+        const lowerCaseUrl = params.value.trim().toLowerCase();
+        
+        // Check for a match with the keywords
+        const matchedKeywords = keywords.filter(keyword => {
+          const lowerCaseKeyword = keyword.trim().toLowerCase();
+          return lowerCaseUrl.includes(lowerCaseKeyword);
+        });
+  
+        const hasParams = lowerCaseUrl.includes('?');
+  
         return (
-          <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column', // Stack elements vertically
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start',
+              backgroundColor: matchedKeywords.length > 0 ? '#6b1717' : 'transparent', // Set color to red if match
+              padding: '8px', // Add some padding for better spacing
+              fontSize: '17px'
+            }}
+            className={matchedKeywords.length > 0 ? 'MuiDataGrid-cell--withRenderer' : ''}
+          >
             <a
               style={{
                 textDecoration: 'none',
-                color: hasParams ? 'yellow' : 'white',
+                color: hasParams ? 'yellow' : 'inherit', // Keep the parent color
+                width: '100%', // Ensure the anchor takes the full width
               }}
               href={params.value}
               target="_blank"
@@ -168,31 +266,36 @@ function Urls({ initialUrls, domain }) {
             >
               {params.value}
             </a>
+            {matchedKeywords.length > 0 && (
+              <div style={{ color: 'white', marginTop: '4px' }}>
+                  {matchedKeywords.join(', ')} {/* Display matched keywords */}
+              </div>
+            )}
           </div>
         );
-      },
+      }
     },
   ];
+  
+  
 
   return (
     <div className="endpoint-content">
       <Helmet>
-        <title>Endpoints</title>
+        <title>{domain}</title>
       </Helmet>
-
-
 
       <DataGrid
         rows={rows}
         columns={columns}
-        slots={{ toolbar: GridToolbar, toolbar: CustomToolbar  }}
+        slots={{ toolbar: CustomToolbar }}
         slotProps={{
           toolbar: {
-            exclude, setExclude ,
+            exclude,
+            setExclude,
             showQuickFilter: true,
           },
         }}
-
         initialState={{
           pagination: {
             paginationModel: {
@@ -208,6 +311,7 @@ function Urls({ initialUrls, domain }) {
           '& .MuiDataGrid-cell': {
             color: 'white',
             fontSize: '16px',
+            padding: '0',
             border: '1px solid var(--border-color)',
           },
           '& .MuiDataGrid-columnHeaders': {
@@ -216,7 +320,7 @@ function Urls({ initialUrls, domain }) {
           },
           '& .css-v4u5dn-MuiInputBase-root-MuiInput-root': {
             background: 'white',
-            color: 'black'
+            color: 'black',
           },
           '& .MuiButtonBase-root': {
             color: 'white',
@@ -227,17 +331,20 @@ function Urls({ initialUrls, domain }) {
           '& .MuiDataGrid-root': {
             backgroundColor: '#333',
           },
-          '& .MuiDataGrid-toolbarContainer':{
+          '& .MuiDataGrid-toolbarContainer': {
             display: 'flex',
             justifyContent: 'space-between',
-            margin: '5px'
+            margin: '5px',
+          },
+          '& .css-1w53k9d-MuiDataGrid-overlay': {
+            height: '2000px',
           },
           border: '1px solid var(--border-color)',
           height: '850px',
+          width: '1808px',
+          color: 'white',
         }}
       />
-      {loading && <div style={{ color: 'white', textAlign: 'center' }}>Loading more URLs...</div>}
-      {!hasMore && <div style={{ color: 'white', textAlign: 'center' }}>No more URLs to load.</div>}
     </div>
   );
 }
