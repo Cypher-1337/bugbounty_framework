@@ -24,7 +24,35 @@
     display: flex;
 }
 
+.endpoint-bar .filter{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 25%;
+}
 
+
+.endpoint-bar .filter .filter_input{
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.endpoint-bar .filter .filter_input input{
+
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    margin: 2px 0;
+
+}
+
+.endpoint-bar .filter button{
+
+    background-color: var(--primary-color);
+    padding: 4px 12px;
+    height: 80%;
+}
 
 /* Scrollbar Styling for MUI DataGrid */
 .MuiDataGrid-virtualScroller {

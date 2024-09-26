@@ -81,7 +81,6 @@ const streamLatestNewUrls = async (res, page = 1, limit = 50) => {
         const domainsData = await getLatestNewUrlsForAllDomains(); // Get latest new_urls files for all domains
         res.setHeader('Content-Type', 'application/x-ndjson'); // Set header for NDJSON format
 
-        let totalFiles = 0;
         const allFiles = [];
 
         // Collect all the files for streaming later

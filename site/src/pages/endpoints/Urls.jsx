@@ -3,7 +3,9 @@ import { Helmet } from 'react-helmet';
 import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import './endpoint.css';
 
-function CustomToolbar({ exclude, setExclude }) {
+
+
+function CustomToolbar({ exclude, setExclude, toggleFilter, filterActive }) {
   return (
     <GridToolbarContainer>
       <GridToolbarQuickFilter />
@@ -23,18 +25,39 @@ function CustomToolbar({ exclude, setExclude }) {
           borderRadius: '0',
         }}
       />
+      <button
+        onClick={toggleFilter}
+        style={{
+          marginLeft: '10px',
+          padding: '8px',
+          backgroundColor: filterActive ? 'green' : '#333', // Green when filter is active
+          color: 'white',
+          border: '1px solid var(--border-color)',
+          borderRadius: '0',
+          fontSize: '16px',
+          cursor: 'pointer'
+        }}
+      >
+        {filterActive ? 'Filter On' : 'Filter Off'}
+      </button>
     </GridToolbarContainer>
   );
 }
 
+
+
 function Urls({ initialUrls, domain }) {
-  const [urls, setUrls] = useState(initialUrls || []);
+  const [urls, setUrls] = useState(initialUrls || []); // Ensure urls is initialized as an array
   const [page, setPage] = useState(1); // Keep using page state
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [filteredUrls, setFilteredUrls] = useState([]);
   const [exclude, setExclude] = useState(""); // State for exclusion input
   const [keywords, setKeywords] = useState([]); // State for keywords
+  const [filterActive, setFilterActive] = useState(false);
+  const [filterSubdomains, setFilterSubdomains] = useState([]);
+
+
 
   const debounce = (func, delay) => {
     let timeoutId;
@@ -60,26 +83,72 @@ function Urls({ initialUrls, domain }) {
     }
   }, [domain]);
 
+  
+  // Toggle filter activation
+  const toggleFilter = () => {
+    setFilterActive((prevState) => !prevState);
+  };
+
+
+  // Fetch filtered subdomains when filter is active
+  useEffect(() => {
+    const fetchFilterSubdomains = async () => {
+      if (!filterActive) return;
+  
+      try {
+        const response = await fetch('/api/v1/endpoints/filter');
+        const data = await response.json();
+        setFilterSubdomains(data); // Store the full data array with subdomain and filter
+      } catch (error) {
+        console.error('Error fetching filtered subdomains:', error);
+      }
+    };
+  
+    fetchFilterSubdomains();
+  }, [filterActive]);
+
+  // Exclude URLs based on the subdomain and filter combination
+  useEffect(() => {
+    setFilteredUrls(
+      urls.filter((url) => {
+        const lowerCaseUrl = url.toLowerCase(); // Ensure url is defined
+
+        // Check if the URL matches any subdomain and its associated filter
+        const shouldExclude = filterActive
+          ? filterSubdomains.some(({ subdomain, filter }) => {
+              const subdomainInUrl = lowerCaseUrl.includes(subdomain.toLowerCase());
+              const filterInUrl = lowerCaseUrl.includes(filter.toLowerCase());
+              return subdomainInUrl && filterInUrl; // Only exclude if both subdomain and filter are present in the URL
+            })
+          : false;
+
+        return !shouldExclude; // Exclude if both subdomain and filter match
+      })
+    );
+  }, [urls, filterActive, filterSubdomains]);
+
+
+
 
 
   const loadMoreUrlsWithDomain = useCallback(async (currentPage) => {
     if (loading || !hasMore || !domain) return;
-
+  
     setLoading(true);
     try {
       const response = await fetch(`/api/v1/endpoints?domain=${domain}&page=${currentPage}&limit=500`);
-
+  
       if (!response.ok) {
         console.error('Network response was not ok:', response.statusText);
         setHasMore(false);
         return;
       }
-
+  
       const reader = response.body.getReader();
       const decoder = new TextDecoder('utf-8');
       let newUrls = [];
       let done = false;
-
+  
       while (!done) {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;
@@ -94,11 +163,16 @@ function Urls({ initialUrls, domain }) {
           }
         });
       }
-
+  
       if (newUrls.length === 0) {
         setHasMore(false);
       } else {
-        setUrls((prevUrls) => currentPage === 1 ? newUrls : [...prevUrls, ...newUrls]);
+        // Update the URLs and apply filtering immediately
+        setUrls((prevUrls) => {
+          const combinedUrls = currentPage === 1 ? newUrls : [...prevUrls, ...newUrls];
+          applyFiltering(combinedUrls); // Apply filtering right here
+          return combinedUrls; // Return the combined URLs
+        });
       }
     } catch (error) {
       console.error('Error loading more URLs:', error);
@@ -108,63 +182,86 @@ function Urls({ initialUrls, domain }) {
   }, [loading, hasMore, domain]);
 
 
-  // Function to load more URLs when no domain is specified
-  const loadMoreUrlsWithoutDomain = useCallback(async (currentPage) => {
-    if (loading || !hasMore) return;
 
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/v1/endpoints?page=${currentPage}&limit=500`);
 
-      if (!response.ok) {
-        console.error('Network response was not ok:', response.statusText);
-        setHasMore(false);
-        return;
-      }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder('utf-8');
-      let newUrls = [];
-      let done = false;
+ // Function to load more URLs without domain and apply filtering immediately after loading
+ const loadMoreUrlsWithoutDomain = useCallback(async (currentPage) => {
+  if (loading || !hasMore) return;
 
-      while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
-        const decodedValue = decoder.decode(value, { stream: true });
-        const ndjsonLines = decodedValue.trim().split('\n');
-        ndjsonLines.forEach((line) => {
-          try {
-            const parsed = JSON.parse(line);
-            newUrls.push(parsed.url);
-          } catch (error) {
-            console.error('Error parsing line:', line, error);
-          }
-        });
-      }
+  setLoading(true);
+  try {
+    const response = await fetch(`/api/v1/endpoints?page=${currentPage}&limit=500`);
 
-      if (newUrls.length === 0) {
-        setHasMore(false);
-      } else {
-        setUrls((prevUrls) => currentPage === 1 ? newUrls : [...prevUrls, ...newUrls]);
-      }
-    } catch (error) {
-      console.error('Error loading more URLs:', error);
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      console.error('Network response was not ok:', response.statusText);
+      setHasMore(false);
+      return;
     }
-  }, [loading, hasMore]);
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let newUrls = [];
+    let done = false;
+
+    while (!done) {
+      const { value, done: readerDone } = await reader.read();
+      done = readerDone;
+      const decodedValue = decoder.decode(value, { stream: true });
+      const ndjsonLines = decodedValue.trim().split('\n');
+      ndjsonLines.forEach((line) => {
+        try {
+          const parsed = JSON.parse(line);
+          newUrls.push(parsed.url);
+        } catch (error) {
+          console.error('Error parsing line:', line, error);
+        }
+      });
+    }
+
+    if (newUrls.length === 0) {
+      setHasMore(false);
+    } else {
+      // Update the URLs and apply filtering immediately
+      setUrls((prevUrls) => {
+        const combinedUrls = currentPage === 1 ? newUrls : [...prevUrls, ...newUrls];
+        applyFiltering(combinedUrls); // Apply filtering right here
+        return combinedUrls; // Return the combined URLs
+      });
+    }
+  } catch (error) {
+    console.error('Error loading more URLs:', error);
+  } finally {
+    setLoading(false);
+  }
+}, [loading, hasMore]);
+
+
+  // New function to apply the filtering logic after more URLs are loaded
+  const applyFiltering = (newUrls) => {
+    const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
+  
+    if (excludeTerms.length > 0 && excludeTerms[0] !== "") {
+      setFilteredUrls(newUrls.filter(url => !excludeTerms.some(term => url.toLowerCase().includes(term))));
+    } else {
+      setFilteredUrls(newUrls); // No exclusion, show all URLs
+    }
+  };
+  
+
+
 
 
   // Filter URLs based on the exclusion input
-  useEffect(() => {
-    const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
+  // useEffect(() => {
+  //   const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
 
-    if (excludeTerms.length > 0 && excludeTerms[0] !== "") {
-      setFilteredUrls(urls.filter(url => !excludeTerms.some(term => url.toLowerCase().includes(term))));
-    } else {
-      setFilteredUrls(urls); // No exclusion, show all URLs
-    }
-  }, [exclude, urls]);
+  //   if (excludeTerms.length > 0 && excludeTerms[0] !== "") {
+  //     setFilteredUrls(urls.filter(url => !excludeTerms.some(term => url.toLowerCase().includes(term))));
+  //   } else {
+  //     setFilteredUrls(urls); // No exclusion, show all URLs
+  //   }
+  // }, [exclude, urls]);
 
   useEffect(() => {
     const loadKeyWords = async () => {
@@ -293,6 +390,8 @@ function Urls({ initialUrls, domain }) {
           toolbar: {
             exclude,
             setExclude,
+            toggleFilter,
+            filterActive,  // Pass the filter active state
             showQuickFilter: true,
           },
         }}
