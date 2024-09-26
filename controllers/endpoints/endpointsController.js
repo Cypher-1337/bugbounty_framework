@@ -18,27 +18,7 @@ const metadata = async (req, res) => {
 };
 
 
-// Function to count URLs in given files
-const countUrlsInFiles = async (newUrlsFolderPath, files) => {
-    let count = 0;
-    for (const file of files) {
-        const filePath = path.join(newUrlsFolderPath, file);
-        const fileExists = fs.existsSync(filePath);
-        if (!fileExists) continue;
 
-        const readStream = fs.createReadStream(filePath, { encoding: 'utf8' });
-        const rl = readline.createInterface({
-            input: readStream,
-            crlfDelay: Infinity
-        });
-
-        // Count lines (URLs) in the file
-        for await (const line of rl) {
-            if (line.trim()) count++;
-        }
-    }
-    return count;
-};
 
 
 const getDirectories = async () => {
@@ -68,8 +48,7 @@ const getLatestNewUrlsForAllDomains = async () => {
         const directories = await getDirectories();
         const results = await Promise.all(directories.map(async ({ domain, fullPath }) => {
             const latestNewUrlsFiles = await getLastNewUrlsFiles(path.join(fullPath, 'urls'), 3);
-            const urlCount = await countUrlsInFiles(path.join(fullPath, 'urls', 'new_urls'), latestNewUrlsFiles);
-            return { domain, fullPath, latestNewUrlsFiles, urlCount }; // Include URL count
+            return { domain, fullPath, latestNewUrlsFiles }; 
         }));
 
         return results;
