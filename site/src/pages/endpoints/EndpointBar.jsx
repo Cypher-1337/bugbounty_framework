@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Select, MenuItem, FormControl, Button } from '@mui/material';
 import './endpoint.css';
 
-function EndpointBar({ domains, onDomainSelect, count }) {
+function EndpointBar({ domains, onDomainSelect, onFilterChange }) {
   const [selectedDomain, setSelectedDomain] = useState('');
   const [latestUrlsFile, setLatestUrlsFile] = useState('');
   const [subdomain, setSubdomain] = useState(''); // State for subdomain input
@@ -32,6 +32,8 @@ function EndpointBar({ domains, onDomainSelect, count }) {
       alert('Please enter both subdomain and filter');
       return;
     }
+
+    onFilterChange(filter); // Notify parent about the new filter
 
     // Extract domain from subdomain
     const extractedDomain = extractDomain(subdomain);

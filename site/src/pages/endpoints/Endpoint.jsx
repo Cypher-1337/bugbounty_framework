@@ -10,6 +10,7 @@ function Endpoint() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState(''); // Store the selected domain
+  const [filter, setFilter] = useState(''); // New filter state
 
   // Fetch all domains initially
   useEffect(() => {
@@ -33,6 +34,7 @@ function Endpoint() {
   // Handle domain selection and streaming
   const handleDomainSelect = async (domain) => {
     setSelectedDomain(domain); // Set the selected domain
+    setFilter(''); // Reset filter when a new domain is selected
 
     try {
       setLoading(true);
@@ -44,12 +46,20 @@ function Endpoint() {
     }
   };
 
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
+  };
+
   return (
     <div className='endpoint-main'>
       {loading && <p>Loading...</p>}
       {error && <p className="error-message">{error}</p>}
-      <EndpointBar domains={domains} onDomainSelect={handleDomainSelect}  />
-      <Urls initialUrls={[]} domain={selectedDomain} /> {/* Pass domain to Urls component */}
+      <EndpointBar
+       domains={domains}
+       onDomainSelect={handleDomainSelect}
+       onFilterChange={handleFilterChange} // Pass the function to handle filter changes
+       />
+      <Urls initialUrls={[]} domain={selectedDomain} filter={filter} /> {/* Pass filter to Urls component */}
     </div>
   );
 }

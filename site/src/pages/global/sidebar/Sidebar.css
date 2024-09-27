@@ -163,5 +163,9 @@
 
 }
 
+.nav-link.active {
+  background-color: #00361b; /* Change to your desired highlight color */
+  color: white; /* Change to your desired text color */
+}
 
 /* sx={{ width: "auto", color: "green", background: "#3A3B3C"}} */

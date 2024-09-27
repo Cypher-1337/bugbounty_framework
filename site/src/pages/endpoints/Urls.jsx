@@ -46,7 +46,7 @@ function CustomToolbar({ exclude, setExclude, toggleFilter, filterActive }) {
 
 
 
-function Urls({ initialUrls, domain }) {
+function Urls({ initialUrls, domain, filter }) {
   const [urls, setUrls] = useState(initialUrls || []); // Ensure urls is initialized as an array
   const [page, setPage] = useState(1); // Keep using page state
   const [loading, setLoading] = useState(false);
@@ -54,7 +54,7 @@ function Urls({ initialUrls, domain }) {
   const [filteredUrls, setFilteredUrls] = useState([]);
   const [exclude, setExclude] = useState(""); // State for exclusion input
   const [keywords, setKeywords] = useState([]); // State for keywords
-  const [filterActive, setFilterActive] = useState(false);
+  const [filterActive, setFilterActive] = useState(true);
   const [filterSubdomains, setFilterSubdomains] = useState([]);
 
 
@@ -105,29 +105,7 @@ function Urls({ initialUrls, domain }) {
     };
   
     fetchFilterSubdomains();
-  }, [filterActive]);
-
-  // Exclude URLs based on the subdomain and filter combination
-  useEffect(() => {
-    setFilteredUrls(
-      urls.filter((url) => {
-        const lowerCaseUrl = url.toLowerCase(); // Ensure url is defined
-
-        // Check if the URL matches any subdomain and its associated filter
-        const shouldExclude = filterActive
-          ? filterSubdomains.some(({ subdomain, filter }) => {
-              const subdomainInUrl = lowerCaseUrl.includes(subdomain.toLowerCase());
-              const filterInUrl = lowerCaseUrl.includes(filter.toLowerCase());
-              return subdomainInUrl && filterInUrl; // Only exclude if both subdomain and filter are present in the URL
-            })
-          : false;
-
-        return !shouldExclude; // Exclude if both subdomain and filter match
-      })
-    );
-  }, [urls, filterActive, filterSubdomains]);
-
-
+  }, [filterActive, filter]);
 
 
 
@@ -251,17 +229,36 @@ function Urls({ initialUrls, domain }) {
 
 
 
+// Filtering is automatically applied when new exclude terms or filters are added
+useEffect(() => {
+  // This logic should apply filtering immediately when the exclude term changes or filterActive changes
+  const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
 
-  // Filter URLs based on the exclusion input
-  useEffect(() => {
-    const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
+  const filtered = urls.filter(url => {
+    const lowerCaseUrl = url.toLowerCase();
 
-    if (excludeTerms.length > 0 && excludeTerms[0] !== "") {
-      setFilteredUrls(urls.filter(url => !excludeTerms.some(term => url.toLowerCase().includes(term))));
-    } else {
-      setFilteredUrls(urls); // No exclusion, show all URLs
-    }
-  }, [exclude, urls]);
+    // Check if the URL matches any exclusion terms
+    const shouldExcludeByTerm = excludeTerms.length > 0 && excludeTerms[0] !== ""
+      ? excludeTerms.some(term => lowerCaseUrl.includes(term))
+      : false;
+
+    // Check if the URL matches the filterActive state (subdomains and filters)
+    const shouldExcludeByFilter = filterActive
+      ? filterSubdomains.some(({ subdomain, filter }) => {
+          const subdomainInUrl = lowerCaseUrl.includes(subdomain.toLowerCase());
+          const filterInUrl = lowerCaseUrl.includes(filter.toLowerCase());
+          return subdomainInUrl && filterInUrl;
+        })
+      : false;
+
+    return !(shouldExcludeByTerm || shouldExcludeByFilter);
+  });
+
+  setFilteredUrls(filtered); // Apply the filtering logic
+}, [urls, exclude, filterActive, filterSubdomains]);
+
+
+
 
   useEffect(() => {
     const loadKeyWords = async () => {
