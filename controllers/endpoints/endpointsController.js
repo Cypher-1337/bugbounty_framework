@@ -4,7 +4,7 @@ const readline = require('readline');
 const EventEmitter = require('events');
 EventEmitter.defaultMaxListeners = 20;
 
-const folderPath = '/home/kali/Desktop/my_tools/framework/recon';
+const folderPath = '/home/kali/framework/recon';
 
 
 const metadata = async (req, res) => {
@@ -58,6 +58,9 @@ const getLatestNewUrlsForAllDomains = async () => {
 };
 
 
+
+
+// Get the latest new_urls files based on modification date
 const getLastNewUrlsFiles = async (urlsFolderPath, count = 3) => {
     try {
         const newUrlsFolderPath = path.join(urlsFolderPath, 'new_urls');
@@ -68,14 +71,29 @@ const getLastNewUrlsFiles = async (urlsFolderPath, count = 3) => {
 
         const files = await fs.promises.readdir(newUrlsFolderPath);
         const newUrlFiles = files.filter(file => file.startsWith('new_urls_'));
-        return newUrlFiles.sort((a, b) => b.localeCompare(a)).slice(0, count);
+
+        const fileStats = await Promise.all(
+            newUrlFiles.map(async (file) => {
+                const filePath = path.join(newUrlsFolderPath, file);
+                const stats = await fs.promises.stat(filePath);
+                return { file, mtime: stats.mtime }; // Return the file and modification time
+            })
+        );
+
+        // Sort files by modification time (newest first)
+        const sortedFiles = fileStats
+            .sort((a, b) => b.mtime - a.mtime) // Sort by modification time, newest first
+            .map(stat => stat.file); // Extract the file names after sorting
+
+        return sortedFiles.slice(0, count); // Return the latest 'count' files
     } catch (err) {
         throw new Error(`Unable to get new_urls files: ${err.message}`);
     }
 };
+
   
-
-
+// Stream the latest new_urls files across all domains
+// Stream the latest new_urls files across all domains, sorted by modification time
 const streamLatestNewUrls = async (res, page = 1, limit = 50) => {
     try {
         const domainsData = await getLatestNewUrlsForAllDomains(); // Get latest new_urls files for all domains
@@ -83,21 +101,24 @@ const streamLatestNewUrls = async (res, page = 1, limit = 50) => {
 
         const allFiles = [];
 
-        // Collect all the files for streaming later
+        // Collect all the files with their modification times
         for (const domain of domainsData) {
             const { fullPath, latestNewUrlsFiles } = domain;
             if (latestNewUrlsFiles.length > 0) {
                 for (const file of latestNewUrlsFiles) {
                     const filePath = path.join(fullPath, 'urls', 'new_urls', file);
-                    allFiles.push(filePath);
+                    const stats = await fs.promises.stat(filePath); // Get file modification time
+                    allFiles.push({ filePath, mtime: stats.mtime }); // Store file and its modification time
                 }
             }
         }
 
+        // Sort all files by modification time (newest first)
+        allFiles.sort((a, b) => b.mtime - a.mtime);
+
         let currentLine = 0;
         const startLine = (page - 1) * limit;
         const endLine = startLine + limit;
-
         let fileIndex = 0;
         let linesStreamed = 0;
 
@@ -107,7 +128,7 @@ const streamLatestNewUrls = async (res, page = 1, limit = 50) => {
                 if (fileIndex >= allFiles.length) {
                     res.end(); // End response if no more files
                 } else {
-                    streamFile(allFiles[fileIndex]); // Move to the next file
+                    streamFile(allFiles[fileIndex].filePath); // Move to the next file
                 }
                 return;
             }
@@ -136,7 +157,7 @@ const streamLatestNewUrls = async (res, page = 1, limit = 50) => {
                     res.end(); // End response after limit is reached or all files are processed
                 } else {
                     fileIndex++;
-                    streamFile(allFiles[fileIndex]); // Move to the next file
+                    streamFile(allFiles[fileIndex].filePath); // Move to the next file
                 }
             });
 
@@ -146,13 +167,13 @@ const streamLatestNewUrls = async (res, page = 1, limit = 50) => {
                 if (fileIndex >= allFiles.length) {
                     res.end(); // End response after all files are processed
                 } else {
-                    streamFile(allFiles[fileIndex]); // Move to the next file
+                    streamFile(allFiles[fileIndex].filePath); // Move to the next file
                 }
             });
         };
 
         if (allFiles.length > 0) {
-            streamFile(allFiles[0]); // Start streaming from the first file
+            streamFile(allFiles[0].filePath); // Start streaming from the first file (newest one)
         } else {
             res.end(); // End response if no files are found
         }
@@ -168,18 +189,15 @@ const streamLatestNewUrls = async (res, page = 1, limit = 50) => {
 
 
 
-
-
-// Function to stream URLs from the last 5 new_urls files in NDJSON format
+// Function to stream URLs from the latest new_urls files for a single domain
 const streamUrlsFromNewFiles = async (res, domain, dirPath, page, limit) => {
     try {
         const urlsFolderPath = path.join(dirPath, domain, 'urls');
         const lastNewUrlsFiles = await getLastNewUrlsFiles(urlsFolderPath);
 
-
         if (lastNewUrlsFiles.length === 0) {
-            console.log(`No new_urls files found for ${domain}. Skipping...`); // Log that this domain is being skipped
-            return; // Skip processing for this domain
+            console.log(`No new_urls files found for ${domain}. Skipping...`);
+            return;
         }
 
         let currentLine = 0;
@@ -222,14 +240,14 @@ const streamUrlsFromNewFiles = async (res, domain, dirPath, page, limit) => {
             });
 
             rl.on('error', (err) => {
-                console.error(`Error reading file ${filePath}:`, err); // Log any errors
+                console.error(`Error reading file ${filePath}:`, err);
                 res.status(500).json({ error: `Unable to read URLs: ${err.message}` });
             });
         };
 
         readNextFile();
     } catch (err) {
-        console.error(`Error streaming URLs for ${domain}:`, err); // Log the error
+        console.error(`Error streaming URLs for ${domain}:`, err);
         res.status(500).json({ error: `Unable to stream URLs: ${err.message}` });
     }
 };

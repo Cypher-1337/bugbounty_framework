@@ -114,7 +114,7 @@ function Urls({ initialUrls, domain, filter }) {
   
     setLoading(true);
     try {
-      const response = await fetch(`/api/v1/endpoints?domain=${domain}&page=${currentPage}&limit=500`);
+      const response = await fetch(`/api/v1/endpoints?domain=${domain}&page=${currentPage}&limit=5000`);
   
       if (!response.ok) {
         console.error('Network response was not ok:', response.statusText);
@@ -169,7 +169,7 @@ function Urls({ initialUrls, domain, filter }) {
 
   setLoading(true);
   try {
-    const response = await fetch(`/api/v1/endpoints?page=${currentPage}&limit=500`);
+    const response = await fetch(`/api/v1/endpoints?page=${currentPage}&limit=5000`);
 
     if (!response.ok) {
       console.error('Network response was not ok:', response.statusText);
@@ -344,7 +344,7 @@ useEffect(() => {
               justifyContent: 'flex-start',
               backgroundColor: matchedKeywords.length > 0 ? '#6b1717' : 'transparent', // Set color to red if match
               padding: '8px', // Add some padding for better spacing
-              fontSize: '17px'
+              fontSize: '19px'
             }}
             className={matchedKeywords.length > 0 ? 'MuiDataGrid-cell--withRenderer' : ''}
           >
@@ -383,6 +383,7 @@ useEffect(() => {
         rows={rows}
         columns={columns}
         slots={{ toolbar: CustomToolbar }}
+        density="comfortable" // Set density to comfortable
         slotProps={{
           toolbar: {
             exclude,
@@ -406,7 +407,7 @@ useEffect(() => {
           },
           '& .MuiDataGrid-cell': {
             color: 'white',
-            fontSize: '16px',
+            fontSize: '18px',
             padding: '0',
             border: '1px solid var(--border-color)',
           },
@@ -435,6 +436,7 @@ useEffect(() => {
           '& .css-1w53k9d-MuiDataGrid-overlay': {
             height: '2000px',
           },
+
           border: '1px solid var(--border-color)',
           height: '850px',
           width: '1808px',
