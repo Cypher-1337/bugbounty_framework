@@ -4,7 +4,7 @@ const readline = require('readline');
 const EventEmitter = require('events');
 EventEmitter.defaultMaxListeners = 20;
 
-const folderPath = '/home/kali/framework/recon';
+const folderPath = '/home/kali/Desktop/my_tools/framework/recon';
 
 
 const metadata = async (req, res) => {

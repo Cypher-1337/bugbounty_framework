@@ -121,7 +121,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
                 <img src="https://github.com/favicon.ico" alt="" className="imageIcon" />
               </a>
 
-              <a href={`https://www.google.com/search?q=site%3A${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
+              <a href={`https://www.google.com/search?q=site%3A${hostname} | intext:${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
                 <img src="https://www.google.com/favicon.ico" alt="" className="imageIcon" />
               </a>
 
@@ -208,8 +208,9 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
 
     },
     {
-      field: 'ip',
-      headerName: 'IP',
+      field: 'date',
+      headerName: 'Date',
+      type: 'Date',
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
       width: 150,
@@ -225,14 +226,14 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
       cellClassName: 'custom-cell', // Add this line
 
     },
+
     {
-        field: 'date',
-        headerName: 'Date',
-        type: 'Date',
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        width: 150,
-        cellClassName: 'custom-cell', // Add this line
+      field: 'ip',
+      headerName: 'IP',
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      width: 150,
+      cellClassName: 'custom-cell', // Add this line
 
     },
     {
