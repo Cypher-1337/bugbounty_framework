@@ -312,10 +312,11 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
             columns={columns}
             getRowId={getRowId}
             getRowClassName={getRowClassName}
+            sortModel={[{ field: 'date', sort: 'desc' }]} // Add this line
             initialState={{
             pagination: {
                 paginationModel: {
-                pageSize: 25,
+                pageSize: 100,
                 },
             },
             }}

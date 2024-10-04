@@ -6,6 +6,7 @@ import MonitorIcon from '@mui/icons-material/Monitor';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import UpdateIcon from '@mui/icons-material/Update';
 import LinkIcon from '@mui/icons-material/Link';
+import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
@@ -90,26 +91,31 @@ export default function Sidebar() {
                     </ul>
                 </div>
 
-                <div className='bottom-content'>
                     {isAuth && authData.role === 'admin' && (
-                        <li>
-                            <FormControl className="dark">
-                                <Select
-                                    labelId="grap data"
-                                    id="data-grap"
-                                    value={data}
-                                    onChange={handleChange}
-                                    className="dark data-form"
-                                    color='warning'
-                                >
-                                    <MenuItem value='alive' selected>Alive</MenuItem>
-                                    <MenuItem value='domains'>Domains</MenuItem>
-                                    <MenuItem value='subdomains'>Subdomains</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </li>
+                        <div className='bottom-content'>
+                            <li className={`nav-link ${location.pathname === '/filter_subdomains' ? 'active' : ''}`}>
+                                <Link to="/filter_subdomains" className='link-a'>
+                                    <SettingsIcon className='link-icon' />
+                                </Link>
+                            </li>
+                            <li>
+                                <FormControl className="dark">
+                                    <Select
+                                        labelId="grap data"
+                                        id="data-grap"
+                                        value={data}
+                                        onChange={handleChange}
+                                        className="dark data-form"
+                                        color='warning'
+                                    >
+                                        <MenuItem value='alive' selected>Alive</MenuItem>
+                                        <MenuItem value='domains'>Domains</MenuItem>
+                                        <MenuItem value='subdomains'>Subdomains</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </li>
+                        </div>
                     )}
-                </div>
             </div>
         </nav>
     );

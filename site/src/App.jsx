@@ -8,6 +8,7 @@ import { createContext, useState, useEffect } from 'react';
 import Monitor from './pages/monitor/monitor';
 import Display from './pages/monitor/Display';
 import Endpoint from './pages/endpoints/Endpoint';
+import Filter from './pages/filter_subdomains/Filter'
 import Login from './pages/login/Login';
 import { AuthProvider } from './auth';
 import ProtectedRoute from './components/protectedRoute';
@@ -57,6 +58,10 @@ function App() {
                 <Route
                     path='/endpoints'
                     element={<ProtectedRoute><Endpoint /></ProtectedRoute>}
+                />
+                <Route
+                    path='/filter_subdomains'
+                    element={<ProtectedRoute><Filter /></ProtectedRoute>}
                 />
 
 

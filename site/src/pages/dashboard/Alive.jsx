@@ -353,7 +353,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 25,
+              pageSize: 100,
             },
           },
         }}
@@ -433,7 +433,7 @@ const  handleScannedButtonClick = async (id ,scannedValue) => {
         style={{
           height: '100%', // Set the height to 50%
           border: 'none', // Set the border color to grey
-          fontSize: '18px',
+          fontSize: '16px',
 
         }}
         rowBuffer={25}  // Render extra rows outside the visible area for smoother scrolling
