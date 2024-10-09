@@ -20,7 +20,7 @@
     "js-beautify": "^1.14.11",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.2",
-    "mysql2": "^3.6.5",
+    "mysql2": "^3.9.7",
     "node-cron": "^3.0.3",
     "redis": "^4.6.11",
     "socket.io": "^4.7.3",
