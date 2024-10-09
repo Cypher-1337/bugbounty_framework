@@ -5,7 +5,7 @@ import './endpoint.css';
 
 
 
-function CustomToolbar({ exclude, setExclude, toggleFilter, filterActive }) {
+function CustomToolbar({ exclude, setExclude, toggleFilter, filterActive, toggleExt, filterExtActive }) {
   return (
     <GridToolbarContainer>
       <GridToolbarQuickFilter />
@@ -25,21 +25,39 @@ function CustomToolbar({ exclude, setExclude, toggleFilter, filterActive }) {
           borderRadius: '0',
         }}
       />
-      <button
-        onClick={toggleFilter}
-        style={{
-          marginLeft: '10px',
-          padding: '8px',
-          backgroundColor: filterActive ? 'green' : '#333', // Green when filter is active
-          color: 'white',
-          border: '1px solid var(--border-color)',
-          borderRadius: '0',
-          fontSize: '16px',
-          cursor: 'pointer'
-        }}
-      >
-        {filterActive ? 'Filter On' : 'Filter Off'}
-      </button>
+      <div>
+        <button
+          onClick={toggleFilter}
+          style={{
+            marginLeft: '10px',
+            padding: '8px',
+            backgroundColor: filterActive ? 'green' : '#333', // Green when filter is active
+            color: 'white',
+            border: '1px solid var(--border-color)',
+            borderRadius: '0',
+            fontSize: '16px',
+            cursor: 'pointer'
+          }}
+        >
+          {filterActive ? 'Filter On' : 'Filter Off'}
+        </button>
+
+        <button
+          onClick={toggleExt}
+          style={{
+            marginLeft: '10px',
+            padding: '8px',
+            backgroundColor: filterExtActive ? 'blue' : '#333', // Green when filter is active
+            color: 'white',
+            border: '1px solid var(--border-color)',
+            borderRadius: '0',
+            fontSize: '16px',
+            cursor: 'pointer'
+          }}
+        >
+          {filterExtActive ? 'Ext On' : 'Ext Off'}
+        </button>
+      </div>
     </GridToolbarContainer>
   );
 }
@@ -56,6 +74,11 @@ function Urls({ initialUrls, domain, filter }) {
   const [keywords, setKeywords] = useState([]); // State for keywords
   const [filterActive, setFilterActive] = useState(true);
   const [filterSubdomains, setFilterSubdomains] = useState([]);
+  const [filterExtActive, setFilterExtActive] = useState(true);
+
+
+  // Array of file extensions to filter (images and css)
+  const fileExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.css'];
 
 
 
@@ -89,6 +112,11 @@ function Urls({ initialUrls, domain, filter }) {
     setFilterActive((prevState) => !prevState);
   };
 
+  // Toggle Ext filter activation
+  const toggleExt = () => {
+    setFilterExtActive((prevState) => !prevState);
+  };
+  
 
   // Fetch filtered subdomains when filter is active
   useEffect(() => {
@@ -215,26 +243,19 @@ function Urls({ initialUrls, domain, filter }) {
 }, [loading, hasMore]);
 
 
-  // New function to apply the filtering logic after more URLs are loaded
-  const applyFiltering = (newUrls) => {
-    const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
-  
-    if (excludeTerms.length > 0 && excludeTerms[0] !== "") {
-      setFilteredUrls(newUrls.filter(url => !excludeTerms.some(term => url.toLowerCase().includes(term))));
-    } else {
-      setFilteredUrls(newUrls); // No exclusion, show all URLs
-    }
-  };
-  
 
-
-
-// Filtering is automatically applied when new exclude terms or filters are added
-useEffect(() => {
-  // This logic should apply filtering immediately when the exclude term changes or filterActive changes
+// New function to apply the filtering logic after more URLs are loaded
+const applyFiltering = (newUrls) => {
   const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
 
-  const filtered = urls.filter(url => {
+  // Function to check if a URL has one of the specified file extensions, ignoring query parameters
+  const hasFileExtension = (url, extensions) => {
+    const urlWithoutQuery = url.split('?')[0].toLowerCase(); // Strip query parameters if present
+    return extensions.some(ext => urlWithoutQuery.endsWith(ext));
+  };
+
+  // Filtering logic for exclusion terms and file extensions
+  const filtered = newUrls.filter(url => {
     const lowerCaseUrl = url.toLowerCase();
 
     // Check if the URL matches any exclusion terms
@@ -251,11 +272,51 @@ useEffect(() => {
         })
       : false;
 
-    return !(shouldExcludeByTerm || shouldExcludeByFilter);
+    // Check if the URL contains any of the specified file extensions (ignoring query parameters)
+    const shouldExcludeByExt = filterExtActive
+      ? hasFileExtension(lowerCaseUrl, fileExtensions)
+      : false;
+
+    return !(shouldExcludeByTerm || shouldExcludeByFilter || shouldExcludeByExt);
   });
 
   setFilteredUrls(filtered); // Apply the filtering logic
-}, [urls, exclude, filterActive, filterSubdomains]);
+};
+
+
+
+useEffect(() => {
+  applyFiltering(urls); // Re-apply filtering when URLs or filter states change
+}, [urls, exclude, filterActive, filterSubdomains, filterExtActive]);
+
+
+// // Filtering is automatically applied when new exclude terms or filters are added
+// useEffect(() => {
+//   // This logic should apply filtering immediately when the exclude term changes or filterActive changes
+//   const excludeTerms = exclude.split(',').map(term => term.trim().toLowerCase());
+
+//   const filtered = urls.filter(url => {
+//     const lowerCaseUrl = url.toLowerCase();
+
+//     // Check if the URL matches any exclusion terms
+//     const shouldExcludeByTerm = excludeTerms.length > 0 && excludeTerms[0] !== ""
+//       ? excludeTerms.some(term => lowerCaseUrl.includes(term))
+//       : false;
+
+//     // Check if the URL matches the filterActive state (subdomains and filters)
+//     const shouldExcludeByFilter = filterActive
+//       ? filterSubdomains.some(({ subdomain, filter }) => {
+//           const subdomainInUrl = lowerCaseUrl.includes(subdomain.toLowerCase());
+//           const filterInUrl = lowerCaseUrl.includes(filter.toLowerCase());
+//           return subdomainInUrl && filterInUrl;
+//         })
+//       : false;
+
+//     return !(shouldExcludeByTerm || shouldExcludeByFilter);
+//   });
+
+//   setFilteredUrls(filtered); // Apply the filtering logic
+// }, [urls, exclude, filterActive, filterSubdomains]);
 
 
 
@@ -389,6 +450,8 @@ useEffect(() => {
             exclude,
             setExclude,
             toggleFilter,
+            toggleExt,
+            filterExtActive,
             filterActive,  // Pass the filter active state
             showQuickFilter: true,
           },
