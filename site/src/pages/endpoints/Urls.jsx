@@ -78,7 +78,7 @@ function Urls({ initialUrls, domain, filter }) {
 
 
   // Array of file extensions to filter (images and css)
-  const fileExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.css'];
+  const fileExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.css', '.webp', '.pdf'];
 
 
 

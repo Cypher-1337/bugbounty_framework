@@ -14,6 +14,8 @@ const endpointsRoute = require('./routes/endpointsRoute')
 const filter_subRoute = require('./routes/filter_subsRoute')
 const checkRoute = require('./routes/auth/checkRoute')
 const changesRoute = require('./routes/changesRoute')
+const dorkingRoute = require('./routes/dorkingRoute')
+const testingRoute = require('./routes/testRoute')
 
 // require('./monitor/change_detection')
 const http = require('http');
@@ -45,7 +47,8 @@ app.use('/api/v1/download', downloadRoute);
 app.use('/api/v1/changes', changesRoute )
 app.use('/api/v1/endpoints', endpointsRoute )
 app.use('/api/v1/filter', filter_subRoute )
-
+app.use('/api/v1/dorking', dorkingRoute )
+app.use('/api/v1/testing', testingRoute)
 
 
 const port = 5000;

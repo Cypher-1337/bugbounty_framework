@@ -10,9 +10,11 @@ import Display from './pages/monitor/Display';
 import Endpoint from './pages/endpoints/Endpoint';
 import Filter from './pages/filter_subdomains/Filter'
 import Login from './pages/login/Login';
+import Dorking from './pages/dorking/dorking';
 import { AuthProvider } from './auth';
 import ProtectedRoute from './components/protectedRoute';
 import Register from './pages/login/register';
+import { Button } from '@mui/material';
 export const AppContext = createContext()
 
 
@@ -62,6 +64,11 @@ function App() {
                 <Route
                     path='/filter_subdomains'
                     element={<ProtectedRoute><Filter /></ProtectedRoute>}
+                />
+
+                <Route
+                    path='/dorking'
+                    element={<ProtectedRoute><Dorking /></ProtectedRoute>}
                 />
 
 

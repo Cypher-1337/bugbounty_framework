@@ -8,6 +8,7 @@ import UpdateIcon from '@mui/icons-material/Update';
 import LinkIcon from '@mui/icons-material/Link';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import GoogleIcon from '@mui/icons-material/Google';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { AppContext } from '../../../App';
@@ -67,6 +68,12 @@ export default function Sidebar() {
                                         <li className={`nav-link ${location.pathname === '/monitor' ? 'active' : ''}`}>
                                             <Link to="/monitor" className='link-a'>
                                                 <MonitorIcon className='link-icon' />
+                                            </Link>
+                                        </li>
+
+                                        <li className={`nav-link ${location.pathname === '/dorking' ? 'active' : ''}`}>
+                                            <Link to="/dorking" className='link-a'>
+                                                <GoogleIcon className='link-icon' />
                                             </Link>
                                         </li>
                                     </>
