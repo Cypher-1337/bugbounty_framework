@@ -53,11 +53,11 @@ export default function Sidebar() {
                                 </li>
                                 {authData.role === "admin" && (
                                     <>
-                                        <li className={`nav-link ${location.pathname === '/endpoints' ? 'active' : ''}`}>
+                                        {/* <li className={`nav-link ${location.pathname === '/endpoints' ? 'active' : ''}`}>
                                             <Link to="/endpoints" className='link-a'>
                                                 <LinkIcon className='link-icon' />
                                             </Link>
-                                        </li>
+                                        </li> */}
 
                                         <li className={`nav-link ${location.pathname === '/changes' ? 'active' : ''}`}>
                                             <Link to="/changes" className='link-a'>
@@ -71,11 +71,11 @@ export default function Sidebar() {
                                             </Link>
                                         </li>
 
-                                        <li className={`nav-link ${location.pathname === '/dorking' ? 'active' : ''}`}>
+                                        {/* <li className={`nav-link ${location.pathname === '/dorking' ? 'active' : ''}`}>
                                             <Link to="/dorking" className='link-a'>
                                                 <GoogleIcon className='link-icon' />
                                             </Link>
-                                        </li>
+                                        </li> */}
                                     </>
                                 )}
                             </>
@@ -86,13 +86,7 @@ export default function Sidebar() {
                                         <AccountCircleIcon className='link-icon' />
                                     </Link>
                                 </li>
-                                {isAuth && authData.role === 'admin' && (
-                                    <li className={`nav-link ${location.pathname === '/register' ? 'active' : ''}`}>
-                                        <Link to="/register" className='link-a'>
-                                            <PersonAddIcon className='link-icon' />
-                                        </Link>
-                                    </li>
-                                )}
+                                
                             </>
                         )}
                     </ul>
@@ -100,11 +94,11 @@ export default function Sidebar() {
 
                     {isAuth && authData.role === 'admin' && (
                         <div className='bottom-content'>
-                            <li className={`nav-link ${location.pathname === '/filter_subdomains' ? 'active' : ''}`}>
+                            {/* <li className={`nav-link ${location.pathname === '/filter_subdomains' ? 'active' : ''}`}>
                                 <Link to="/filter_subdomains" className='link-a'>
                                     <SettingsIcon className='link-icon' />
                                 </Link>
-                            </li>
+                            </li> */}
                             <li>
                                 <FormControl className="dark">
                                     <Select

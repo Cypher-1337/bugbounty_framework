@@ -4,17 +4,15 @@ import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom
 import Sidebar from './pages/global/sidebar/Sidebar';
 import Dashboard from './pages/dashboard/Dashboard';
 import ChangesData from './pages/changes/Changes'
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState } from 'react';
 import Monitor from './pages/monitor/monitor';
 import Display from './pages/monitor/Display';
-import Endpoint from './pages/endpoints/Endpoint';
-import Filter from './pages/filter_subdomains/Filter'
+// import Endpoint from './pages/endpoints/Endpoint';
+// import Filter from './pages/filter_subdomains/Filter'
 import Login from './pages/login/Login';
-import Dorking from './pages/dorking/dorking';
+// import Dorking from './pages/dorking/dorking';
 import { AuthProvider } from './auth';
 import ProtectedRoute from './components/protectedRoute';
-import Register from './pages/login/register';
-import { Button } from '@mui/material';
 export const AppContext = createContext()
 
 
@@ -40,7 +38,6 @@ function App() {
             <div className='nav-dashboard'>
             <Routes>
             <Route path='/login' element={<Login />} />
-            <Route path='/register' element={<Register />} />
                 <Route
                     path='/dashboard'
                     element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
@@ -57,19 +54,19 @@ function App() {
                     path='/monitor/display'
                     element={<ProtectedRoute><Display /></ProtectedRoute>}
                 />
-                <Route
+                {/* <Route
                     path='/endpoints'
                     element={<ProtectedRoute><Endpoint /></ProtectedRoute>}
-                />
-                <Route
+                /> */}
+                {/* <Route
                     path='/filter_subdomains'
                     element={<ProtectedRoute><Filter /></ProtectedRoute>}
-                />
-
+                /> */}
+{/* 
                 <Route
                     path='/dorking'
                     element={<ProtectedRoute><Dorking /></ProtectedRoute>}
-                />
+                /> */}
 
 
                 <Route path='/' element={<Navigate to='/dashboard' />} />

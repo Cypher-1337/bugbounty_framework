@@ -18,13 +18,18 @@ const getAllChanges = async (req, res) => {
   try {
     
     const userRole = req.user.role;
+    const limit = parseInt(req.query.limit, 10) || 3000;
+
+    let sqlQuery = ''
+    let queryParams = []
+    queryParams = [limit];
 
     if (userRole === 'admin') {
-      
-      connection.execute(
-        'SELECT * FROM `live` WHERE comment like "Changed%" order by id desc',
-        function(err, results, fields) {
- 
+        
+        sqlQuery = 'SELECT * FROM `live` WHERE comment like "Changed%" order by id desc limit ?'
+
+        connection.query(sqlQuery, queryParams, function(err, results, fields) {
+
           if (err) {
             console.error('Database error:', err);
             return res.status(500).json({ message: 'Internal Server Error' });

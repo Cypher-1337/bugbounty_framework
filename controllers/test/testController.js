@@ -3,42 +3,93 @@ const fs = require('fs')
 const path = require('path')
 
 
-const fileWriting = async () => {
+class Queue{
+    constructor(capacity){
+        this.capacity = capacity
+        this.items = new Array(capacity)
+        this.currentLength = 0
+        this.front = -1
+        this.rear = -1
+    }
 
-    try {
-        
-        const basePath = path.join(process.cwd(), "controllers", "test")
-        const domainPath = path.join(basePath, "urls.txt")
-        const outputPath = path.join(basePath, "results.txt")
-        
-        const streamUrls = fs.createWriteStream(outputPath, {encoding: "utf8"})
+    isFull(){
+        return this.currentLength == this.capacity
+    }
 
-        for (let i =0 ; i<= 10000000 ; i++){
-            streamUrls.write(`log number ${i}\n`)
+    isEmpty(){
+        return this.currentLength == 0
+    }
+
+    enqueue(element){
+        if(!this.isFull()){
+            this.rear = (this.rear + 1) % this.capacity
+            this.items[this.rear] = element
+            this.currentLength += 1
+            if(this.front == -1){
+                this.front = this.rear
+            }
+        }
+    }
+
+    dequeue(){
+        if(this.isEmpty()){
+            return null
         }
 
-        streamUrls.on("end", () => {
-            console.log("writed successsfully")
-        })
+        const item = this.items[this.front]
+        this.items[this.front] = null
+        this.front = (this.front + 1) % this.capacity
+        this.currentLength -=1
 
-        streamUrls.on("error", (err) => {
-            console.error(err)
-        })
+        if(this.isEmpty()){
+            this.front = -1
+            this.rear = -1
 
-        return 'jjj'
-        
-    } catch (error) {
-        console.log('errorrrrrr' + error)
+        }
+        return item
+    }
+
+    peek(){
+        if(!this.isEmpty()){
+            return this.items[this.front]
+        }
+        return null
+    }
+
+    print(){
+        if(this.isEmpty()){
+            console.log("empty")
+        }else{
+            let i
+            let str = ''
+            for(i = this.front ; i !== this.rear; i= (i+1) % this.capacity){
+
+                str += this.items[i] + " "
+            }
+            str += this.items[i] 
+
+            console.log(str)
+
+        }
+        console.log(this.items)
     }
 }
 
+
+
 const testing = async (req, res) => {
-    try {
-        const f = await fileWriting()
-        res.status(200).json({"testing": f })
-    } catch (error) {
-        console.log("error")
-    }
+
+    const queue = new Queue(5)
+    queue.enqueue(5)
+    queue.enqueue(7)
+    queue.enqueue(3)
+    queue.enqueue(3)
+    queue.enqueue(3)
+
+
+    console.log(queue.isFull())
+    queue.print()
+    res.status(200).json({"sum": "test"})
 }
 
 
