@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getAllMonitor, deleteMonitor, updateMonitor, displayMonitor, addMonitor} = require('../controllers/monitorController')
+const { getAllMonitor, deleteMonitor,  displayMonitor, addMonitor} = require('../controllers/monitorController')
 const { getUnreadFiles, deleteReadFiles } = require('../controllers/monitorNotifications')
 
 router.route('/add')
@@ -17,7 +17,7 @@ router.route('/add')
 
 router.route('/')
   .get(getAllMonitor)
-  .post(updateMonitor)
+
 
 router.route('/display')
   .get(displayMonitor)

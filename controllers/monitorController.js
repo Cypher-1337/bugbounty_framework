@@ -70,30 +70,7 @@ const getAllMonitor = async (req, res) => {
     }
 };
 
-const updateMonitor = async (req, res) => {
-  try {
 
-    // Get the domain details from the request body
-    const id = req.body.id;
-    const monitor = req.body.monitor;
-
-    connection.execute(
-      `UPDATE monitor SET monitor = ? WHERE id = ?`,
-      [monitor, id],
-      function(err, results, fields) {
-        if (err) {
-          console.error('Error updating data:', err);
-          return res.status(500).json({ message: 'Internal Server Error' });
-        }
-
-        res.json("Monitor Updated Successfully");
-      }
-    );
-  } catch (error) {
-    console.error('Error updating data:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-};
 
 const addMonitor = async (req, res) => {
   try {
@@ -165,7 +142,7 @@ const displayMonitor = async (req, res) => {
     try{
 
       let fileContent = getFileContent(file)
-
+      let aiFile = ''
 
       let dir = path.dirname(file) + '/';
 
@@ -175,10 +152,16 @@ const displayMonitor = async (req, res) => {
         
         if (!path.basename(file).startsWith("new_")) {
           newFiles = listNewFiles(dir, file);
+          console.log('test')
         } else {
-          const match = file.match(/new_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_(.*)\.txt$/);
-          const extractedFile = match ? match[1] : '';
-          newFiles = listNewFiles(dir, extractedFile);
+          // const match = file.match(/new_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_(.*)\.txt$/);
+          // const extractedFile = match ? match[1] : '';
+          if(fs.existsSync(listNewAiFile(dir, file))){
+            aiFile = listNewAiFile(dir, file)
+            
+          }
+
+          newFiles = listNewFiles(dir,'');
         }
       
         return newFiles
@@ -193,13 +176,13 @@ const displayMonitor = async (req, res) => {
         fileContent = "[-] File too large";
         let newFiles = handleFileRequest(dir, file);
 
-        res.status(200).json({ fileContent, newFiles });
+        res.status(200).json({ fileContent, newFiles, aiFile });
 
 
       } else {
         let newFiles = handleFileRequest(dir, file);
 
-        res.status(200).json({ fileContent, newFiles });
+        res.status(200).json({ fileContent, newFiles, aiFile });
 
       }
 
@@ -207,11 +190,8 @@ const displayMonitor = async (req, res) => {
     } catch (err) {
       res.status(500).json({Error: err.message})
     }
-   
-
-  }
-
-  else{
+  
+  }else{
 
     try{
       const files = listFiles(savedFolder);
@@ -258,7 +238,7 @@ function listNewFiles(dir, filename, fileList = []) {
   let files = fs.readdirSync(dir);
 
   files.forEach((file) => {
-      if (file.startsWith('new_') && file.includes(filename.split('/').pop())) {
+      if (file.startsWith('new_') && !file.includes("_ai.txt") && file.includes(filename.split('/').pop())) {
         fileList.push(dir + file);
       }
   });
@@ -267,5 +247,14 @@ function listNewFiles(dir, filename, fileList = []) {
 }
 
 
+function listNewAiFile(dir, filename){
 
-module.exports = {getAllMonitor, updateMonitor, deleteMonitor, displayMonitor, addMonitor}
+  filename= filename.slice(0,-4)
+  
+  let aiFile = filename + "_ai.txt"
+
+
+  return aiFile
+}
+
+module.exports = {getAllMonitor, deleteMonitor, displayMonitor, addMonitor}

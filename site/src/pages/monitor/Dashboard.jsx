@@ -47,7 +47,7 @@ function Dashboard() {
   const { data: notificationsData, isLoading: isLoadingNotifications, isError: isErrorNotifications } = useQuery(
     ['notificationsData'],
     fetchMonitorNotifications,
-);
+  );
   
   
   if (isLoading) {
@@ -72,8 +72,12 @@ function Dashboard() {
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
       cellClassName: 'custom-cell', // Add this line
-      cellClassName: (params) => `custom-cell ${params.value > 0 ? 'green' : 'red'}`, // Add this line
-  
+      cellClassName: (params) => {
+        if (params.row.hasAi) {
+          return 'custom-cell blue';
+        }
+        return `custom-cell ${params.value > 0 ? 'green' : 'red'}`;
+      },
     },
     {
         field: 'url',
@@ -100,17 +104,7 @@ function Dashboard() {
         ),
   
 },
-    //,{
-    //   field: 'monitor',
-    //   headerName: 'Monitor',
-    //   width: 150,
-    //   type: 'number',
-    //   headerClassName: 'super-app-theme--header',
-    //   headerAlign: 'center',
-    //   cellClassName: 'custom-cell', // Add this line
 
-
-    // },
     
     {
         field: 'date',
@@ -163,6 +157,9 @@ function Dashboard() {
     notificationsData.forEach((notification) => {
       formattedAlive.forEach((row) => {
         if (row.url === notification.base_url) {
+          if(notification.ai > 0){
+            row.hasAi = true
+          }
           row.count += 1;
         }
       });
@@ -188,6 +185,9 @@ function Dashboard() {
     },
     '& .css-tptqer-MuiDataGrid-root':{
       border: 'none',
+    },
+    '.blue': {
+      color: '#006ef6', // Choose the shade of blue you prefer
     },
     '& .custom-cell': {
       fontSize: '18px',

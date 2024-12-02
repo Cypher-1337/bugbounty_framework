@@ -5,7 +5,6 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import GridViewIcon from '@mui/icons-material/GridView';
 import WarningIcon from '@mui/icons-material/Warning';
 import Dashboard from './Dashboard';
-import Display from './Display';
 
 
 function Monitor() {
