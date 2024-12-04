@@ -138,3 +138,9 @@
 .notification_ai{
     background-color: rgb(0, 38, 207) !important;
 }
+
+
+.display-header{
+    display: flex;
+    margin: 0 20px;
+}

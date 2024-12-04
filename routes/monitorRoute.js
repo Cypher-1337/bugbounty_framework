@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getAllMonitor, deleteMonitor,  displayMonitor, addMonitor} = require('../controllers/monitorController')
-const { getUnreadFiles, deleteReadFiles } = require('../controllers/monitorNotifications')
+const { getUnreadFiles, deleteReadFiles, deleteAllNoti } = require('../controllers/monitorNotifications')
 
 router.route('/add')
   .get((req, res) => {
@@ -26,6 +26,8 @@ router.route('/display/notifications')
   .get(getUnreadFiles)
   .delete(deleteReadFiles)
 
+router.route('/display/notifications/delete')
+  .delete(deleteAllNoti)
 
 router.route('/delete/:id')
   .delete(deleteMonitor)

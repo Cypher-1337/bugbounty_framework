@@ -111,13 +111,36 @@ function Display() {
     });
   };
 
+  const deleteNotif = async (url) => {
+    try {
+      const encodedUrl = encodeURIComponent(url);
+      await axios.delete(`/api/v1/monitor/display/notifications/delete?url=${encodedUrl}`);
+
+      // After deletion, fetch updated notifications to update the state
+      const response = await axios.get(`/api/v1/monitor/display/notifications?url=${url}`);
+      setNote(response.data);
+
+    } catch (error) {
+      console.error('Error deleting Url:', error);
+    }
+  }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', mt: 4, margin: '8px' }}>
       <Helmet>
           <title>{url}</title>
       </Helmet>
-      <Typography variant="h5" sx={{ mb: 2 }}>{fileName(clickedFile)}</Typography>
+      <div className='display-header'>
+        <Typography variant="h5" sx={{ mb: 2 }}>{fileName(clickedFile)}</Typography>
+        <Button
+              variant="outlined"
+              color="error"  // You can customize the color as needed
+              onClick={() => {deleteNotif(url)}}
+              style={{ marginLeft: 'auto'}}
+            >
+              Del Notifications
+            </Button>
+      </div>
       <Box sx={{ display: 'flex', width: '100%', maxWidth: 2200 }}>
         
         <div>
@@ -182,7 +205,7 @@ function Display() {
         </div>
 
         {fileContent && (
-          <Paper className='custom-scrollbar' sx={{ flex: 4, p: 3, fontSize: '18px',border: '1px solid var(--border-color)', backgroundColor: "var(--secondary-color)", color: 'white', overflow: "auto", maxHeight: '85vh', margin: "0 20px" }}>
+          <Paper className='custom-scrollbar' sx={{  backgroundColor:"grey", flex: 4, p: 3, fontSize: '18px',border: '1px solid var(--border-color)', backgroundColor: "var(--secondary-color)", color: 'white', overflow: "auto", maxHeight: '85vh', margin: "0 20px" }}>
             <Typography variant="h6">File Content </Typography>
             {fileContent === "[-] File too large" ? (
             <Button variant='contained' color='success' onClick={() => handleFileDownload(theFile)} >Download file</Button>  

@@ -64,6 +64,30 @@ const deleteReadFiles = async (req, res) => {
   };
   
 
+  const deleteAllNoti = async (req, res) => {
+    let url = req.query.url;
+  
+    if (url) {
+      try {
+        const decodedPath = decodeURIComponent(url);
+        connection.execute(
+          'DELETE FROM `notifications` WHERE base_url=?',
+          [decodedPath],
+          function(err, results, fields) {
+            if (err) {
+              console.error('Error updating data:', err);
+              return res.status(500).json({ message: 'Internal Server Error' });
+            }
+            res.status(200).json({ success: `Notifications Deleted successfully for ${url}` });
+          }
+        );
+      } catch (error) {
+        res.status(500).json({ Error: error });
+      }
+    }else{
+      res.status(200).json({Message: "Please Provide `url` parameter"})
+    }
+  };
 
 
-module.exports = {getUnreadFiles, deleteReadFiles}
+module.exports = {getUnreadFiles, deleteReadFiles, deleteAllNoti}

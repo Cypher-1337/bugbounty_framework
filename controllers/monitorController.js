@@ -154,14 +154,15 @@ const displayMonitor = async (req, res) => {
           newFiles = listNewFiles(dir, file);
           console.log('test')
         } else {
-          // const match = file.match(/new_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_(.*)\.txt$/);
-          // const extractedFile = match ? match[1] : '';
+          const match = file.match(/new_\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_(.*)\.txt$/);
+          const extractedFile = match ? match[1] : '';
+
           if(fs.existsSync(listNewAiFile(dir, file))){
             aiFile = listNewAiFile(dir, file)
             
           }
 
-          newFiles = listNewFiles(dir,'');
+          newFiles = listNewFiles(dir,extractedFile);
         }
       
         return newFiles
