@@ -1,171 +1,175 @@
-
-.sidebar .bug-icon {
-  color: var(--primary-color);
-}
-
-
+/* Sidebar.css - Modern Dark Mode */
 .sidebar {
-  position: sticky;
-  left: 0;
-  top: 0;
-  width: 70px;
+  background-color: var(--body-bg);
+ /* Subtle dark base using --body-bg with opacity */
+  color: var(--text-primary); /* Using the new color scheme's light color */
+  width: 200px;
   height: 100vh;
-  padding: 10px 15px;
-  background-color: var(--sidebar-color);
-  transition: var(--tran-04);
-  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px); /* Apply glass effect */
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+  box-shadow: 1px 0 5px rgba(0, 0, 0, 0.3);
+  padding-bottom: 20px;
+  z-index: 10; /* Ensure it's above other content */
+  border-right: 1px solid var(--border-light); /* Using the new border color */
   border-radius: 8px;
 }
 
-.sidebar.collapsed {
-  width: 88px;
-}
-
-.sidebar .text {
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--text-color);
-  transition: var(--tran-04);
-  white-space: nowrap;
-  opacity: 1;
-  flex: 1;
-}
-
-
-.sidebar header .image-text {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-}
-
-.sidebar header .header-text {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  margin-left: 20px;
-}
-
-
-.sidebar header .toggle-cover {
+.sidebar::before {
+  content: "";
   position: absolute;
-  top: 5%;
-  right: -14px;
-  background-color: var(--primary-color);
-  transform: translateY(-50%);
-  height: 30px;
-  width: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  color: var(--sidebar-color);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit; /* Inherit the background color */
+  filter: blur(10px); /* Apply blur to the pseudo-element for better effect */
+  margin: -1px; /* To cover the border */
+  z-index: -1; /* Place it behind the content */
 }
 
-.sidebar ul {
-  margin: 60px 0;
-  display: flex;
-  flex-direction: column;
-  padding: 0;
+.sidebar-content {
+  padding-top: 20px;
 }
 
-.sidebar li {
-  margin-top: 10px;
+.navigation-items {
   list-style: none;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 60px;
+  padding: 0;
+  margin: 0;
 }
 
-.sidebar li .link-a {
-  height: 40px;
+.nav-item {
+  padding: 0;
+  margin-bottom: 8px; /* More spacing between items */
+}
+
+.nav-item .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
   text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 10px 28px;
-  transition: var(--tran-04);
+  color: var(--text-primary); /* Using the new light color */
+  transition: background-color 0.15s ease-in-out;
+  border-radius: 8px; /* Rounded corners for items */
+  margin: 15px 10px; /* Add horizontal margin */
 }
 
-.sidebar li .link-icon {
-  font-size: 24px;
-  margin-right: 40px;
-  color: var(--text-color);
+.nav-item .nav-link:active {
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.3
+  ); /* Slightly darker background for active using rgba */
 }
 
-.sidebar li {
-  border-radius: 6px;
+.nav-item .nav-link:hover {
+  background-color: var(--primary-hover); /* Lighter hover using primary color */
 }
 
-.sidebar li:hover {
-  background-color: var(--primary-color)
+.nav-item.active .nav-link {
+  background-color: var(--primary); /* More prominent active background using primary color */
+  font-weight: 500;
+  color: var(--body-bg); /* Text color for active item - using body bg for contrast */
 }
 
-.sidebar li:hover .text,
-.sidebar li:hover .link-icon {
-  color: var(--sidebar-color);
-  transition: var(--tran-03);
+.nav-item.active .nav-link:hover {
+  background-color: var(--primary);
 }
 
-.sidebar .menu-bar {
-  height: 88%;
-  display: flex;
-  flex-direction: column;
+.nav-icon {
+  font-size: 1.1rem;
+  color: var(--text-secondary); /* Default icon color using light color */
+  transition: color 0.2s ease-in-out;
+}
+
+.nav-item.active .nav-icon {
+  color: var(--body-bg); /* Icon color on active - using body bg for contrast */
+}
+
+/* Example color classes for icons - Overriding with new scheme */
+.color-primary {
+  color: var(--primary); /* Vibrant Cyan */
+}
+
+.color-secondary {
+  color: var(--secondary); /* Pastel Pink */
+}
+
+.color-accent {
+  color: var(--accent); /* Gold */
+}
+
+.color-tertiary {
+  color: var(--primary-hover); /* Lighter Cyan */
+}
+
+.has-sub-menu > .nav-link {
   justify-content: space-between;
-  width: 100%;
 }
 
-.sidebar .menu-bar .bottom-content {
-  width: 100%;
-  text-align: center;
+.arrow-icon {
+  width: 1em;
+  height: 1em;
+  margin-left: auto;
+  transition: transform 0.2s ease-in-out;
+  color: var(--text-secondary); /* Arrow color */
 }
 
-.menu-bar .mode {
-  position: relative;
-  display: flex;
-  justify-content: space-around;
-  background-color: var(--primary-color-light);
-  border-radius: 6px;
+.has-sub-menu.active > .nav-link .arrow-icon {
+  transform: rotate(90deg);
 }
 
-
-.menu-bar .mode .sun {
-  opacity: 0;
+.sub-menu {
+  list-style: none;
+  padding-left: 0px;
+  margin: 0;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease-in-out;
+  background-color: transparent; /* Keep sub-menu background transparent */
 }
 
-.bottom-content .mode .toggle-switch {
-  width: 34px;
+.has-sub-menu.active .sub-menu {
+  max-height: 500px;
+}
+
+.sub-nav-item .nav-link {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 100%;
-  outline: none;
+  gap: 12px;
+  padding: 10px 15px 10px 30px; /* Adjusted left padding */
+  font-size: 0.9rem;
+  color: var(--primary-hover); /* Sub-item text color */
+  border-radius: 8px;
+  margin: 0 10px;
 }
 
- .mode .toggle-switch {
-  position: absolute;
-  right: 15px;
+.sub-nav-item .nav-link:hover {
+  background-color: rgba(
+    var(--primary-hover-rgb, 194, 240, 255),
+    0.2
+  ); /* Hover for sub-items using rgba and primary hover */
 }
 
-.data-form {
-  border-radius: 5px;
+.sub-nav-item.active .nav-link {
+  color: var(--body-bg);
+  background-color: var(--primary); /* Active sub-item */
+  font-weight: normal;
 }
 
-
-.data-form{
-  background-color: var(--primary-color);
-  transition: var(--tran-04);
-
+.item-count {
+  margin-left: auto;
+  background-color: var(--primary); /* Using primary color */
+  color: var(--body-bg);
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
-.menu-item{
-  background-color: var(--sidebar-color);
-
+.external-link-icon {
+  width: 0.8em;
+  height: 0.8em;
+  margin-left: 5px;
+  color: var(--text-secondary); /* External link icon color */
 }
-
-.nav-link.active {
-  background-color: #00361b; /* Change to your desired highlight color */
-  color: white; /* Change to your desired text color */
-}
-
-/* sx={{ width: "auto", color: "green", background: "#3A3B3C"}} */

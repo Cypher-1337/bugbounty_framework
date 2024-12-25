@@ -1,15 +1,4 @@
-  
-.dark{
-    --body-color: #09090b;       /* Dark background color */
-    --sidebar-color: #09090b;    /* Slightly lighter dark color for the sidebar */
-    --primary-color: #b9b9b9;    /* Cyan primary color */
-    --border-color: #3e3e3e;    /* Border color */
-    --primary-color-light: #c5c5c5; /* Lighter shade of cyan */
-    --toggle-color: #FFF;
-    --text-color: #B3C5E0;       /* Light blue text color */
-    --odd-color: rgb(2, 119, 128);
-    --even-color: #0b5a63;
-}
+
 
 
 .modal-background {

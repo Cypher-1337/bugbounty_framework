@@ -1,137 +1,132 @@
-    import React, { useState, useContext, useEffect } from 'react';
-    import { useLocation, useNavigate } from 'react-router-dom';
-    import "./login.css";
-    import { AuthContext } from '../../auth';
-    import { Helmet } from 'react-helmet';
+import React, { useState, useContext, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import "./login.css";
+import { AuthContext } from '../../auth';
+import { Helmet } from 'react-helmet';
 
-    function Login() {
-        const [formData, setFormData] = useState({ username: '', password: '' });
-        const [loading, setLoading] = useState(false);
-        const [showToast, setShowToast] = useState(false);
-        const [toastMessage, setToastMessage] = useState('');
-        const [toastType, setToastType] = useState('')
-        const { isAuth, setAuthData, updateAuthStatus } = useContext(AuthContext);
-        const location = useLocation();
+function Login() {
+    const [formData, setFormData] = useState({ username: '', password: '' });
+    const [loading, setLoading] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState('');
+    const { isAuth, setAuthData, updateAuthStatus } = useContext(AuthContext);
+    const location = useLocation();
 
+    useEffect(() => {
+        if (location.state?.showToast) {
+            setToastMessage(location.state.toastMessage);
+            setToastType('success');
+            setShowToast(true);
+            setTimeout(() => {
+                setShowToast(false);
+            }, 3000);
+        }
+    }, [location.state]);
 
-        useEffect(() => {
-            // Check if there's a toast message passed in state
-            if (location.state?.showToast) {
-                setToastMessage(location.state.toastMessage);
-                setToastType('success'); // Set the toast type to success
-                setShowToast(true);
+    const navigate = useNavigate();
 
-                // Remove the toast after a delay
-                setTimeout(() => {
-                    setShowToast(false);
-                }, 3000);
-            }
-        }, [location.state]);
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
 
-        const navigate = useNavigate();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setShowToast(false);
 
-        const handleChange = (e) => {
-            const { name, value } = e.target;
-            setFormData({
-                ...formData,
-                [name]: value
+        try {
+            const response = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
             });
-        };
 
-        const handleSubmit = async (e) => {
-            e.preventDefault();
-            setLoading(true);
-            setShowToast(false);
+            const responseData = await response.json();
 
-            try {
-                const response = await fetch('/api/v1/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
-                });
-
-                const responseData = await response.json();
-
-                if (response.status === 401) {
-                    setToastMessage(responseData.Message)
-                    setToastType('error'); // Set the toast type to error
-                    setShowToast(true);
-                    setTimeout(() => setShowToast(false), 3000);
-                    return;
-                }
-
-                if (response.ok) {
-
-                    
-                    navigate('/dashboard', { replace: true });
-                    
-                    setAuthData(responseData)
-                    await updateAuthStatus()
-                    setToastMessage("Logged in ")
-                    setShowToast(true);
-
-                } else {
-                    throw new Error('Network response was not ok');
-                }
-            } catch (error) {
-                console.error('Error during login:', error);
-            } finally {
-                setLoading(false);
+            if (response.status === 401) {
+                setToastMessage(responseData.Message);
+                setToastType('error');
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 3000);
+                return;
             }
-        };
 
-        useEffect(() => {
-            if (isAuth) {
+            if (response.ok) {
                 navigate('/dashboard', { replace: true });
+                setAuthData(responseData);
+                await updateAuthStatus();
+                setToastMessage("Logged in successfully!");
+                setShowToast(true);
+            } else {
+                throw new Error('Network response was not ok');
             }
-        }, [isAuth, navigate]);
+        } catch (error) {
+            console.error('Error during login:', error);
+            setToastMessage("An error occurred. Please try again.");
+            setToastType('error');
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 3000);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        return (
-            <div className='login_div'>
-                <Helmet>
-                    <title>Login</title>
-                </Helmet>
-                <form className='login_form' onSubmit={handleSubmit}>
-                    <div className='username input_div'>
-                        <label>Username: </label>
+    useEffect(() => {
+        if (isAuth) {
+            navigate('/dashboard', { replace: true });
+        }
+    }, [isAuth, navigate]);
+
+    return (
+        <div className='login-container'>
+            <Helmet>
+                <title>Login</title>
+            </Helmet>
+            <div className='login-card'>
+                <h2>Login</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className='input-group'>
+                        <label htmlFor="username">Username</label>
                         <input
                             type="text"
+                            id="username"
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
+                            required
                         />
                     </div>
-
-                    <div className='password input_div'>
-                        <label>Password: </label>
+                    <div className='input-group'>
+                        <label htmlFor="password">Password</label>
                         <input
                             type="password"
+                            id="password"
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
+                            required
                         />
                     </div>
-
-                    <input
-                        type="submit"
-                        className='login_submit'
-                        value={loading ? "Logging in..." : "Login"}
-                        disabled={loading}
-                    />
-
-                
-
+                    <button type="submit" className='login-button' disabled={loading}>
+                        {loading ? "Logging in..." : "Login"}
+                    </button>
                 </form>
-
-                {showToast && (
-                    <div className={`toast ${toastType}`}>
-                        <p>{toastMessage}</p>
-                    </div>
-                )}
             </div>
-        );
-    }
 
-    export default Login;
+            {showToast && (
+                <div className={`toast ${toastType}`}>
+                    <p>{toastMessage}</p>
+                </div>
+            )}
+        </div>
+    );
+}
+
+export default Login;

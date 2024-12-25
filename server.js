@@ -9,14 +9,11 @@ const subdomainsRoute = require('./routes/subdomainsRoute');
 const monitorRoute = require('./routes/monitorRoute'); 
 const downloadRoute = require('./routes/downloadRoute')
 const loginRoute = require('./routes/auth/loginRoute')
-// const endpointsRoute = require('./routes/endpointsRoute')
-// const filter_subRoute = require('./routes/filter_subsRoute')
 const checkRoute = require('./routes/auth/checkRoute')
 const changesRoute = require('./routes/changesRoute')
-const dorkingRoute = require('./routes/dorkingRoute')
 const testingRoute = require('./routes/testRoute')
+const fuzzingRoute = require('./routes/fuzz/fuzzRoute')
 
-// require('./monitor/change_detection')
 const http = require('http');
 
 
@@ -43,11 +40,8 @@ app.use('/api/v1/subdomains', subdomainsRoute);
 app.use('/api/v1/monitor', validateToken, checkAdmin, monitorRoute); 
 app.use('/api/v1/download', downloadRoute); 
 app.use('/api/v1/changes', changesRoute )
-// app.use('/api/v1/endpoints', endpointsRoute )
-// app.use('/api/v1/filter', filter_subRoute )
-// app.use('/api/v1/dorking', dorkingRoute )
 app.use('/api/v1/testing', testingRoute)
-
+app.use('/api/v1/fuzz', fuzzingRoute)
 
 const port = 5000;
 

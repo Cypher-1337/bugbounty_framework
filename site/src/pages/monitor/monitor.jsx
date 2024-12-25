@@ -3,7 +3,6 @@ import Add from './Add';
 import './monitor.css'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import GridViewIcon from '@mui/icons-material/GridView';
-import WarningIcon from '@mui/icons-material/Warning';
 import Dashboard from './Dashboard';
 
 
@@ -32,12 +31,7 @@ function Monitor() {
 
         </div>
 
-        <div
-          className={activeTab === 3 ? 'tabs active-tabs' : 'tabs'}
-          onClick={() => toggleTab(3)}
-        >
-          Display <WarningIcon color="error" className='link-icon' sx={{margin: "15px 0 0 0", fontSize: "20px"}}/>
-        </div>
+        
       </div>
 
       <div className="content-tabs">

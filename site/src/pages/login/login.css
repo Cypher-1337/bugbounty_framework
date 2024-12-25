@@ -1,74 +1,77 @@
-.login_div{
-    display:flex;
+.login-container {
+    display: flex;
     justify-content: center;
     align-items: center;
-    height: 90vh;
-    margin: 0
+    min-height: 100vh; /* Ensure full viewport height */
+    background-color: var(--body-bg);
+    padding: 20px; /* Add some padding for smaller screens */
 }
 
-
-
-.login_form {
-    display: flex;
-    border: 2px solid var(--primary-color);
-    border-radius: 20px;
-    justify-content: center;
-    flex-direction: column;
-    padding: 100px 200px;
-    position: relative; /* Allow positioning of pseudo-element */
+.login-card {
+    background-color: var(--surface-bg);
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px; /* Limit the width of the card */
+    text-align: center;
 }
 
-.login_form::before {
-    content: "Login";
-    position: absolute;
-    top: -1%; /* Center vertically */
-    left: 22%; /* Center horizontally */
-    transform: translate(-80%, -50%); /* Adjust to exactly center */
-    background-color: var(--body-color);
-    font-size: 36px; /* Adjust as needed */
-    font-weight: bold; /* Adjust as needed */
-    color: var(--primary-color); /* Same color as the border */
-    padding: 0 10px; /* Padding for better visibility */
-    z-index: 1; /* Ensure text is above other content */
+.login-card h2 {
+    color: var(--text-primary);
+    margin-bottom: 30px;
+    font-size: 2rem;
 }
 
-label{
-    font-size: 24px;
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
     font-weight: bold;
-    margin: 0 20px;
 }
 
-.input_div{
-    color: var(--primary-color);
-    margin: 15px 0
+.input-group input[type="text"],
+.input-group input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border-light);
+    background-color: transparent;
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
 }
 
-
-input{
-    background-color: rgba(0, 0, 0, 0);
-    border: 1px solid var(--primary-color);
-    color:var(--primary-color);
-    padding: 10px 20px;
-    border-radius: 15px;
-    font-size: 20px;
-    font-family: Arial, Helvetica, sans-serif;
-
+.input-group input[type="text"]:focus,
+.input-group input[type="password"]:focus {
+    outline: none;
+    border-color: var(--primary);
 }
 
-input:focus{
-    outline:none
-}
-
-
-.login_submit{
-    margin: 40px 0 0;
-    cursor: pointer;
-
-}
-
-.login_submit:hover{
-    background-color: var(--primary-color);
+.login-button {
+    background-color: var(--primary);
     color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: var(--primary-hover);
+}
+
+.login-button:disabled {
+    background-color: var(--border-light);
+    cursor: not-allowed;
 }
 
 .toast {
@@ -76,31 +79,36 @@ input:focus{
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 10px 20px;
+    padding: 12px 24px;
     border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     z-index: 1000;
     text-align: center;
-    font-size: 16px;
-    animation: fadeInOut 4s ease-in-out;
+    font-size: 1rem;
+    animation: fadeInOut 3s ease-in-out forwards; /* Ensure toast stays for the duration */
 }
 
 .toast.success {
-    background-color: #4BB543; /* Green for success */
-    color: white;
+    background-color: var(--success);
+    color: #1e293b; /* Darker text for contrast on light background */
 }
 
 .toast.error {
-    background-color: #FF4B4B; /* Red for error */
+    background-color: var(--error);
     color: white;
 }
 
 @keyframes fadeInOut {
-    0%, 100% {
+    0% {
         opacity: 0;
+        transform: translateX(-50%) translateY(20px);
     }
     10%, 90% {
         opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
     }
 }
-

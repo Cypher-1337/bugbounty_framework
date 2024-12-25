@@ -1,0 +1,42 @@
+/* ... your existing fuzz.css ... */
+
+.asset-cell-link {
+    text-decoration: none;
+    color: var(--primary); /* Use your theme's primary color */
+    font-weight: 500;
+  }
+  
+  .asset-cell-link:hover {
+    text-decoration: underline;
+  }
+  
+  .action-cell {
+    text-align: center;
+  }
+  
+  .action-button {
+    background-color: var(--primary); /* Use your theme's primary color */
+    color: var(--body-bg);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .action-button:hover {
+    background-color: var(--primary-hover); /* Use your theme's hover color */
+  }
+  
+  .interesting-indicator {
+    margin-left: 10px;
+    font-size: 1.2em;
+    color: orange; /* Or any color you prefer */
+  }
+  
+  .table-footer {
+    padding: 10px 20px;
+    text-align: right;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-light);
+  }

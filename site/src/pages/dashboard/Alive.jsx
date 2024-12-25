@@ -1,58 +1,117 @@
-import "./dashboard.css"
-import * as React from 'react';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+// Fuzz.js
+import React, { useState, useEffect, useMemo } from 'react';
 import { fetchAliveData, formatAliveData } from '../../data/allAliveData';
-import { useQuery } from 'react-query';
 import { AppContext } from '../../App';
 import TextField from '@mui/material/TextField';
-import { Button, Modal } from '@mui/material';
-import EditModal from '../../modal/alive/EditModal';
-import DeleteModal from '../../modal/alive/DelModal';
-import Axios from 'axios';
-import { Helmet } from 'react-helmet';
-import { AuthContext } from "../../auth";
-import { redirect } from "react-router-dom";
+import './dashboard.css';
 
+const Alive = () => {
+  const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(100);
+  const [searchTerm, setSearchTerm] = useState('');
 
-
-export default function AliveData() {
-  
-  
   const { inputFilter, setInputFilter } = React.useContext(AppContext);
   const [localInputFilter, setLocalInputFilter] = React.useState(inputFilter);
-  // const [page, setPage] = React.useState(1);
 
-  const [ aliveId, setAliveId ] = React.useState(null);
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false); // New state for delete modal
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const rawData = await fetchAliveData(inputFilter); // Use inputFilter here
+        const formattedData = formatAliveData(rawData);
+        setTableData(formattedData);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const {authData} = React.useContext(AuthContext)
+    fetchData();
+  }, [inputFilter]); // Re-fetch data when inputFilter changes
 
-
-
-
-
-// ----------------------- Edit & Delete -------------------------
-  const handleEditButtonClick = (id) => {
-    setAliveId(id);
-    setModalOpen(true);
+  const handleSort = (key) => {
+    setSortConfig((currentSortConfig) => {
+      if (currentSortConfig.key === key) {
+        if (currentSortConfig.direction === 'ascending') {
+          return { key, direction: 'descending' };
+        } else if (currentSortConfig.direction === 'descending') {
+          return { key: null, direction: null };
+        } else {
+          return { key, direction: 'ascending' };
+        }
+      } else {
+        return { key, direction: 'ascending' };
+      }
+    });
   };
-  const handleCloseEditModal = () => {
-    setAliveId(null); // Reset selectedId when the modal is closed
-    setModalOpen(false);
-  };
-  const handleDelButtonClick = (id) => {
-    setAliveId(id);
-    setDeleteModalOpen(true); // Open delete modal
-  }
-  const handleCloseDeleteModal = () => {
-    setAliveId(null);
-    setDeleteModalOpen(false); // Close delete modal
-  };
-// ---------------------------------------------------------------
 
+  const filteredData = useMemo(() => {
+    let dataToFilter = [...tableData];
 
-//------------------- Filter Input ---------------------
+    if (searchTerm) {
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      dataToFilter = dataToFilter.filter(item => {
+        const matchesAsset = item.alive.toLowerCase().includes(lowerSearchTerm);
+        const matchesStatus = String(item.status).toLowerCase().includes(lowerSearchTerm);
+        const matchSize = String(item.size).toLowerCase().includes(lowerSearchTerm);
+        const matchTitle = String(item.title).toLowerCase().includes(lowerSearchTerm);
+        const matchCname = String(item.cname).toLowerCase().includes(lowerSearchTerm);
+        const matchComment = String(item.comment).toLowerCase().includes(lowerSearchTerm);
+        let matchesTech = false;
+        if (Array.isArray(item.tech)) {
+          matchesTech = item.tech.some(techItem =>
+            String(techItem).toLowerCase().includes(lowerSearchTerm)
+          );
+        } else if (item.tech) {
+          matchesTech = String(item.tech).toLowerCase().includes(lowerSearchTerm);
+        }
+        return matchesAsset || matchesStatus || matchSize || matchTitle || matchCname || matchComment || matchesTech;
+      });
+    }
+
+    return dataToFilter;
+  }, [tableData, searchTerm]);
+
+  const sortedData = useMemo(() => {
+    if (!sortConfig.key) {
+      return [...filteredData];
+    }
+    return [...filteredData].sort((a, b) => {
+      const isAsc = sortConfig.direction === 'ascending';
+      if (sortConfig.key === 'alive') {
+        return isAsc ? String(a.alive).localeCompare(String(b.alive)) : String(b.alive).localeCompare(String(a.alive));
+      } else if (sortConfig.key === 'status') {
+        return isAsc ? String(a.status).localeCompare(String(b.status)) : String(b.status).localeCompare(String(a.status));
+      } else if (sortConfig.key === 'size') {
+        return isAsc ? a.size - b.size : b.size - a.size;
+      } else if (sortConfig.key === 'title') {
+        return isAsc ? String(a.title).localeCompare(String(b.title)) : String(b.title).localeCompare(String(a.title));
+      } else if (sortConfig.key === 'cname') {
+        return isAsc ? String(a.cname).localeCompare(String(b.cname)) : String(b.cname).localeCompare(String(a.cname));
+      } else if (sortConfig.key === 'comment') {
+        return isAsc ? String(a.comment).localeCompare(String(b.comment)) : String(b.comment).localeCompare(String(a.comment));
+      } else if (sortConfig.key === 'date') {
+        return isAsc ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date);
+      }
+      return 0;
+    });
+  }, [filteredData, sortConfig]);
+
+  const getSortIndicator = (key) => {
+    if (sortConfig.key === key) {
+      if (sortConfig.direction === 'ascending') {
+        return ' ↑';
+      } else if (sortConfig.direction === 'descending') {
+        return ' ↓';
+      }
+    }
+    return null;
+  };
 
   const handleChange = (e) => {
     setLocalInputFilter(e.target.value);
@@ -60,401 +119,226 @@ export default function AliveData() {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       setInputFilter(localInputFilter);
+      setCurrentPage(1); // Reset page when applying filter
     }
   };
 
-// ------------------------------------------------------
-
-const  handleScannedButtonClick = async (id ,scannedValue) => {
-  const oppositeValue = scannedValue === 'true' ? 'false' : 'true';
-  const url = "/api/v1/alive/"+id;
-  const requestBody = {
-    scanned: oppositeValue
+  // Function to convert bytes to human-readable format
+  const formatBytes = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  try {
-    const response = await Axios.patch(url, requestBody);
-    console.log(`${response.data}`);
-  } catch (error) {
-    alert(`Error: ${error.message}`);
-  }  
-};
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Fetch data based on inputFilter using useQuery
-  const { data, isLoading, isError } = useQuery(['aliveData', inputFilter], async () => {
-    const response = await fetchAliveData(inputFilter);
-    return response;
-  });
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
-  const columns = [
-  
-    
-    {
-      field: 'alive',
-      headerName: 'Alive',
-      width: 550,
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      renderCell: (params) => {
+  const firstItemOnPage = Math.min(indexOfFirstItem + 1, sortedData.length);
+  const lastItemOnPage = Math.min(indexOfLastItem, sortedData.length);
 
-        const url = new URL(params.value);
-        const hostname = url.hostname;
-        const redirect = params.row.redirect
-
-        return(
-          <div>
-            <div style={{ marginTop: redirect ? '25px' : '15px',marginBottom: redirect ? '7px' : '20px', display: 'flex', flexDirection: 'column', width: '100%', display: 'flex',  justifyContent: 'space-between'}}>
-              <a style={{ textDecoration: 'none', color: 'white', width: '10px', fontSize:'21px' }} href={params.value} target="_blank" rel="noopener noreferrer">
-                {params.value}
-              </a>     
-              {redirect && ( // Show redirect if it exists
-                
-                <a style={{ textDecoration: 'none', color: 'orange', marginTop: '3px', width: "10px" }} href={redirect} target="_blank" rel="noopener noreferrer">{redirect}</a>
-                
-              )}
-            </div>
-
-                      
-            <div className="links">
-
-              <a href={`https://github.com/search?q=${hostname}&type=code`} target="_blank" rel="noopener noreferrer" className="link">
-                <img src="https://github.com/favicon.ico" alt="" className="imageIcon" />
-              </a>
-
-              <a href={`https://www.google.com/search?q=site%3A${hostname} | intext:${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
-                <img src="https://www.google.com/favicon.ico" alt="" className="imageIcon" />
-              </a>
-
-              <a href={`http://web.archive.org/cdx/search/cdx?url=${hostname}/*&output=text&fl=original&collapse=urlkey&from=`} target="_blank" rel="noopener noreferrer" className="link">
-                <img src="https://archive.org/favicon.ico" alt="" className="imageIcon" />
-              </a>
-              
-              <a href={`https://www.bing.com/search?q=site%3A${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
-                <img src="https://www.bing.com/favicon.ico" alt="" className="imageIcon" />
-              </a>
-
-              <a href={`https://www.shodan.io/search?query=hostname%3A%22${hostname}%22`} target="_blank" rel="noopener noreferrer" className="link">
-                <img src="https://www.shodan.io/static/img/favicon-60c1b1cd.png" alt="" className="imageIcon" />
-              </a>
-              
-              <a href={`https://search.censys.io/search?resource=hosts&q=${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
-                <img src="https://search.censys.io/static/img/favicon-32x32.png" alt="" className="imageIcon" />
-              </a>
-              
-
-              <a href={`https://en.fofa.info/result?qbase64=${btoa(hostname)}`} target="_blank" rel="noopener noreferrer" className="link">
-                <img src="https://en.fofa.info/favicon.ico" alt="" className="imageIcon" />
-              </a>
-
-            </div>
-        </div>
-        )
-      },
-      cellClassName: 'custom-cell, alive_column',
-    },
-    {
-        field: 'status',
-        headerName: 'Status',
-        type: 'number',
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        cellClassName: 'custom-cell', // Add this line
-
-    },
-    {
-        field: 'size',
-        headerName: 'Size',
-        type: 'number',
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        cellClassName: 'custom-cell', // Add this line
-
-
-    },
-    {
-        field: 'title',
-        headerName: 'Title',
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        width: 200,
-        cellClassName: 'custom-cell', // Add this line
-
-    },
-    {
-      field: 'tech',
-      headerName: 'Tech',
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      width: 250,
-      cellClassName: 'custom-cell', // Add this line
-
-    },
-    {
-      field: 'apps',
-      headerName: 'apps',
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      width: 150,
-      cellClassName: 'custom-cell', // Add this line
-
-    },
-    {
-      field: 'comment',
-      headerName: 'Comment',
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      width: 100,
-      cellClassName: 'custom-cell', // Add this line
-
-    },
-    {
-      field: 'date',
-      headerName: 'Date',
-      type: 'Date',
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      width: 150,
-      cellClassName: 'custom-cell', // Add this line
-
-    },
-    {
-      field: 'cname',
-      headerName: 'CName',
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      width: 250,
-      cellClassName: 'custom-cell', // Add this line
-
-    },
-
-    {
-      field: 'ip',
-      headerName: 'IP',
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      width: 150,
-      cellClassName: 'custom-cell', // Add this line
-
-    },
-    {
-      field: 'scanned',
-      headerName: 'Scanned',
-      type: 'Scanned',
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      width: 150,
-      cellClassName: 'custom-cell', // Add this line
-      renderCell: (params) => (
-        <Button
-        variant="outlined"
-        color={params.row.scanned === 'true' ? 'success' : 'info'}
-        onClick={() => handleScannedButtonClick(params.row.id, params.row.scanned)}
-      >
-        {params.row.scanned}
-      </Button>
-      ),
-
-    },
-    {
-      field: 'edit', // You can customize this field name
-      headerName: 'Edit',
-      width: 100,
-      headerClassName: 'super-app-theme--header',
-      renderCell: (params) => (
-        <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => handleEditButtonClick(params.row.id)}
-      >
-        Edit
-      </Button>
-      ),
-    },
-  {
-    field: 'delete', // You can customize this field name
-    headerName: 'Delete',
-    width: 100,
-    headerClassName: 'super-app-theme--header',
-    renderCell: (p) => (
-      <Button
-      variant="contained"
-      color="error"
-      onClick={() => handleDelButtonClick(p.row.id)}
-    >
-      Del
-    </Button>
-    ),
-  },
-  ];
-
-  
-  const getRowId = (row) => row.id;
-
-  const getRowClassName = (p) => {
-    const statusValue = p.row.status;
-    const scannedValue = p.row.scanned;
-    
-    if (scannedValue === 'true') {
-      return 'black-background';
-    } else {
-      if (statusValue === 200 || statusValue === 204) {
-        return 'green-background';
-      } else if (statusValue >= 300 && statusValue < 400) {
-        return 'blue-background';
-      } else if (statusValue >= 400) {
-        return 'red-background';
-      }
-    }
-  };
-  
-
-  
-  if (isLoading) {
-      return <h2>Loading...</h2>;
+  if (loading) {
+    return <div>Loading data...</div>;
   }
 
-  if (isError) {
-          // Extract relevamnt information from the error object
-
-      return <h2>{"internal server error"}</h2>;
+  if (error) {
+    return <div>Error: {error.message}</div>;
   }
 
-  const formattedAlive = formatAliveData(data);
+  const today = new Date();
 
   return (
-    <div className='table-content'>
-      <Helmet>
-          <title>Dashboard</title>
-      </Helmet>
-      {authData.role === "admin" &&(
-        <div className='filter-area'>
-          <TextField
-          sx={{ color: 'white', backgroundColor: '#f5f5f5', borderRadius: '4px', width: '50%px' }}
+    <div className="table-container">
+      <div className='filter-area'>
+        <div className="entries-dropdown">
+          Show
+          <select value={itemsPerPage} onChange={(e) => {
+            setItemsPerPage(parseInt(e.target.value, 10));
+            setCurrentPage(1);
+          }}>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+          entries
+        </div>
+        <input
           value={localInputFilter}
           onChange={handleChange}
+          className="search-input"
           size='small'
           placeholder='Filter...'
-          onKeyDown={handleKeyDown} />
-
-          { (inputFilter) &&
-          <p style={{color:'white', fontSize: '22px', marginLeft: '80px' }}>
-            Searched for: <b>{inputFilter}</b>
-          </p>
-          }
-
-        </div>
-      )}
-
-      <DataGrid
-        rows={formattedAlive}
-        columns={columns}
-        getRowId={getRowId}
-        getRowClassName={getRowClassName}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 100,
-            },
-          },
-        }}
-        pageSizeOptions={[25]}
-        slots={{ toolbar: GridToolbar}}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        disableRowSelectionOnClick
-        sx={{
-    
-          '& .super-app-theme--header': {
-            backgroundColor: '#3A3B3C',
-            color: 'white',
-          },
-          '& .MuiDataGrid-row:hover': {
-              backgroundColor: "#636363",
-          },
-          '& .MuiDataGrid-row': {
-            
-            minHeight: "125px !important" ,
-          },
-          '& .green-background': {
-            backgroundColor: '#1e481f',  /* 70% opacity */
-            color: 'white',
-          },
-          '& .MuiButtonBase-root':{
-            color: 'white'
-          },
-          '& .red-background': {
-            backgroundColor: '#591410',  /* 70% opacity */
-            color: 'white',
-          },
-          '& .blue-background': {
-            backgroundColor: '#0c3659',  /* 70% opacity */
-            color: 'white',
-          },
-          '& .black-background': {
-            backgroundColor: '#000',
-            color: 'white',
-          },'& .MuiDataGrid-cellContent': {
-            margin: '0 auto',
-          },
-          '& .custom-cell': {
-            fontSize: '18px',
-            textAlign: 'center',
-          },
-          '& .alive_column': {
-            // minHeight: "100% !important",
-
-          },
-          '& .MuiDataGrid-cell':{
-            minHeight: "100px !important",
-            
-          },
-          '& .css-v4u5dn-MuiInputBase-root-MuiInput-root': {
-            backgroundColor: 'white',
-            color: 'black',
-            borderRadius: '4px', // Adjust as needed
-          },
-          '& .css-ptiqhd-MuiSvgIcon-root': {
-            color: 'blue',
-          },
-          '& .css-levciy-MuiTablePagination-displayedRows':{
-            color: 'white',
-          },
-          '.MuiDataGrid-withBorderColor': {
-            border:'none'
-          },
-          '.css-1knaqv7-MuiButtonBase-root-MuiButton-root':{
-            color: 'white',
-          },
-
-        }}
-        style={{
-          height: '100%', // Set the height to 50%
-          border: 'none', // Set the border color to grey
-          fontSize: '16px',
-
-        }}
-        rowBuffer={25}  // Render extra rows outside the visible area for smoother scrolling
-        disableVirtualization={true}  // Make sure virtualization is enabled (this is default)
-        pagination
-        scrollEndThreshold={1}  // Adjust threshold if the problem persists
+          onKeyDown={handleKeyDown}
+          sx={{ backgroundColor: 'white', borderRadius: '4px' }}
         />
 
-        <Modal open={deleteModalOpen} onClose={handleCloseDeleteModal}>
-
-        <DeleteModal
-          aliveId={aliveId}
-          onClose={handleCloseDeleteModal}
+        <input
+          type="text"
+          placeholder="Search..."
+          className="search-input"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1); // Reset page on search
+          }}
         />
-        </Modal>
-
-
-        <Modal open={modalOpen} onClose={handleCloseEditModal}>
-          <EditModal aliveId={aliveId} onClose={handleCloseEditModal}/>
-        </Modal>
-
       </div>
+      <div className="table-wrapper">
+        <table className="dashboard-table">
+          <thead>
+            <tr>
+              <th>
+                <button className="sort-header-button" onClick={() => handleSort('alive')}>
+                  ASSET{getSortIndicator('alive')}
+                </button>
+              </th>
+              <th>
+                <button className="sort-header-button" onClick={() => handleSort('title')}>
+                  TITLE{getSortIndicator('title')}
+                </button>
+              </th>
+              <th>
+                <button className="sort-header-button" onClick={() => handleSort('status')}>
+                  STATUS{getSortIndicator('status')}
+                </button>
+              </th>
+              <th>
+                <button className="sort-header-button" onClick={() => handleSort('size')}>
+                  CONTENT LENGTH{getSortIndicator('size')}
+                </button>
+              </th>
+              <th>
+                <button className="sort-header-button" onClick={() => handleSort('cname')}>
+                  TECH{getSortIndicator('cname')}
+                </button>
+              </th>
+              <th>
+                <button className="sort-header-button" onClick={() => handleSort('comment')}>
+                  COMMENT{getSortIndicator('comment')}
+                </button>
+              </th>
+              <th>
+                <button className="sort-header-button" onClick={() => handleSort('date')}>
+                  DATE{getSortIndicator('date')}
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentData.map((row) => {
+              let hostname;
+              try {
+                const url = new URL(row.alive);
+                hostname = url.hostname;
+              } catch (error) {
+                hostname = row.alive; // Fallback
+              }
+
+              const rowDate = new Date(row.date);
+              const isToday = rowDate.getDate() === today.getDate() &&
+                rowDate.getMonth() === today.getMonth() &&
+                rowDate.getFullYear() === today.getFullYear();
+
+              return (
+                <tr key={row.id}>
+                  <td>
+                    <div className="asset-cell">
+
+                      <a href={row.alive} target="_blank" rel="noopener noreferrer">
+                        {row.alive}
+                      </a>
+                      {row.redirect && (
+                        <div className="redirect">
+                          Redirect: <span>{row.redirect}</span>
+                        </div>
+                      )}
+                      <div className="dns">DNS: {row.ip}</div>
+                      <div className="links">
+                        <a href={`https://github.com/search?q=${hostname}&type=code`} target="_blank" rel="noopener noreferrer" className="link">
+                          <img src="https://github.com/favicon.ico" alt="" className="imageIcon" />
+                        </a>
+                        <a href={`https://www.google.com/search?q=site%3A${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
+                          <img src="https://www.google.com/favicon.ico" alt="" className="imageIcon" />
+                        </a>
+                        <a href={`http://web.archive.org/cdx/search/cdx?url=${hostname}/*&output=text&fl=original&collapse=urlkey&from=`} target="_blank" rel="noopener noreferrer" className="link">
+                          <img src="https://archive.org/favicon.ico" alt="" className="imageIcon" />
+                        </a>
+                        <a href={`https://www.bing.com/search?q=site%3A${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
+                          <img src="https://www.bing.com/favicon.ico" alt="" className="imageIcon" />
+                        </a>
+                        <a href={`https://www.shodan.io/search?query=hostname%3A%22${hostname}%22`} target="_blank" rel="noopener noreferrer" className="link">
+                          <img src="https://www.shodan.io/static/img/favicon-60c1b1cd.png" alt="" className="imageIcon" />
+                        </a>
+                        <a href={`https://search.censys.io/search?resource=hosts&q=${hostname}`} target="_blank" rel="noopener noreferrer" className="link">
+                          <img src="https://search.censys.io/static/img/favicon-32x32.png" alt="" className="imageIcon" />
+                        </a>
+                        <a href={`https://en.fofa.info/result?qbase64=${btoa(hostname)}`} target="_blank" rel="noopener noreferrer" className="link">
+                          <img src="https://en.fofa.info/favicon.ico" alt="" className="imageIcon" />
+                        </a>
+                      </div>
+                      {Array.isArray(row.tech) && row.tech.length > 0 && (
+                        <div className="tags">
+                          Tags:
+                          {row.tech.map((tag, tagIndex) => (
+                            <span key={tagIndex} className="tag">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {Array.isArray(row.apps) && row.apps.length > 0 && (
+                        <div className="tags">
+                          Apps:
+                          {row.apps.map((app, appIndex) => (
+                            <span key={appIndex} className="tag">
+                              {app}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="centered-cell">{row.title}</td>
+                  <td className="centered-cell">
+                    <div className="status-code-cell">
+                      <span className={`status-code status-code-${Math.floor(row.status / 100)}xx`}>{row.status}</span>
+                    </div>
+                  </td>
+                  <td className="centered-cell">
+                    <div className="content-length-cell">
+                      <span className="content-length">
+                        {formatBytes(row.size)}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="centered-cell">{Array.isArray(row.tech) ? row.tech.join(', ') : row.tech}</td>
+                  <td className="centered-cell">{row.comment}</td>
+                  <td className={`centered-cell ${isToday ? 'today-date' : ''}`}>
+                    {new Date(row.date).toLocaleDateString()}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div className="pagination">
+        <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+          Previous
+        </button>
+        <span>{firstItemOnPage} - {lastItemOnPage} of {sortedData.length}</span>
+        <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>
+          Next
+        </button>
+      </div>
+    </div>
   );
-}
+};
+
+export default Alive;
