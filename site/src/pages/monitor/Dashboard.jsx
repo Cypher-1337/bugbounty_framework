@@ -121,33 +121,43 @@ function Dashboard() {
                 <table className="dashboard-table">
                     <thead>
                         <tr>
-                            <th style={{ width: '8%' }}> {/* Adjusted width */}
+                            <th style={{ width: '8%' }}>
                                 <button className="sort-header-button" onClick={() => handleSort('count')}>
                                     Count{getSortIndicator('count')}
                                 </button>
                             </th>
-                            <th style={{ width: '60%' }}> {/* Adjusted width */}
+                            <th style={{ width: '60%' }}>
                                 <button className="sort-header-button" onClick={() => handleSort('url')}>
                                     Url{getSortIndicator('url')}
                                 </button>
                             </th>
-                            <th style={{ width: '10%' }}>Display</th> {/* Adjusted width */}
-                            <th style={{ width: '12%' }}> {/* Adjusted width */}
+                            <th style={{ width: '10%' }}>Display</th>
+                            <th style={{ width: '12%' }}>
                                 <button className="sort-header-button" onClick={() => handleSort('date')}>
                                     Date{getSortIndicator('date')}
                                 </button>
                             </th>
-                            <th style={{ width: '5%' }}>Edit</th> {/* Adjusted width */}
-                            <th style={{ width: '5%' }}>Delete</th> {/* Adjusted width */}
+                            <th style={{ width: '5%' }}>Edit</th>
+                            <th style={{ width: '5%' }}>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
                         {sortedData.map((row) => (
                             <tr key={row.id}>
-                                <td className="table-cell centered-cell" style={{ width: '8%' }}> {/* Adjusted width */}
+                                <td
+                                    className="table-cell centered-cell"
+                                    style={{
+                                        width: '8%',
+                                        backgroundColor: row.count !== 0 && !row.hasAi
+                                            ? '#15ea1f57' // Use your --success color with transparency
+                                            : row.count !== 0 && row.hasAi
+                                                ? 'rgba(0, 95, 173, 0.58)' // A light blue color
+                                                : 'inherit',
+                                    }}
+                                >
                                     <span className={row.hasAi ? 'highlight' : ''}>{row.count}</span>
                                 </td>
-                                <td className="table-cell" style={{ width: '60%' }}> {/* Adjusted width */}
+                                <td className="table-cell" style={{ width: '60%' }}>
                                     <div className="asset-cell">
                                         <a
                                             href={row.url}
@@ -159,7 +169,7 @@ function Dashboard() {
                                         </a>
                                     </div>
                                 </td>
-                                <td className="table-cell centered-cell" style={{ width: '10%' }}> {/* Adjusted width */}
+                                <td className="table-cell centered-cell" style={{ width: '10%' }}>
                                     <Button
                                         variant="outlined"
                                         style={{ color: 'var(--info)', borderColor: 'var(--info)' }}
@@ -169,11 +179,11 @@ function Dashboard() {
                                         Display
                                     </Button>
                                 </td>
-                                <td className="table-cell centered-cell" style={{ width: '12%' }}> {/* Adjusted width */}
+                                <td className="table-cell centered-cell" style={{ width: '12%' }}>
                                     {format(new Date(row.date), 'dd-MM-yyyy')}
                                 </td>
 
-                                <td className="table-cell centered-cell" style={{ width: '5%' }}> {/* Adjusted width */}
+                                <td className="table-cell centered-cell" style={{ width: '5%' }}>
                                     <Button
                                         variant="contained"
                                         style={{ backgroundColor: 'var(--success)' }}
@@ -183,7 +193,7 @@ function Dashboard() {
                                         Edit
                                     </Button>
                                 </td>
-                                <td className="table-cell centered-cell" style={{ width: '5%' }}> {/* Adjusted width */}
+                                <td className="table-cell centered-cell" style={{ width: '5%' }}>
                                     <Button
                                         variant="contained"
                                         style={{ backgroundColor: 'var(--error)' }}
