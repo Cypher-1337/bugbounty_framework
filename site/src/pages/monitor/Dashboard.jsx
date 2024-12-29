@@ -1,286 +1,213 @@
-import React from 'react'
+import React, { useState, useMemo, useEffect } from 'react';
 import { fetchMonitorData, formatMonitorData } from '../../data/monitorData';
 import { fetchMonitorNotifications } from '../../data/monitorNotifications';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Button, Modal } from '@mui/material';
 import { useQuery } from 'react-query';
 import DeleteModal from '../../modal/monitor/DelModal';
 import EditModal from '../../modal/monitor/EditModal';
 import { format } from 'date-fns'; // Import the format function
 import { Helmet } from 'react-helmet';
-
 import { useNavigate } from 'react-router-dom';
-
+import './monitor.css'; // Import the dashboard.css
 
 function Dashboard() {
+    const [monitorId, setMonitorId] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [sortConfig, setSortConfig] = useState({ key: 'count', direction: 'descending' });
 
-  const [ monitorId, setMonitorId ] = React.useState(null);
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false); // New state for delete modal
+    const navigate = useNavigate();
 
-  const navigate = useNavigate();
+    const handleEditButtonClick = (id) => {
+        setMonitorId(id);
+        setModalOpen(true);
+    };
 
-  const handleEditButtonClick = (id) => {
-    setMonitorId(id);
-    setModalOpen(true);
-  };
+    const handleCloseEditModal = () => {
+        setMonitorId(null);
+        setModalOpen(false);
+    };
 
-  const handleCloseEditModal = () => {
-    setMonitorId(null); // Reset selectedId when the modal is closed
-    setModalOpen(false);
-  };
+    const handleDelButtonClick = (id) => {
+        setMonitorId(id);
+        setDeleteModalOpen(true);
+    };
 
-  const handleDelButtonClick = (id) => {
-    setMonitorId(id);
-    setDeleteModalOpen(true); // Open delete modal
-  }
-  const handleCloseDeleteModal = () => {
-    setMonitorId(null);
-    setDeleteModalOpen(false); // Close delete modal
-  };
+    const handleCloseDeleteModal = () => {
+        setMonitorId(null);
+        setDeleteModalOpen(false);
+    };
 
-  // Fetch data based on inputFilter using useQuery
-  const { data, isLoading, isError } = useQuery(['subdomainsData'], () =>
-  fetchMonitorData()
-  );
+    const { data, isLoading, isError } = useQuery(['subdomainsData'], () =>
+        fetchMonitorData()
+    );
 
-  const { data: notificationsData, isLoading: isLoadingNotifications, isError: isErrorNotifications } = useQuery(
-    ['notificationsData'],
-    fetchMonitorNotifications,
-  );
-  
-  
-  if (isLoading) {
-    return <h2>Loading...</h2>;
-  }
-  
-  if (isError) {
-    // Extract relevamnt information from the error object
-    
-    return <h2>{"internal server error"}</h2>;
-  }
-  
+    const {
+        data: notificationsData,
+        isLoading: isLoadingNotifications,
+        isError: isErrorNotifications,
+    } = useQuery(['notificationsData'], fetchMonitorNotifications);
 
-
-  
-  const columns = [
-    {
-      field: 'count',
-      headerName: 'Count',
-      width: 120,
-      type: 'number',
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      cellClassName: 'custom-cell', // Add this line
-      cellClassName: (params) => {
-        if (params.row.hasAi) {
-          return 'custom-cell blue';
+    const formattedMonitorData = useMemo(() => {
+        if (!data) return [];
+        const formatted = formatMonitorData(data);
+        if (!isLoadingNotifications && !isErrorNotifications && notificationsData) {
+            notificationsData.forEach((notification) => {
+                formatted.forEach((row) => {
+                    if (row.url === notification.base_url) {
+                        if (notification.ai > 0) {
+                            row.hasAi = true;
+                        }
+                        row.count += 1;
+                    }
+                });
+            });
         }
-        return `custom-cell ${params.value > 0 ? 'green' : 'red'}`;
-      },
-    },
-    {
-        field: 'url',
-        headerName: 'Url',
-        width: 916,
-        type: 'string',
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        cellClassName: 'custom-cell', // Add this line
-        renderCell: (params) => (
-          <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-            <a style={{ textDecoration: 'none', color: 'white' }} href={params.value} target="_blank" rel="noopener noreferrer">
-              {params.value}
-            </a>
-            <Button
-              variant="outlined"
-              color="warning"  // You can customize the color as needed
-              onClick={() => handleDisplayClick(params.row.url)}
-              style={{ marginLeft: 'auto'}}
-            >
-              Display
-            </Button>
-          </div>
-        ),
-  
-},
+        return formatted;
+    }, [data, isLoadingNotifications, isErrorNotifications, notificationsData]);
 
-    
-    {
-        field: 'date',
-        headerName: 'Date',
-        type: 'Date',
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        width: 450,
-        cellClassName: 'custom-cell', // Add this line
-        valueFormatter: (params) => format(new Date(params.value), 'dd-MM-yyyy'), // Format the date
-
-    },
-    {
-      field: 'edit', // You can customize this field name
-      headerName: 'Edit',
-      width: 125,
-      headerClassName: 'super-app-theme--header',
-      renderCell: (params) => (
-        <Button
-        variant="contained"
-        color="success"
-        onClick={() => handleEditButtonClick(params.row.id)}
-      >
-        Edit
-      </Button>
-      ),
-    },
-    {
-      field: 'delete', // You can customize this field name
-      headerName: 'Delete',
-      width: 125,
-      headerClassName: 'super-app-theme--header',
-      renderCell: (p) => (
-        <Button
-        variant="contained"
-        color="error"
-        onClick={() => handleDelButtonClick(p.row.id)}
-      >
-        Del
-      </Button>
-      ),
-    },
-  ];
-
-    
-
-  const formattedAlive = formatMonitorData(data);
-  
-  if (!isLoadingNotifications && !isErrorNotifications && notificationsData) {
-    notificationsData.forEach((notification) => {
-      formattedAlive.forEach((row) => {
-        if (row.url === notification.base_url) {
-          if(notification.ai > 0){
-            row.hasAi = true
-          }
-          row.count += 1;
+    const sortedData = useMemo(() => {
+        if (!sortConfig.key) {
+            return [...formattedMonitorData];
         }
-      });
-    });
-  }
+        return [...formattedMonitorData].sort((a, b) => {
+            const isAsc = sortConfig.direction === 'ascending';
+            if (sortConfig.key === 'count') {
+                return isAsc ? a.count - b.count : b.count - a.count;
+            } else if (sortConfig.key === 'url') {
+                return isAsc ? a.url.localeCompare(b.url) : b.url.localeCompare(a.url);
+            } else if (sortConfig.key === 'date') {
+                return isAsc ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date);
+            }
+            return 0;
+        });
+    }, [formattedMonitorData, sortConfig]);
 
-  const handleDisplayClick = (url) =>{
-    navigate(`/monitor/display?url=${encodeURIComponent(url)}`);
-  }
+    const handleSort = (key) => {
+        setSortConfig((currentSortConfig) => {
+            const direction =
+                currentSortConfig.key === key && currentSortConfig.direction === 'ascending'
+                    ? 'descending'
+                    : 'ascending';
+            return { key, direction };
+        });
+    };
 
+    const handleDisplayClick = (url) => {
+        navigate(`/monitor/display?url=${encodeURIComponent(url)}`);
+    };
 
-  const gridStyles = {
-    '& .super-app-theme--header': {
-      color: 'white',
-    },
-    '& .MuiDataGrid-row': {
-      '&:hover': {
-        backgroundColor: '#4D4D4D',
-      },
-      display: 'flex',  // Add this line
-      justifyContent: 'center',  // Add this line
-      alignItems: 'center',  // Add this line
-    },
-    '& .css-tptqer-MuiDataGrid-root':{
-      border: 'none',
-    },
-    '.blue': {
-      color: '#006ef6', // Choose the shade of blue you prefer
-    },
-    '& .custom-cell': {
-      fontSize: '18px',
-      textAlign: 'center',
-      width:'100%',
-    },
-    '& .css-v4u5dn-MuiInputBase-root-MuiInput-root': {
-      backgroundColor: 'white',
-      color: 'black',
-      borderRadius: '4px', // Adjust as needed
-    },
-    '& .MuiDataGrid-cellContent': {
-      margin: '0 auto',
-    },
+    if (isLoading) {
+        return <h2>Loading...</h2>;
+    }
 
-    '& .css-ptiqhd-MuiSvgIcon-root': {
-      color: 'green',
+    if (isError) {
+        return <h2>{"internal server error"}</h2>;
+    }
 
-    },
-    '& .css-levciy-MuiTablePagination-displayedRows':{
-      color: 'white',
-    },
-    '& .MuiButtonBase-root':{
-      color: 'white'
-    },
-    '.MuiDataGrid-withBorderColor': {
-      borderColor: "var(--border-color)",
-    },
-    '.css-1knaqv7-MuiButtonBase-root-MuiButton-root':{
-      color: 'white',
-    },
-    '.green': {
-      color: 'lightgreen', // Add this line
-    },
-    '.red': {
-      color: 'red', // Add this line
-    },
+    const getSortIndicator = (key) => {
+        if (sortConfig.key === key) {
+            return sortConfig.direction === 'ascending' ? ' ↑' : ' ↓';
+        }
+        return null;
+    };
 
-    fontSize: '20px',
-    color: 'white',
-    border: 'none',
+    return (
+        <div className="table-container">
+            <Helmet>
+                <title>Monitor</title>
+            </Helmet>
+            <div className="table-wrapper">
+                <table className="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th style={{ width: '8%' }}> {/* Adjusted width */}
+                                <button className="sort-header-button" onClick={() => handleSort('count')}>
+                                    Count{getSortIndicator('count')}
+                                </button>
+                            </th>
+                            <th style={{ width: '60%' }}> {/* Adjusted width */}
+                                <button className="sort-header-button" onClick={() => handleSort('url')}>
+                                    Url{getSortIndicator('url')}
+                                </button>
+                            </th>
+                            <th style={{ width: '10%' }}>Display</th> {/* Adjusted width */}
+                            <th style={{ width: '12%' }}> {/* Adjusted width */}
+                                <button className="sort-header-button" onClick={() => handleSort('date')}>
+                                    Date{getSortIndicator('date')}
+                                </button>
+                            </th>
+                            <th style={{ width: '5%' }}>Edit</th> {/* Adjusted width */}
+                            <th style={{ width: '5%' }}>Delete</th> {/* Adjusted width */}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {sortedData.map((row) => (
+                            <tr key={row.id}>
+                                <td className="table-cell centered-cell" style={{ width: '8%' }}> {/* Adjusted width */}
+                                    <span className={row.hasAi ? 'highlight' : ''}>{row.count}</span>
+                                </td>
+                                <td className="table-cell" style={{ width: '60%' }}> {/* Adjusted width */}
+                                    <div className="asset-cell">
+                                        <a
+                                            href={row.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            style={{ display: 'block', color: 'var(--primary)' }}
+                                        >
+                                            {row.url}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td className="table-cell centered-cell" style={{ width: '10%' }}> {/* Adjusted width */}
+                                    <Button
+                                        variant="outlined"
+                                        style={{ color: 'var(--info)', borderColor: 'var(--info)' }}
+                                        onClick={() => handleDisplayClick(row.url)}
+                                        size="small"
+                                    >
+                                        Display
+                                    </Button>
+                                </td>
+                                <td className="table-cell centered-cell" style={{ width: '12%' }}> {/* Adjusted width */}
+                                    {format(new Date(row.date), 'dd-MM-yyyy')}
+                                </td>
 
-    //... other styles
-  };
+                                <td className="table-cell centered-cell" style={{ width: '5%' }}> {/* Adjusted width */}
+                                    <Button
+                                        variant="contained"
+                                        style={{ backgroundColor: 'var(--success)' }}
+                                        onClick={() => handleEditButtonClick(row.id)}
+                                        size="small"
+                                    >
+                                        Edit
+                                    </Button>
+                                </td>
+                                <td className="table-cell centered-cell" style={{ width: '5%' }}> {/* Adjusted width */}
+                                    <Button
+                                        variant="contained"
+                                        style={{ backgroundColor: 'var(--error)' }}
+                                        onClick={() => handleDelButtonClick(row.id)}
+                                        size="small"
+                                    >
+                                        Del
+                                    </Button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
-  return (
-    <div className='table-content'>
-      <Helmet>
-          <title>Monitor</title>
-      </Helmet>
-        <DataGrid
-          rows={formattedAlive}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 100,
-              },
-            },
-          }}
-          slots={{ toolbar: GridToolbar}}
+            <Modal open={deleteModalOpen} onClose={handleCloseDeleteModal}>
+                <DeleteModal monitorId={monitorId} onClose={handleCloseDeleteModal} />
+            </Modal>
 
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          pageSizeOptions={[5]}
-          sortModel={[{ field: 'count', sort: 'desc' }]} // Add this line
-
-          disableRowSelectionOnClick
-          sx={{
-              ...gridStyles
-          }}
-        />
-
-
-        <Modal open={deleteModalOpen} onClose={handleCloseDeleteModal}>
-
-        <DeleteModal
-          monitorId={monitorId}
-          onClose={handleCloseDeleteModal}
-        />
-        </Modal>
-        
-
-        <Modal open={modalOpen} onClose={handleCloseEditModal}>
-          <EditModal monitorId={monitorId} onClose={handleCloseEditModal}/>
-        </Modal>
-
-
-      </div>
-  )
+            <Modal open={modalOpen} onClose={handleCloseEditModal}>
+                <EditModal monitorId={monitorId} onClose={handleCloseEditModal} />
+            </Modal>
+        </div>
+    );
 }
 
-export default Dashboard
+export default Dashboard;

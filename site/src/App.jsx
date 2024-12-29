@@ -1,3 +1,4 @@
+// App.jsx
 import './App.css';
 import './themes.css';
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom'
@@ -12,14 +13,12 @@ import { AuthProvider } from './auth';
 import ProtectedRoute from './components/protectedRoute';
 export const AppContext = createContext()
 
-
-
 function App() {
-  
 
   const [data, setData] = useState('alive');
   const [darkMode, setDarkMode] = useState('dark');
   const [inputFilter, setInputFilter] = useState('');
+  const [selectedView, setSelectedView] = useState('alive'); // Move selectedView state here
 
   const themes = [
     'theme-cyberpunk',
@@ -67,11 +66,10 @@ function App() {
     document.documentElement.className = randomTheme;
   }, []);
 
-  
   return (
   <AuthProvider>     {/* To check if you authenticated or not */}
 
-    <AppContext.Provider value={{data, setData, darkMode, setDarkMode,  inputFilter, setInputFilter}}>
+    <AppContext.Provider value={{data, setData, darkMode, setDarkMode,  inputFilter, setInputFilter, selectedView, setSelectedView}}>
       <div className={`App ${darkMode === 'dark' ? "dark" : "light"}`}>
 
         <Router>
@@ -82,7 +80,7 @@ function App() {
                 <Route
                     path='/dashboard'
                     element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
-                />  
+                />
                 <Route
                     path='/monitor'
                     element={<ProtectedRoute><Monitor /></ProtectedRoute>}
@@ -103,18 +101,17 @@ function App() {
                     path='/filter_subdomains'
                     element={<ProtectedRoute><Filter /></ProtectedRoute>}
                 /> */}
-{/* 
+{/*
                 <Route
                     path='/dorking'
                     element={<ProtectedRoute><Dorking /></ProtectedRoute>}
                 /> */}
 
-
                 <Route path='/' element={<Navigate to='/dashboard' />} />
             </Routes>
             </div>
         </Router>
-        
+
       </div>
     </AppContext.Provider>
 

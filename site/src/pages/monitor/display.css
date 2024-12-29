@@ -1,0 +1,189 @@
+.fantastic-display-container {
+    background-color: var(--body-bg);
+    color: var(--text-primary);
+    padding: 20px;
+    height: 95%;
+    /* Remove overflow: hidden; to allow internal scrolling */
+    display: grid;
+    grid-template-columns: 250px 1fr 250px;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "header header header"
+      "fileLists content aiFiles"
+      "footer footer footer";
+    gap: 20px;
+  }
+  
+  .fantastic-display-header {
+    grid-area: header;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .fantastic-file-lists {
+    grid-area: fileLists;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: calc(100vh - 180px); /* Adjust the value as needed (header + footer + gap) */
+    padding-right: 10px;
+  }
+  
+  .fantastic-ai-files {
+    grid-area: aiFiles;
+    overflow-y: auto;
+    max-height: calc(100vh - 180px); /* Adjust the value as needed */
+    padding-left: 10px;
+  }
+  
+  .fantastic-file-list-card {
+    background-color: var(--surface-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* Ensure internal scrolling works */
+    overflow: hidden; /* To prevent child from overflowing the card */
+  }
+  
+  .fantastic-file-list-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+    font-size: 1.1em;
+  }
+  
+  .fantastic-file-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto; /* Enable scrolling within the list */
+    max-height: calc(100% - 40px); /* Adjust based on header height */
+    flex-grow: 1;
+  }
+  
+  .fantastic-file-list-item {
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .fantastic-file-list-item:hover {
+    background-color: var(--border-light);
+  }
+  
+  .fantastic-file-list-item.active {
+    background-color: var(--primary);
+    color: var(--body-bg);
+  }
+  
+  .fantastic-file-list-item.notification {
+    border-left: 4px solid var(--warning);
+    padding-left: 8px;
+  }
+  
+  .fantastic-file-list-item.notification_ai {
+    border-left: 4px solid var(--success);
+    padding-left: 8px;
+  }
+  
+  .fantastic-file-content {
+    grid-area: content;
+    background-color: var(--surface-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: calc(100vh - 140px); /* Adjust the value as needed (header + gap) */
+    font-family: 'Roboto Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    position: relative;
+  }
+  
+  .fantastic-file-content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    color: var(--text-secondary);
+  }
+  
+  .fantastic-file-content-header button {
+    background-color: var(--primary);
+    color: var(--body-bg);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .fantastic-file-content-header button:hover {
+    background-color: var(--primary-hover);
+  }
+  
+  .fantastic-file-content-line-add {
+    background-color: rgba(0, 255, 179, 0.2); /* --success with transparency */
+    display: block;
+    margin: 2px 0;
+    padding: 0 5px;
+    border-radius: 4px;
+  }
+  
+  .fantastic-file-content-line-remove {
+    background-color: rgba(255, 51, 102, 0.2); /* --error with transparency */
+    display: block;
+    margin: 2px 0;
+    padding: 0 5px;
+    border-radius: 4px;
+  }
+  
+  .fantastic-notification-badge {
+    background-color: var(--warning);
+    color: var(--surface-bg);
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 0.8em;
+  }
+  
+  .fantastic-ai-badge {
+    background-color: var(--success);
+    color: var(--body-bg);
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 0.8em;
+  }
+  
+  .fantastic-file-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .fantastic-file-actions button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1em;
+    transition: color 0.2s ease;
+  }
+  
+  .fantastic-file-actions button:hover {
+    color: var(--text-primary);
+  }

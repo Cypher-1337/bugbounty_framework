@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { fetchAliveData, formatAliveData } from '../../data/allAliveData';
 import { AppContext } from '../../App';
 import TextField from '@mui/material/TextField';
-import './dashboard.css';
+import './monitor_dash.css';
 
 const Alive = () => {
   const [tableData, setTableData] = useState([]);
@@ -166,7 +166,6 @@ const Alive = () => {
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          entries
         </div>
         <input
           value={localInputFilter}

@@ -1,17 +1,21 @@
-/* Sidebar.css - Modern Dark Mode */
+/* Sidebar.css - Modern Dark Mode with Improved Dropdown */
 .sidebar {
   background-color: var(--body-bg);
- /* Subtle dark base using --body-bg with opacity */
-  color: var(--text-primary); /* Using the new color scheme's light color */
-  width: 200px;
+  color: var(--text-primary);
+  width: 175px;
+  max-width: 175px;
   height: 100vh;
-  backdrop-filter: blur(10px); /* Apply glass effect */
-  -webkit-backdrop-filter: blur(10px); /* For Safari */
+  overflow: hidden; /* Prevent content overflow from affecting width */
+  flex-shrink: 0; /* Prevent the sidebar from shrinking */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 1px 0 5px rgba(0, 0, 0, 0.3);
   padding-bottom: 20px;
-  z-index: 10; /* Ensure it's above other content */
-  border-right: 1px solid var(--border-light); /* Using the new border color */
+  z-index: 10;
+  border-right: 1px solid var(--border-light);
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar::before {
@@ -21,14 +25,15 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: inherit; /* Inherit the background color */
-  filter: blur(10px); /* Apply blur to the pseudo-element for better effect */
-  margin: -1px; /* To cover the border */
-  z-index: -1; /* Place it behind the content */
+  background: inherit;
+  filter: blur(10px);
+  margin: -1px;
+  z-index: -1;
 }
 
 .sidebar-content {
   padding-top: 20px;
+  flex-grow: 1; /* Allow content to take up available space */
 }
 
 .navigation-items {
@@ -39,7 +44,7 @@
 
 .nav-item {
   padding: 0;
-  margin-bottom: 8px; /* More spacing between items */
+  margin-bottom: 8px;
 }
 
 .nav-item .nav-link {
@@ -48,29 +53,24 @@
   gap: 12px;
   padding: 10px 15px;
   text-decoration: none;
-  color: var(--text-primary); /* Using the new light color */
+  color: var(--text-primary);
   transition: background-color 0.15s ease-in-out;
-  border-radius: 8px; /* Rounded corners for items */
-  margin: 15px 10px; /* Add horizontal margin */
+  border-radius: 8px;
+  margin: 15px 10px;
 }
 
 .nav-item .nav-link:active {
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.3
-  ); /* Slightly darker background for active using rgba */
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .nav-item .nav-link:hover {
-  background-color: var(--primary-hover); /* Lighter hover using primary color */
+  background-color: var(--primary-hover);
 }
 
 .nav-item.active .nav-link {
-  background-color: var(--primary); /* More prominent active background using primary color */
+  background-color: var(--primary);
   font-weight: 500;
-  color: var(--body-bg); /* Text color for active item - using body bg for contrast */
+  color: var(--body-bg);
 }
 
 .nav-item.active .nav-link:hover {
@@ -79,29 +79,28 @@
 
 .nav-icon {
   font-size: 1.1rem;
-  color: var(--text-secondary); /* Default icon color using light color */
+  color: var(--text-secondary);
   transition: color 0.2s ease-in-out;
 }
 
 .nav-item.active .nav-icon {
-  color: var(--body-bg); /* Icon color on active - using body bg for contrast */
+  color: var(--body-bg);
 }
 
-/* Example color classes for icons - Overriding with new scheme */
 .color-primary {
-  color: var(--primary); /* Vibrant Cyan */
+  color: var(--primary);
 }
 
 .color-secondary {
-  color: var(--secondary); /* Pastel Pink */
+  color: var(--secondary);
 }
 
 .color-accent {
-  color: var(--accent); /* Gold */
+  color: var(--accent);
 }
 
 .color-tertiary {
-  color: var(--primary-hover); /* Lighter Cyan */
+  color: var(--primary-hover);
 }
 
 .has-sub-menu > .nav-link {
@@ -113,7 +112,7 @@
   height: 1em;
   margin-left: auto;
   transition: transform 0.2s ease-in-out;
-  color: var(--text-secondary); /* Arrow color */
+  color: var(--text-secondary);
 }
 
 .has-sub-menu.active > .nav-link .arrow-icon {
@@ -127,7 +126,7 @@
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.3s ease-in-out;
-  background-color: transparent; /* Keep sub-menu background transparent */
+  background-color: transparent;
 }
 
 .has-sub-menu.active .sub-menu {
@@ -138,29 +137,26 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 15px 10px 30px; /* Adjusted left padding */
+  padding: 10px 15px 10px 30px;
   font-size: 0.9rem;
-  color: var(--primary-hover); /* Sub-item text color */
+  color: var(--primary-hover);
   border-radius: 8px;
   margin: 0 10px;
 }
 
 .sub-nav-item .nav-link:hover {
-  background-color: rgba(
-    var(--primary-hover-rgb, 194, 240, 255),
-    0.2
-  ); /* Hover for sub-items using rgba and primary hover */
+  background-color: rgba(var(--primary-hover-rgb, 194, 240, 255), 0.2);
 }
 
 .sub-nav-item.active .nav-link {
   color: var(--body-bg);
-  background-color: var(--primary); /* Active sub-item */
+  background-color: var(--primary);
   font-weight: normal;
 }
 
 .item-count {
   margin-left: auto;
-  background-color: var(--primary); /* Using primary color */
+  background-color: var(--primary);
   color: var(--body-bg);
   font-size: 0.8rem;
   padding: 2px 8px;
@@ -171,5 +167,72 @@
   width: 0.8em;
   height: 0.8em;
   margin-left: 5px;
-  color: var(--text-secondary); /* External link icon color */
+  color: var(--text-secondary);
 }
+
+/* Styles for the custom select dropdown */
+.sidebar-bottom {
+  padding: 15px;
+  border-top: 1px solid var(--border-light);
+}
+
+.custom-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  background-color: var(--surface-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.custom-select:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.3); /* Optional focus glow */
+}
+
+.custom-select .select {
+  appearance: none; /* Remove default styling */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 10px 15px;
+  padding-right: 30px; /* Space for the arrow */
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  width: 100%;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.custom-select .select::-ms-expand {
+  display: none; /* Hide the default arrow in IE */
+}
+
+.custom-select .select:focus {
+  outline: none;
+}
+
+.custom-select .select option {
+  background-color: var(--surface-bg);
+  color: var(--text-primary);
+  padding: 8px 15px;
+}
+
+.custom-select .select option:hover {
+  background-color: var(--primary-hover);
+}
+
+.custom-select .select-arrow {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none; /* Ensure the arrow doesn't interfere with clicks */
+}
+
+
+

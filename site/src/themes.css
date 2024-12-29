@@ -1,661 +1,697 @@
 /* Theme Variables */
 .theme-cyberpunk {
-    --body-bg: #0D0221;
-    --surface-bg: #1A1025;
-    --primary: #00FF9D;
-    --primary-hover: #00FFB3;
-    --secondary: #FF00FF;
-    --secondary-hover: #FF33FF;
-    --accent: #00FFFF;
-    --text-primary: #FFFFFF;
-    --text-secondary: #9D71EA;
-    --border-light: #2F1755;
-    --success: #00FF9D;
-    --error: #FF0054;
-    --warning: #FFB800;
-    --info: #00BFFF;
-  }
-  
-  .theme-golden {
-    --body-bg: #0A0805;
-    --surface-bg: #1A1610;
-    --primary: #FFD700;
-    --primary-hover: #FEE4A6;
-    --secondary: #B8860B;
-    --secondary-hover: #DAA520;
-    --accent: #F4C430;
-    --text-primary: #FFFFFF;
-    --text-secondary: #FFE5B4;
-    --border-light: #483C1F;
-    --success: #CFB53B;
-    --error: #8B0000;
-    --warning: #CD853F;
-    --info: #D4AF37;
-  }
-  
-  .theme-arctic {
-    --body-bg: #0A1922;
-    --surface-bg: #152630;
-    --primary: #A5F8FF;
-    --primary-hover: #B8FAFF;
-    --secondary: #007C91;
-    --secondary-hover: #0095AD;
-    --accent: #00FFE5;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B4E7FF;
-    --border-light: #1F3543;
-    --success: #00FFB3;
-    --error: #FF4B6E;
-    --warning: #FFB86C;
-    --info: #64C7FF;
-  }
-  
-  .theme-forest {
-    --body-bg: #0B1F0B;
-    --surface-bg: #162916;
-    --primary: #4CAF50;
-    --primary-hover: #66BB6A;
-    --secondary: #81C784;
-    --secondary-hover: #92D094;
-    --accent: #00C853;
-    --text-primary: #FFFFFF;
-    --text-secondary: #C8E6C9;
-    --border-light: #2E462E;
-    --success: #00E676;
-    --error: #FF5252;
-    --warning: #FFD740;
-    --info: #64FFDA;
-  }
-  
-  .theme-volcanic {
-    --body-bg: #1A0F0F;
-    --surface-bg: #2A1717;
-    --primary: #FF3D00;
-    --primary-hover: #FF6E40;
-    --secondary: #DD2C00;
-    --secondary-hover: #FF3D00;
-    --accent: #FF6D00;
-    --text-primary: #FFFFFF;
-    --text-secondary: #FFCCBC;
-    --border-light: #3E2723;
-    --success: #FF6E40;
-    --error: #D50000;
-    --warning: #FFAB00;
-    --info: #FF5722;
-  }
-  
-  .theme-ocean {
-    --body-bg: #001220;
-    --surface-bg: #001B2E;
-    --primary: #00B4DB;
-    --primary-hover: #00C9F2;
-    --secondary: #0083B0;
-    --secondary-hover: #0098CC;
-    --accent: #00E5FF;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B3E5FC;
-    --border-light: #002F4B;
-    --success: #00E5FF;
-    --error: #FF1744;
-    --warning: #FFC400;
-    --info: #00B0FF;
-  }
-  
-  .theme-amethyst {
-    --body-bg: #170B25;
-    --surface-bg: #251336;
-    --primary: #9C27B0;
-    --primary-hover: #AB47BC;
-    --secondary: #7B1FA2;
-    --secondary-hover: #8E24AA;
-    --accent: #E040FB;
-    --text-primary: #FFFFFF;
-    --text-secondary: #E1BEE7;
-    --border-light: #4A148C;
-    --success: #AA00FF;
-    --error: #FF4081;
-    --warning: #FFD740;
-    --info: #EA80FC;
-  }
-  
-  .theme-cherry {
-    --body-bg: #1A0F13;
-    --surface-bg: #2C1720;
-    --primary: #FF1744;
-    --primary-hover: #FF4081;
-    --secondary: #D81B60;
-    --secondary-hover: #E91E63;
-    --accent: #FF4081;
-    --text-primary: #FFFFFF;
-    --text-secondary: #FFB6C1;
-    --border-light: #4A1F2A;
-    --success: #FF4081;
-    --error: #FF1744;
-    --warning: #FFC107;
-    --info: #FF80AB;
-  }
-  
-  .theme-space {
-    --body-bg: #0B0C10;
-    --surface-bg: #1F2833;
-    --primary: #66FCF1;
-    --primary-hover: #45A29E;
-    --secondary: #45A29E;
-    --secondary-hover: #66FCF1;
-    --accent: #5CDB95;
-    --text-primary: #FFFFFF;
-    --text-secondary: #C5C6C7;
-    --border-light: #2F3640;
-    --success: #5CDB95;
-    --error: #FF3C3C;
-    --warning: #FFA500;
-    --info: #66FCF1;
-  }
-  
-  .theme-electric {
-    --body-bg: #09090B;
-    --surface-bg: #16161A;
-    --primary: #00FF00;
-    --primary-hover: #33FF33;
-    --secondary: #FF00FF;
-    --secondary-hover: #FF33FF;
-    --accent: #FFFF00;
-    --text-primary: #FFFFFF;
-    --text-secondary: #CCFFCC;
-    --border-light: #232329;
-    --success: #00FF00;
-    --error: #FF0000;
-    --warning: #FFFF00;
-    --info: #00FFFF;
-  }
-  
-  .theme-desert {
-    --body-bg: #1A1710;
-    --surface-bg: #2A251B;
-    --primary: #D4AC2B;
-    --primary-hover: #E5BE48;
-    --secondary: #B38B22;
-    --secondary-hover: #C49C33;
-    --accent: #FFD700;
-    --text-primary: #FFFFFF;
-    --text-secondary: #FFE5B4;
-    --border-light: #3D3424;
-    --success: #D4AC2B;
-    --error: #FF6B6B;
-    --warning: #FFA502;
-    --info: #D4AC2B;
-  }
-  
-  .theme-retro-wave {
-    --body-bg: #120458;
-    --surface-bg: #1B0B40;
-    --primary: #FF00FF;
-    --primary-hover: #FF33FF;
-    --secondary: #00FFFF;
-    --secondary-hover: #33FFFF;
-    --accent: #FF2B6B;
-    --text-primary: #FFFFFF;
-    --text-secondary: #FF71CE;
-    --border-light: #291B6D;
-    --success: #05FFA1;
-    --error: #FF0055;
-    --warning: #FFB302;
-    --info: #01CDFE;
-  }
-  
-  .theme-matrix {
-    --body-bg: #000000;
-    --surface-bg: #0A1612;
-    --primary: #00FF41;
-    --primary-hover: #33FF66;
-    --secondary: #008F11;
-    --secondary-hover: #00B815;
-    --accent: #003B00;
-    --text-primary: #00FF41;
-    --text-secondary: #008F11;
-    --border-light: #003B00;
-    --success: #00FF41;
-    --error: #FF0000;
-    --warning: #FFFF00;
-    --info: #00FF41;
-  }
-  
-  .theme-midnight {
-    --body-bg: #0F1C2E;
-    --surface-bg: #1B2A41;
-    --primary: #4A90E2;
-    --primary-hover: #5AA0F2;
-    --secondary: #7B68EE;
-    --secondary-hover: #8B78FE;
-    --accent: #00B4DB;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B8C6D9;
-    --border-light: #2C3E50;
-    --success: #2ECC71;
-    --error: #E74C3C;
-    --warning: #F1C40F;
-    --info: #3498DB;
-  }
-  
-  .theme-sunset {
-    --body-bg: #2C1810;
-    --surface-bg: #3D2317;
-    --primary: #FF6B6B;
-    --primary-hover: #FF8585;
-    --secondary: #FFA502;
-    --secondary-hover: #FFB52E;
-    --accent: #FF7F50;
-    --text-primary: #FFFFFF;
-    --text-secondary: #FFD5C2;
-    --border-light: #4A2F24;
-    --success: #FF9F43;
-    --error: #FF4757;
-    --warning: #FFAA00;
-    --info: #FF7F50;
-  }
-  
-  .theme-neon {
-    --body-bg: #090415;
-    --surface-bg: #150B2E;
-    --primary: #F706CF;
-    --primary-hover: #FF33FF;
-    --secondary: #01FFC3;
-    --secondary-hover: #33FFD1;
-    --accent: #01FFFF;
-    --text-primary: #FFFFFF;
-    --text-secondary: #9D8EC1;
-    --border-light: #251A43;
-    --success: #01FFC3;
-    --error: #FF0063;
-    --warning: #FFB300;
-    --info: #01FFFF;
-  }
-  
-  /* Add this to your existing themes */
-  .theme-hacker {
-    --body-bg: #0D0D0D;  /* Almost black background */
-    --surface-bg: #151515;  /* Slightly lighter black for surfaces */
-    --primary: #00FF00;  /* Classic Matrix green */
-    --primary-hover: #33FF33;  /* Lighter green for hover states */
-    --secondary: #008F11;  /* Darker terminal green */
-    --secondary-hover: #00B814;  /* Slightly lighter terminal green */
-    --accent: #20C20E;  /* Vintage terminal green */
-    --text-primary: #00FF00;  /* Matrix green for primary text */
-    --text-secondary: #3F8F3F;  /* Muted green for secondary text */
-    --border-light: #1A1A1A;  /* Very dark gray for borders */
-    --success: #00FF00;  /* Success matches primary */
-    --error: #FF0000;  /* Pure red for errors */
-    --warning: #FFFF00;  /* Yellow for warnings */
-    --info: #00FF00;  /* Info matches primary */
-  }
-  
-  /* Optional: Add a terminal-like text effect for the hacker theme */
-  .theme-hacker * {
-    text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
-  }
-  
-  /* Optional: Add a subtle scanline effect */
-  .theme-hacker::before {
-    content: "";
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 255, 0, 0.03) 0px,
-      rgba(0, 255, 0, 0.03) 1px,
-      transparent 1px,
-      transparent 2px
-    );
-  }
-  
+  --body-bg: #0D0221;
+  --surface-bg: #1A1025;
+  --primary: #00FF9D;
+  --primary-hover: #00FFB3;
+  --secondary: #FF00FF;
+  --secondary-hover: #FF33FF;
+  --accent: #00FFFF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9D71EA;
+  --border-light: #2F1755;
+  --success: #00FF9D;
+  --error: #FF0054;
+  --warning: #FFB800;
+  --info: #00BFFF;
+  --border-color: #2F1755;
+}
+
+.theme-golden {
+  --body-bg: #0A0805;
+  --surface-bg: #1A1610;
+  --primary: #FFD700;
+  --primary-hover: #FEE4A6;
+  --secondary: #B8860B;
+  --secondary-hover: #DAA520;
+  --accent: #F4C430;
+  --text-primary: #FFFFFF;
+  --text-secondary: #FFE5B4;
+  --border-light: #483C1F;
+  --success: #CFB53B;
+  --error: #8B0000;
+  --warning: #CD853F;
+  --info: #D4AF37;
+  --border-color: #483C1F;
+}
+
+.theme-arctic {
+  --body-bg: #0A1922;
+  --surface-bg: #152630;
+  --primary: #A5F8FF;
+  --primary-hover: #B8FAFF;
+  --secondary: #007C91;
+  --secondary-hover: #0095AD;
+  --accent: #00FFE5;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B4E7FF;
+  --border-light: #1F3543;
+  --success: #00FFB3;
+  --error: #FF4B6E;
+  --warning: #FFB86C;
+  --info: #64C7FF;
+  --border-color: #1F3543;
+}
+
+.theme-forest {
+  --body-bg: #0B1F0B;
+  --surface-bg: #162916;
+  --primary: #4CAF50;
+  --primary-hover: #66BB6A;
+  --secondary: #81C784;
+  --secondary-hover: #92D094;
+  --accent: #00C853;
+  --text-primary: #FFFFFF;
+  --text-secondary: #C8E6C9;
+  --border-light: #2E462E;
+  --success: #00E676;
+  --error: #FF5252;
+  --warning: #FFD740;
+  --info: #64FFDA;
+  --border-color: #2E462E;
+}
+
+.theme-volcanic {
+  --body-bg: #1A0F0F;
+  --surface-bg: #2A1717;
+  --primary: #FF3D00;
+  --primary-hover: #FF6E40;
+  --secondary: #DD2C00;
+  --secondary-hover: #FF3D00;
+  --accent: #FF6D00;
+  --text-primary: #FFFFFF;
+  --text-secondary: #FFCCBC;
+  --border-light: #3E2723;
+  --success: #FF6E40;
+  --error: #D50000;
+  --warning: #FFAB00;
+  --info: #FF5722;
+  --border-color: #3E2723;
+}
+
+.theme-ocean {
+  --body-bg: #001220;
+  --surface-bg: #001B2E;
+  --primary: #00B4DB;
+  --primary-hover: #00C9F2;
+  --secondary: #0083B0;
+  --secondary-hover: #0098CC;
+  --accent: #00E5FF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B3E5FC;
+  --border-light: #002F4B;
+  --success: #00E5FF;
+  --error: #FF1744;
+  --warning: #FFC400;
+  --info: #00B0FF;
+  --border-color: #002F4B;
+}
+
+.theme-amethyst {
+  --body-bg: #170B25;
+  --surface-bg: #251336;
+  --primary: #9C27B0;
+  --primary-hover: #AB47BC;
+  --secondary: #7B1FA2;
+  --secondary-hover: #8E24AA;
+  --accent: #E040FB;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E1BEE7;
+  --border-light: #4A148C;
+  --success: #AA00FF;
+  --error: #FF4081;
+  --warning: #FFD740;
+  --info: #EA80FC;
+  --border-color: #4A148C;
+}
+
+.theme-cherry {
+  --body-bg: #1A0F13;
+  --surface-bg: #2C1720;
+  --primary: #FF1744;
+  --primary-hover: #FF4081;
+  --secondary: #D81B60;
+  --secondary-hover: #E91E63;
+  --accent: #FF4081;
+  --text-primary: #FFFFFF;
+  --text-secondary: #FFB6C1;
+  --border-light: #4A1F2A;
+  --success: #FF4081;
+  --error: #FF1744;
+  --warning: #FFC107;
+  --info: #FF80AB;
+  --border-color: #4A1F2A;
+}
+
+.theme-space {
+  --body-bg: #0B0C10;
+  --surface-bg: #1F2833;
+  --primary: #66FCF1;
+  --primary-hover: #45A29E;
+  --secondary: #45A29E;
+  --secondary-hover: #66FCF1;
+  --accent: #5CDB95;
+  --text-primary: #FFFFFF;
+  --text-secondary: #C5C6C7;
+  --border-light: #2F3640;
+  --success: #5CDB95;
+  --error: #FF3C3C;
+  --warning: #FFA500;
+  --info: #66FCF1;
+  --border-color: #2F3640;
+}
+
+.theme-electric {
+  --body-bg: #09090B;
+  --surface-bg: #16161A;
+  --primary: #00FF00;
+  --primary-hover: #33FF33;
+  --secondary: #FF00FF;
+  --secondary-hover: #FF33FF;
+  --accent: #FFFF00;
+  --text-primary: #FFFFFF;
+  --text-secondary: #CCFFCC;
+  --border-light: #232329;
+  --success: #00FF00;
+  --error: #FF0000;
+  --warning: #FFFF00;
+  --info: #00FFFF;
+  --border-color: #232329;
+}
+
+.theme-desert {
+  --body-bg: #1A1710;
+  --surface-bg: #2A251B;
+  --primary: #D4AC2B;
+  --primary-hover: #E5BE48;
+  --secondary: #B38B22;
+  --secondary-hover: #C49C33;
+  --accent: #FFD700;
+  --text-primary: #FFFFFF;
+  --text-secondary: #FFE5B4;
+  --border-light: #3D3424;
+  --success: #D4AC2B;
+  --error: #FF6B6B;
+  --warning: #FFA502;
+  --info: #D4AC2B;
+  --border-color: #3D3424;
+}
+
+.theme-retro-wave {
+  --body-bg: #120458;
+  --surface-bg: #1B0B40;
+  --primary: #FF00FF;
+  --primary-hover: #FF33FF;
+  --secondary: #00FFFF;
+  --secondary-hover: #33FFFF;
+  --accent: #FF2B6B;
+  --text-primary: #FFFFFF;
+  --text-secondary: #FF71CE;
+  --border-light: #291B6D;
+  --success: #05FFA1;
+  --error: #FF0055;
+  --warning: #FFB302;
+  --info: #01CDFE;
+  --border-color: #291B6D;
+}
+
+.theme-matrix {
+  --body-bg: #000000;
+  --surface-bg: #0A1612;
+  --primary: #00FF41;
+  --primary-hover: #33FF66;
+  --secondary: #008F11;
+  --secondary-hover: #00B815;
+  --accent: #003B00;
+  --text-primary: #00FF41;
+  --text-secondary: #008F11;
+  --border-light: #003B00;
+  --success: #00FF41;
+  --error: #FF0000;
+  --warning: #FFFF00;
+  --info: #00FF41;
+  --border-color: #003B00;
+}
+
+.theme-midnight {
+  --body-bg: #0F1C2E;
+  --surface-bg: #1B2A41;
+  --primary: #4A90E2;
+  --primary-hover: #5AA0F2;
+  --secondary: #7B68EE;
+  --secondary-hover: #8B78FE;
+  --accent: #00B4DB;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B8C6D9;
+  --border-light: #2C3E50;
+  --success: #2ECC71;
+  --error: #E74C3C;
+  --warning: #F1C40F;
+  --info: #3498DB;
+  --border-color: #2C3E50;
+}
+
+.theme-sunset {
+  --body-bg: #2C1810;
+  --surface-bg: #3D2317;
+  --primary: #FF6B6B;
+  --primary-hover: #FF8585;
+  --secondary: #FFA502;
+  --secondary-hover: #FFB52E;
+  --accent: #FF7F50;
+  --text-primary: #FFFFFF;
+  --text-secondary: #FFD5C2;
+  --border-light: #4A2F24;
+  --success: #FF9F43;
+  --error: #FF4757;
+  --warning: #FFAA00;
+  --info: #FF7F50;
+  --border-color: #4A2F24;
+}
+
+.theme-neon {
+  --body-bg: #090415;
+  --surface-bg: #150B2E;
+  --primary: #F706CF;
+  --primary-hover: #FF33FF;
+  --secondary: #01FFC3;
+  --secondary-hover: #33FFD1;
+  --accent: #01FFFF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9D8EC1;
+  --border-light: #251A43;
+  --success: #01FFC3;
+  --error: #FF0063;
+  --warning: #FFB300;
+  --info: #01FFFF;
+  --border-color: #251A43;
+}
+
+/* Add this to your existing themes */
+.theme-hacker {
+  --body-bg: #0D0D0D;  /* Almost black background */
+  --surface-bg: #151515;  /* Slightly lighter black for surfaces */
+  --primary: #00FF00;  /* Classic Matrix green */
+  --primary-hover: #33FF33;  /* Lighter green for hover states */
+  --secondary: #008F11;  /* Darker terminal green */
+  --secondary-hover: #00B814;  /* Slightly lighter terminal green */
+  --accent: #20C20E;  /* Vintage terminal green */
+  --text-primary: #00FF00;  /* Matrix green for primary text */
+  --text-secondary: #3F8F3F;  /* Muted green for secondary text */
+  --border-light: #1A1A1A;  /* Very dark gray for borders */
+  --success: #00FF00;  /* Success matches primary */
+  --error: #FF0000;  /* Pure red for errors */
+  --warning: #FFFF00;  /* Yellow for warnings */
+  --info: #00FF00;  /* Info matches primary */
+  --border-color: #1A1A1A;
+}
+
+/* Optional: Add a terminal-like text effect for the hacker theme */
+.theme-hacker * {
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+/* Optional: Add a subtle scanline effect */
+.theme-hacker::before {
+  content: "";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 0, 0.03) 0px,
+    rgba(0, 255, 0, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+}
+
 /* Vapor Dream Theme - Vaporwave aesthetics with pastels and glitch effects */
 .theme-vapor-dream {
-    --body-bg: #120B1D;
-    --surface-bg: #1D1229;
-    --primary: #FF71CE;
-    --primary-hover: #FF8AD8;
-    --secondary: #01CDFE;
-    --secondary-hover: #33D6FE;
-    --accent: #05FFA1;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B2A7C7;
-    --border-light: #2D1F3E;
-    --success: #7BF2A3;
-    --error: #FF6B8B;
-    --warning: #FFD93D;
-    --info: #01CDFE;
-  }
-  
-  /* Bio-Tech Theme - Organic meets technology */
-  .theme-bio-tech {
-    --body-bg: #071B12;
-    --surface-bg: #0E2A1C;
-    --primary: #00F5B4;
-    --primary-hover: #33F7C3;
-    --secondary: #7CFF7C;
-    --secondary-hover: #93FF93;
-    --accent: #00E6A5;
-    --text-primary: #E0FFF4;
-    --text-secondary: #7CA895;
-    --border-light: #1A3B2D;
-    --success: #00F5B4;
-    --error: #FF4D4D;
-    --warning: #FFE147;
-    --info: #47C2FF;
-  }
-  
-  /* Quantum Flux Theme - Inspired by quantum computing visuals */
-  .theme-quantum {
-    --body-bg: #0A0F2D;
-    --surface-bg: #141B4D;
-    --primary: #00F0FF;
-    --primary-hover: #33F3FF;
-    --secondary: #9D00FF;
-    --secondary-hover: #B133FF;
-    --accent: #FF00E6;
-    --text-primary: #FFFFFF;
-    --text-secondary: #8F9BFF;
-    --border-light: #1E2859;
-    --success: #00FFB3;
-    --error: #FF0055;
-    --warning: #FFB300;
-    --info: #00F0FF;
-  }
-  
-  /* Blood Moon Theme - Dark red theme inspired by lunar eclipses */
-  .theme-blood-moon {
-    --body-bg: #1A0505;
-    --surface-bg: #2D0A0A;
-    --primary: #FF3333;
-    --primary-hover: #FF5C5C;
-    --secondary: #CC0000;
-    --secondary-hover: #E60000;
-    --accent: #FF6666;
-    --text-primary: #FFFFFF;
-    --text-secondary: #FFB3B3;
-    --border-light: #400D0D;
-    --success: #FF4D4D;
-    --error: #FF0000;
-    --warning: #FFB30F;
-    --info: #FF3333;
-  }
-  
-  /* Crystal Cave Theme - Inspired by gemstones and minerals */
-  .theme-crystal {
-    --body-bg: #0B1728;
-    --surface-bg: #142339;
-    --primary: #00FFED;
-    --primary-hover: #33FFF0;
-    --secondary: #FF00D4;
-    --secondary-hover: #FF33DD;
-    --accent: #7B61FF;
-    --text-primary: #FFFFFF;
-    --text-secondary: #9DB7FF;
-    --border-light: #1F3247;
-    --success: #00FFB3;
-    --error: #FF0066;
-    --warning: #FFB300;
-    --info: #47B3FF;
-  }
-  
-  /* Ancient Runes Theme - Mystical and ancient styling */
-  .theme-ancient {
-    --body-bg: #1C1810;
-    --surface-bg: #2A251B;
-    --primary: #FFB938;
-    --primary-hover: #FFC65C;
-    --secondary: #C17917;
-    --secondary-hover: #DA8A1A;
-    --accent: #FFD700;
-    --text-primary: #FFF3D6;
-    --text-secondary: #C5B190;
-    --border-light: #3D3424;
-    --success: #B3A642;
-    --error: #8B0000;
-    --warning: #DAA520;
-    --info: #CD853F;
-  }
-  
-  /* Northern Lights Theme - Aurora Borealis inspired */
-  .theme-aurora {
-    --body-bg: #090D1F;
-    --surface-bg: #111536;
-    --primary: #00FF9D;
-    --primary-hover: #33FFB1;
-    --secondary: #FF6AC1;
-    --secondary-hover: #FF8ACD;
-    --accent: #7B61FF;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B4FFED;
-    --border-light: #1B2147;
-    --success: #00FFB3;
-    --error: #FF0066;
-    --warning: #FFB300;
-    --info: #47B3FF;
-  }
-  
-  /* Digital Rain Theme - Inspired by binary and data streams */
-  .theme-digital-rain {
-    --body-bg: #0A0F0D;
-    --surface-bg: #121916;
-    --primary: #4DFF4D;
-    --primary-hover: #66FF66;
-    --secondary: #00CC00;
-    --secondary-hover: #00E600;
-    --accent: #33FF33;
-    --text-primary: #FFFFFF;
-    --text-secondary: #7FFF7F;
-    --border-light: #1A2E1A;
-    --success: #00FF00;
-    --error: #FF0000;
-    --warning: #FFFF00;
-    --info: #00FF00;
-  }
-  
-  /* Deep Sea Theme - Inspired by deep ocean bioluminescence */
-  .theme-deep-sea {
-    --body-bg: #000D14;
-    --surface-bg: #001824;
-    --primary: #00E6FF;
-    --primary-hover: #33EBFF;
-    --secondary: #0066FF;
-    --secondary-hover: #3385FF;
-    --accent: #00FFB3;
-    --text-primary: #FFFFFF;
-    --text-secondary: #80DFFF;
-    --border-light: #002233;
-    --success: #00FFB3;
-    --error: #FF474C;
-    --warning: #FFB347;
-    --info: #47B3FF;
-  }
-  
-  /* Cosmic Dust Theme - Space nebula inspired */
-  .theme-cosmic {
-    --body-bg: #0D0221;
-    --surface-bg: #160536;
-    --primary: #FF00FF;
-    --primary-hover: #FF33FF;
-    --secondary: #7B00FF;
-    --secondary-hover: #9633FF;
-    --accent: #00FFFF;
-    --text-primary: #FFFFFF;
-    --text-secondary: #E6B3FF;
-    --border-light: #2B0B47;
-    --success: #00FFB3;
-    --error: #FF3366;
-    --warning: #FFB347;
-    --info: #47B3FF;
-  }
+  --body-bg: #120B1D;
+  --surface-bg: #1D1229;
+  --primary: #FF71CE;
+  --primary-hover: #FF8AD8;
+  --secondary: #01CDFE;
+  --secondary-hover: #33D6FE;
+  --accent: #05FFA1;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B2A7C7;
+  --border-light: #2D1F3E;
+  --success: #7BF2A3;
+  --error: #FF6B8B;
+  --warning: #FFD93D;
+  --info: #01CDFE;
+  --border-color: #2D1F3E;
+}
 
+/* Bio-Tech Theme - Organic meets technology */
+.theme-bio-tech {
+  --body-bg: #071B12;
+  --surface-bg: #0E2A1C;
+  --primary: #00F5B4;
+  --primary-hover: #33F7C3;
+  --secondary: #7CFF7C;
+  --secondary-hover: #93FF93;
+  --accent: #00E6A5;
+  --text-primary: #E0FFF4;
+  --text-secondary: #7CA895;
+  --border-light: #1A3B2D;
+  --success: #00F5B4;
+  --error: #FF4D4D;
+  --warning: #FFE147;
+  --info: #47C2FF;
+  --border-color: #1A3B2D;
+}
 
-  /* Hologram Theme - Transparent blues and scan lines */
+/* Quantum Flux Theme - Inspired by quantum computing visuals */
+.theme-quantum {
+  --body-bg: #0A0F2D;
+  --surface-bg: #141B4D;
+  --primary: #00F0FF;
+  --primary-hover: #33F3FF;
+  --secondary: #9D00FF;
+  --secondary-hover: #B133FF;
+  --accent: #FF00E6;
+  --text-primary: #FFFFFF;
+  --text-secondary: #8F9BFF;
+  --border-light: #1E2859;
+  --success: #00FFB3;
+  --error: #FF0055;
+  --warning: #FFB300;
+  --info: #00F0FF;
+  --border-color: #1E2859;
+}
+
+/* Blood Moon Theme - Dark red theme inspired by lunar eclipses */
+.theme-blood-moon {
+  --body-bg: #1A0505;
+  --surface-bg: #2D0A0A;
+  --primary: #FF3333;
+  --primary-hover: #FF5C5C;
+  --secondary: #CC0000;
+  --secondary-hover: #E60000;
+  --accent: #FF6666;
+  --text-primary: #FFFFFF;
+  --text-secondary: #FFB3B3;
+  --border-light: #400D0D;
+  --success: #FF4D4D;
+  --error: #FF0000;
+  --warning: #FFB30F;
+  --info: #FF3333;
+  --border-color: #400D0D;
+}
+
+/* Crystal Cave Theme - Inspired by gemstones and minerals */
+.theme-crystal {
+  --body-bg: #0B1728;
+  --surface-bg: #142339;
+  --primary: #00FFED;
+  --primary-hover: #33FFF0;
+  --secondary: #FF00D4;
+  --secondary-hover: #FF33DD;
+  --accent: #7B61FF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9DB7FF;
+  --border-light: #1F3247;
+  --success: #00FFB3;
+  --error: #FF0066;
+  --warning: #FFB300;
+  --info: #47B3FF;
+  --border-color: #1F3247;
+}
+
+/* Ancient Runes Theme - Mystical and ancient styling */
+.theme-ancient {
+  --body-bg: #1C1810;
+  --surface-bg: #2A251B;
+  --primary: #FFB938;
+  --primary-hover: #FFC65C;
+  --secondary: #C17917;
+  --secondary-hover: #DA8A1A;
+  --accent: #FFD700;
+  --text-primary: #FFF3D6;
+  --text-secondary: #C5B190;
+  --border-light: #3D3424;
+  --success: #B3A642;
+  --error: #8B0000;
+  --warning: #DAA520;
+  --info: #CD853F;
+  --border-color: #3D3424;
+}
+
+/* Northern Lights Theme - Aurora Borealis inspired */
+.theme-aurora {
+  --body-bg: #090D1F;
+  --surface-bg: #111536;
+  --primary: #00FF9D;
+  --primary-hover: #33FFB1;
+  --secondary: #FF6AC1;
+  --secondary-hover: #FF8ACD;
+  --accent: #7B61FF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B4FFED;
+  --border-light: #1B2147;
+  --success: #00FFB3;
+  --error: #FF0066;
+  --warning: #FFB300;
+  --info: #47B3FF;
+  --border-color: #1B2147;
+}
+
+/* Digital Rain Theme - Inspired by binary and data streams */
+.theme-digital-rain {
+  --body-bg: #0A0F0D;
+  --surface-bg: #121916;
+  --primary: #4DFF4D;
+  --primary-hover: #66FF66;
+  --secondary: #00CC00;
+  --secondary-hover: #00E600;
+  --accent: #33FF33;
+  --text-primary: #FFFFFF;
+  --text-secondary: #7FFF7F;
+  --border-light: #1A2E1A;
+  --success: #00FF00;
+  --error: #FF0000;
+  --warning: #FFFF00;
+  --info: #00FF00;
+  --border-color: #1A2E1A;
+}
+
+/* Deep Sea Theme - Inspired by deep ocean bioluminescence */
+.theme-deep-sea {
+  --body-bg: #000D14;
+  --surface-bg: #001824;
+  --primary: #00E6FF;
+  --primary-hover: #33EBFF;
+  --secondary: #0066FF;
+  --secondary-hover: #3385FF;
+  --accent: #00FFB3;
+  --text-primary: #FFFFFF;
+  --text-secondary: #80DFFF;
+  --border-light: #002233;
+  --success: #00FFB3;
+  --error: #FF474C;
+  --warning: #FFB347;
+  --info: #47B3FF;
+  --border-color: #002233;
+}
+
+/* Cosmic Dust Theme - Space nebula inspired */
+.theme-cosmic {
+  --body-bg: #0D0221;
+  --surface-bg: #160536;
+  --primary: #FF00FF;
+  --primary-hover: #FF33FF;
+  --secondary: #7B00FF;
+  --secondary-hover: #9633FF;
+  --accent: #00FFFF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E6B3FF;
+  --border-light: #2B0B47;
+  --success: #00FFB3;
+  --error: #FF3366;
+  --warning: #FFB347;
+  --info: #47B3FF;
+  --border-color: #2B0B47;
+}
+
+/* Hologram Theme - Transparent blues and scan lines */
 .theme-hologram {
-    --body-bg: #001529;
-    --surface-bg: #002140;
-    --primary: #00F0FF;
-    --primary-hover: #33F3FF;
-    --secondary: #0066FF;
-    --secondary-hover: #3385FF;
-    --accent: #00FFFF;
-    --text-primary: #E6FFFF;
-    --text-secondary: #80D8FF;
-    --border-light: #003A66;
-    --success: #00FFD1;
-    --error: #FF0066;
-    --warning: #FFB300;
-    --info: #00F0FF;
-  }
-  
-  /* Neural Network Theme - Complex interconnected patterns */
-  .theme-neural {
-    --body-bg: #0A0A1F;
-    --surface-bg: #12123A;
-    --primary: #00B8FF;
-    --primary-hover: #33C7FF;
-    --secondary: #FF00AA;
-    --secondary-hover: #FF33BB;
-    --accent: #AA00FF;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B3E5FF;
-    --border-light: #1F1F47;
-    --success: #00FFB3;
-    --error: #FF0055;
-    --warning: #FFB300;
-    --info: #00B8FF;
-  }
-  
-  /* Nano Tech Theme - Microscopic technology inspired */
-  .theme-nano {
-    --body-bg: #080F1A;
-    --surface-bg: #101C2E;
-    --primary: #00FF99;
-    --primary-hover: #33FFAD;
-    --secondary: #00CCFF;
-    --secondary-hover: #33D6FF;
-    --accent: #FF00CC;
-    --text-primary: #FFFFFF;
-    --text-secondary: #99FFD6;
-    --border-light: #1A2A40;
-    --success: #00FF99;
-    --error: #FF3366;
-    --warning: #FFCC00;
-    --info: #00CCFF;
-  }
-  
-  /* Augmented Reality Theme - Overlaid data visualization */
-  .theme-augmented {
-    --body-bg: #0D1117;
-    --surface-bg: #161B22;
-    --primary: #FF3366;
-    --primary-hover: #FF5C85;
-    --secondary: #00FF99;
-    --secondary-hover: #33FFAD;
-    --accent: #FFB300;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B3FFE0;
-    --border-light: #21262D;
-    --success: #00FF99;
-    --error: #FF3366;
-    --warning: #FFB300;
-    --info: #00CCFF;
-  }
-  
-  /* Quantum Core Theme - Energy core visualization */
-  .theme-quantum-core {
-    --body-bg: #0F0326;
-    --surface-bg: #1A0940;
-    --primary: #FF00FF;
-    --primary-hover: #FF33FF;
-    --secondary: #00FFFF;
-    --secondary-hover: #33FFFF;
-    --accent: #FF3366;
-    --text-primary: #FFFFFF;
-    --text-secondary: #E6B3FF;
-    --border-light: #2B0959;
-    --success: #00FFB3;
-    --error: #FF3366;
-    --warning: #FFB300;
-    --info: #00FFFF;
-  }
-  
-  /* Space Station Theme - Clean, utilitarian future */
-  .theme-space-station {
-    --body-bg: #0A0C10;
-    --surface-bg: #141820;
-    --primary: #47B3FF;
-    --primary-hover: #66C1FF;
-    --secondary: #FF4785;
-    --secondary-hover: #FF66A3;
-    --accent: #00CC99;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B3D1FF;
-    --border-light: #1E2433;
-    --success: #00CC99;
-    --error: #FF4785;
-    --warning: #FFB347;
-    --info: #47B3FF;
-  }
-  
-  /* AI Interface Theme - Advanced AI system interface */
-  .theme-ai-interface {
-    --body-bg: #050D1A;
-    --surface-bg: #0A1629;
-    --primary: #00FF9D;
-    --primary-hover: #33FFB1;
-    --secondary: #FF00CC;
-    --secondary-hover: #FF33D6;
-    --accent: #00CCFF;
-    --text-primary: #FFFFFF;
-    --text-secondary: #99FFD6;
-    --border-light: #14233;
-    --success: #00FF9D;
-    --error: #FF0066;
-    --warning: #FFB300;
-    --info: #00CCFF;
-  }
-  
-  /* Cyber Grid Theme - Digital grid system */
-  .theme-cyber-grid {
-    --body-bg: #000B14;
-    --surface-bg: #001829;
-    --primary: #00FF00;
-    --primary-hover: #33FF33;
-    --secondary: #00FFFF;
-    --secondary-hover: #33FFFF;
-    --accent: #FF00FF;
-    --text-primary: #FFFFFF;
-    --text-secondary: #99FF99;
-    --border-light: #002233;
-    --success: #00FF00;
-    --error: #FF0000;
-    --warning: #FFFF00;
-    --info: #00FFFF;
-  }
-  
-  /* Fusion Core Theme - Nuclear fusion inspired */
-  .theme-fusion {
-    --body-bg: #0F1219;
-    --surface-bg: #1A1F2E;
-    --primary: #FF6B00;
-    --primary-hover: #FF8533;
-    --secondary: #00CCFF;
-    --secondary-hover: #33D6FF;
-    --accent: #FFB300;
-    --text-primary: #FFFFFF;
-    --text-secondary: #FFD1B3;
-    --border-light: #2A3040;
-    --success: #00FF99;
-    --error: #FF3366;
-    --warning: #FFB300;
-    --info: #00CCFF;
-  }
-  
+  --body-bg: #001529;
+  --surface-bg: #002140;
+  --primary: #00F0FF;
+  --primary-hover: #33F3FF;
+  --secondary: #0066FF;
+  --secondary-hover: #3385FF;
+  --accent: #00FFFF;
+  --text-primary: #E6FFFF;
+  --text-secondary: #80D8FF;
+  --border-light: #003A66;
+  --success: #00FFD1;
+  --error: #FF0066;
+  --warning: #FFB300;
+  --info: #00F0FF;
+  --border-color: #003A66;
+}
+
+/* Neural Network Theme - Complex interconnected patterns */
+.theme-neural {
+  --body-bg: #0A0A1F;
+  --surface-bg: #12123A;
+  --primary: #00B8FF;
+  --primary-hover: #33C7FF;
+  --secondary: #FF00AA;
+  --secondary-hover: #FF33BB;
+  --accent: #AA00FF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B3E5FF;
+  --border-light: #1F1F47;
+  --success: #00FFB3;
+  --error: #FF0055;
+  --warning: #FFB300;
+  --info: #00B8FF;
+  --border-color: #1F1F47;
+}
+
+/* Nano Tech Theme - Microscopic technology inspired */
+.theme-nano {
+  --body-bg: #080F1A;
+  --surface-bg: #101C2E;
+  --primary: #00FF99;
+  --primary-hover: #33FFAD;
+  --secondary: #00CCFF;
+  --secondary-hover: #33D6FF;
+  --accent: #FF00CC;
+  --text-primary: #FFFFFF;
+  --text-secondary: #99FFD6;
+  --border-light: #1A2A40;
+  --success: #00FF99;
+  --error: #FF3366;
+  --warning: #FFCC00;
+  --info: #00CCFF;
+  --border-color: #1A2A40;
+}
+
+/* Augmented Reality Theme - Overlaid data visualization */
+.theme-augmented {
+  --body-bg: #0D1117;
+  --surface-bg: #161B22;
+  --primary: #FF3366;
+  --primary-hover: #FF5C85;
+  --secondary: #00FF99;
+  --secondary-hover: #33FFAD;
+  --accent: #FFB300;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B3FFE0;
+  --border-light: #21262D;
+  --success: #00FF99;
+  --error: #FF3366;
+  --warning: #FFB300;
+  --info: #00CCFF;
+  --border-color: #21262D;
+}
+
+/* Quantum Core Theme - Energy core visualization */
+.theme-quantum-core {
+  --body-bg: #0F0326;
+  --surface-bg: #1A0940;
+  --primary: #FF00FF;
+  --primary-hover: #FF33FF;
+  --secondary: #00FFFF;
+  --secondary-hover: #33FFFF;
+  --accent: #FF3366;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E6B3FF;
+  --border-light: #2B0959;
+  --success: #00FFB3;
+  --error: #FF3366;
+  --warning: #FFB300;
+  --info: #00FFFF;
+  --border-color: #2B0959;
+}
+
+/* Space Station Theme - Clean, utilitarian future */
+.theme-space-station {
+  --body-bg: #0A0C10;
+  --surface-bg: #141820;
+  --primary: #47B3FF;
+  --primary-hover: #66C1FF;
+  --secondary: #FF4785;
+  --secondary-hover: #FF66A3;
+  --accent: #00CC99;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B3D1FF;
+  --border-light: #1E2433;
+  --success: #00CC99;
+  --error: #FF4785;
+  --warning: #FFB347;
+  --info: #47B3FF;
+  --border-color: #1E2433;
+}
+
+/* AI Interface Theme - Advanced AI system interface */
+.theme-ai-interface {
+  --body-bg: #050D1A;
+  --surface-bg: #0A1629;
+  --primary: #00FF9D;
+  --primary-hover: #33FFB1;
+  --secondary: #FF00CC;
+  --secondary-hover: #FF33D6;
+  --accent: #00CCFF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #99FFD6;
+  --border-light: #14233;
+  --success: #00FF9D;
+  --error: #FF0066;
+  --warning: #FFB300;
+  --info: #00CCFF;
+  --border-color: #14233;
+}
+
+/* Cyber Grid Theme - Digital grid system */
+.theme-cyber-grid {
+  --body-bg: #000B14;
+  --surface-bg: #001829;
+  --primary: #00FF00;
+  --primary-hover: #33FF33;
+  --secondary: #00FFFF;
+  --secondary-hover: #33FFFF;
+  --accent: #FF00FF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #99FF99;
+  --border-light: #002233;
+  --success: #00FF00;
+  --error: #FF0000;
+  --warning: #FFFF00;
+  --info: #00FFFF;
+  --border-color: #002233;
+}
+
+/* Fusion Core Theme - Nuclear fusion inspired */
+.theme-fusion {
+  --body-bg: #0F1219;
+  --surface-bg: #1A1F2E;
+  --primary: #FF6B00;
+  --primary-hover: #FF8533;
+  --secondary: #00CCFF;
+  --secondary-hover: #33D6FF;
+  --accent: #FFB300;
+  --text-primary: #FFFFFF;
+  --text-secondary: #FFD1B3;
+  --border-light: #2A3040;
+  --success: #00FF99;
+  --error: #FF3366;
+  --warning: #FFB300;
+  --info: #00CCFF;
+  --border-color: #2A3040;
+}
+
+
   /* Biorhythm Theme - Organic technology patterns */
   .theme-biorhythm {
     --body-bg: #071417;
@@ -672,6 +708,7 @@
     --error: #FF3366;
     --warning: #FFB347;
     --info: #47E5FF;
+    --border-color: #1A3740;
   }
   
   /* Add these special effects for futuristic themes */

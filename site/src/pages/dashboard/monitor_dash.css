@@ -1,7 +1,23 @@
-/* fuzz.css */
+/* dashboard.css */
+.dashboard {
+  width: 100%; /* Dashboard fills its container */
+  height: 100%; /* Make dashboard take full height of nav-dashboard */
+  display: flex;
+  flex-direction: column; /* To make table-content expand vertically */
+}
+  
+.filter-area {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px; /* Add some padding for spacing */
+}
+
+
+
 .table-container {
     width: 99.8%;
-    height: 98%;
+    height: 99.8%;
     font-family: 'Inter', sans-serif;
     background-color: var(--body-bg);
     border: 1px solid var(--border-light);
@@ -28,7 +44,7 @@
     color: var(--text-secondary);
   }
   
-  .entries-dropdown select {
+  select {
     margin-left: 8px;
     padding: 6px 10px;
     border: 1px solid var(--border-light);
@@ -37,12 +53,10 @@
     appearance: none;
     background-color: var(--surface-bg);
     color: var(--text-primary);
-    background-image: url("data:image/svg+xml;utf8,<svg fill='%23FFFFFF' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
-    background-repeat: no-repeat;
-    background-position-x: 100%;
-    background-position-y: 5px;
     cursor: pointer;
+    outline: none;
   }
+
   
   .table-wrapper {
     overflow-x: auto; /* Enable horizontal scrolling */
@@ -380,12 +394,28 @@
     text-align: center;
   }
   
-  .dashboard-table th:nth-child(5),
-  .dashboard-table td:nth-child(5) {
+  .dashboard-table th:nth-child(5) {
     width: 10%;
     min-width: 140px; /* Increased min-width */
   }
-  
+  .dashboard-table td:nth-child(5) {
+    width: 10%;
+    min-width: 140px; /* Increased min-width */
+    /* Adjust font size to make the text smaller */
+    font-size: 14px;
+    /* Allow text to wrap to the next line */
+    white-space: normal;
+    word-break: break-word; /* If words are too long, break them */
+    overflow: visible; /* Ensure the content is visible even if it overflows vertically */
+    text-overflow: clip; /* Prevent text from being cut off with ellipsis */
+  }
+  .filter-area {
+    display: flex;
+    align-items: space-between;
+    gap: 10px;
+    margin-left: 15px;
+  }
+
   .dashboard-table th:nth-child(6),
   .dashboard-table td:nth-child(6) {
     width: 15%;
@@ -440,3 +470,19 @@
     color: yellow;
     margin-left: 10px;
   }
+
+
+
+
+.view-select {
+  /* ... other styles ... */
+  appearance: none;
+  -webkit-appearance: none; /* For Safari */
+  -moz-appearance: none; /* For Firefox */
+  background-color: var(--surface-bg);
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 30px; /* Make space for the arrow */
+}
+
+

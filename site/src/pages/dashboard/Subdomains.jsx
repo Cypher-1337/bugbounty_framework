@@ -119,7 +119,6 @@ const SubDomains = () => {
                         <option value="50">50</option>
                         <option value="100">100</option>
                     </select>
-                    entries
                 </div>
                 <input
                     value={localInputFilter}

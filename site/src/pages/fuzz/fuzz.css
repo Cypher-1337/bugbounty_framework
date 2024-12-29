@@ -1,42 +1,247 @@
-/* ... your existing fuzz.css ... */
+/* fuzz.css */
+
+.table-container {
+  width: 99.8%;
+  height: auto;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--body-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.table-header h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  flex-grow: 1;
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 16px;
+  display: table;
+  table-layout: fixed;
+  min-width: 100%;
+}
+
+.dashboard-table thead {
+  background-color: var(--surface-bg);
+  color: var(--text-secondary);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.dashboard-table tbody {
+  display: table-row-group;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  padding: 8px 15px;
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  text-align: left;
+}
+
+.dashboard-table th:nth-child(2),
+.dashboard-table td:nth-child(2) {
+  text-align: center;
+}
+
+.dashboard-table th:nth-child(3),
+.dashboard-table td:nth-child(3) {
+  text-align: center;
+}
+
+.dashboard-table th {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dashboard-table tbody tr:hover {
+  background-color: var(--surface-bg);
+}
 
 .asset-cell-link {
-    text-decoration: none;
-    color: var(--primary); /* Use your theme's primary color */
-    font-weight: 500;
-  }
-  
-  .asset-cell-link:hover {
-    text-decoration: underline;
-  }
-  
-  .action-cell {
-    text-align: center;
-  }
-  
-  .action-button {
-    background-color: var(--primary); /* Use your theme's primary color */
-    color: var(--body-bg);
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .action-button:hover {
-    background-color: var(--primary-hover); /* Use your theme's hover color */
-  }
-  
-  .interesting-indicator {
-    margin-left: 10px;
-    font-size: 1.2em;
-    color: orange; /* Or any color you prefer */
-  }
-  
-  .table-footer {
-    padding: 10px 20px;
-    text-align: right;
-    color: var(--text-secondary);
-    border-top: 1px solid var(--border-light);
-  }
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.asset-cell-link:hover {
+  text-decoration: underline;
+  color: var(--primary-hover);
+}
+
+.centered-cell {
+  text-align: center;
+}
+
+.action-cell {
+  text-align: center;
+}
+
+.action-button {
+  background-color: var(--primary);
+  color: var(--body-bg);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.interesting-indicator {
+  margin-left: 10px;
+  font-size: 1.2em;
+  color: orange;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 20px;
+  gap: 10px;
+}
+
+.pagination button {
+  background-color: var(--surface-bg);
+  color: var(--text-primary);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: var(--primary);
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination button.active {
+  background-color: var(--primary);
+  color: var(--body-bg);
+  font-weight: bold;
+}
+
+.table-footer {
+  padding: 10px 20px;
+  text-align: right;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-light);
+}
+
+.search-input {
+  padding: 8px 15px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background-color: var(--surface-bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  width: 250px;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2);
+}
+
+.toggle-button {
+  background-color: var(--surface-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.toggle-button:hover {
+  background-color: var(--primary);
+  color: var(--body-bg);
+}
+
+.toggle-button.active {
+  background-color: var(--primary);
+  color: var(--body-bg);
+}
+
+/* Column widths */
+.dashboard-table th:nth-child(1),
+.dashboard-table td:nth-child(1) {
+  width: 40%;
+  min-width: 200px;
+}
+
+.dashboard-table th:nth-child(2),
+.dashboard-table td:nth-child(2) {
+  width: 30%;
+  min-width: 150px;
+}
+
+.dashboard-table th:nth-child(3),
+.dashboard-table td:nth-child(3) {
+  width: 30%;
+  min-width: 150px;
+}
+
+/* Optional: Style the scrollbar */
+.table-wrapper::-webkit-scrollbar {
+  height: 8px;
+  background-color: var(--border-light);
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background-color: var(--text-secondary);
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-primary);
+}

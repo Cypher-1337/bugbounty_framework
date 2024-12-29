@@ -1,3 +1,4 @@
+// Sidebar.jsx
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import MonitorIcon from '@mui/icons-material/Monitor';
@@ -7,24 +8,24 @@ import { AuthContext } from '../../../auth';
 import './Sidebar.css';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; // Import the dropdown icon
 
 export default function Sidebar() {
-    const { data, setData } = useContext(AppContext);
+    const { data, setData, selectedView, setSelectedView } = useContext(AppContext);
     const { isAuth, loading, authData } = useContext(AuthContext);
     const location = useLocation();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
 
-    const handleDataChange = (value) => {
-        setData(value);
-        setIsDropdownOpen(false); // Close dropdown after selection
+    const handleViewChange = (event) => {
+        setSelectedView(event.target.value);
+        setIsDropdownOpen(false);
     };
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         function handleClickOutside(event) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -42,7 +43,6 @@ export default function Sidebar() {
         return <div className='sidebar-loading'>Loading...</div>;
     }
 
-    // Conditionally render the sidebar content based on authentication
     return (
         isAuth && (
             <nav className={`sidebar dark`}>
@@ -55,7 +55,6 @@ export default function Sidebar() {
                             </Link>
                         </li>
 
-                      
                         <li className={`nav-item ${location.pathname === '/fuzz' ? 'active' : ''}`}>
                             <Link to="/fuzz" className="nav-link">
                                 <AssessmentOutlinedIcon className="nav-icon" />
@@ -68,9 +67,27 @@ export default function Sidebar() {
                                 Monitor
                             </Link>
                         </li>
-
                     </ul>
                 </div>
+                {location.pathname === '/dashboard' && (
+                    <div className="sidebar-bottom">
+                        <div className="custom-select">
+                            <select
+                                id="view-select"
+                                className="select"
+                                value={selectedView}
+                                onChange={handleViewChange}
+                            >
+                                <option value="alive">Alive</option>
+                                <option value="domains">Domains</option>
+                                <option value="subdomains">Subdomains</option>
+                            </select>
+                            <div className="select-arrow">
+                                <ArrowDropDownIcon />
+                            </div>
+                        </div>
+                    </div>
+                )}
             </nav>
         )
     );

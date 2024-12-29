@@ -1,31 +1,18 @@
 // dashboard.jsx
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react'; // Import useContext
 import Domains from './Domains'
 import Alive from './Alive'
 import Subdomains from './Subdomains'
+import { AppContext } from '../../App'; // Import AppContext
 
 export default function DomainsData() {
-  const [selectedView, setSelectedView] = useState('alive'); // Default to 'alive'
-
-  const handleViewChange = (event) => {
-    setSelectedView(event.target.value);
-  };
+  const { selectedView } = useContext(AppContext); // Get selectedView from context
 
   return (
     <div className='dashboard'>
-      <div>
-        <label htmlFor="view-select">Select View:</label>
-        <select id="view-select" value={selectedView} onChange={handleViewChange}>
-          <option value="alive">Alive</option>
-          <option value="domains">Domains</option>
-          <option value="subdomains">Subdomains</option>
-        </select>
-      </div>
-
-      {selectedView === 'alive' && <Alive />}
-      {selectedView === 'domains' && <Domains />}
-      {selectedView === 'subdomains' && <Subdomains />}
-
+          {selectedView === 'alive' && <Alive />}
+          {selectedView === 'domains' && <Domains />}
+          {selectedView === 'subdomains' && <Subdomains />}
     </div>
   );
 }
