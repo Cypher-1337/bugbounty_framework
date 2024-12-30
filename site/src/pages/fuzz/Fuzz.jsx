@@ -6,7 +6,7 @@ const Fuzz = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(100); // Set items per page to 100
   const [searchTerm, setSearchTerm] = useState('');
   const [hideZeroDirectories, setHideZeroDirectories] = useState(false);
 
@@ -20,7 +20,7 @@ const Fuzz = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setFuzzData(data.slice(0, 1000)); // Limit to the first 1000 entries
+        setFuzzData(data); // Remove the limit to the first 1000 entries
       } catch (error) {
         console.error("Could not fetch fuzz data:", error);
         setError(error);
