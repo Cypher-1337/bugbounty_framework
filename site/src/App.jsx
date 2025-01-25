@@ -7,7 +7,6 @@ import Dashboard from './pages/dashboard/Dashboard';
 import { createContext, useState, useEffect } from 'react';
 import Monitor from './pages/monitor/monitor';
 import Display from './pages/monitor/Display';
-import Fuzz from './pages/fuzz/Fuzz';
 import Login from './pages/login/Login';
 import { AuthProvider } from './auth';
 import ProtectedRoute from './components/protectedRoute';
@@ -21,43 +20,7 @@ function App() {
   const [selectedView, setSelectedView] = useState('alive'); // Move selectedView state here
 
   const themes = [
-    'theme-cyberpunk',
-    'theme-retro-wave',
-    'theme-matrix',
-    'theme-midnight',
-    'theme-sunset',
-    'theme-neon',
-    'theme-golden',
-    'theme-arctic',
-    'theme-forest',
-    'theme-volcanic',
-    'theme-ocean',
-    'theme-amethyst',
-    'theme-cherry',
-    'theme-space',
-    'theme-electric',
-    'theme-desert',
-    'theme-hacker',
-    'theme-vapor-dream',
-    'theme-bio-tech',
-    'theme-quantum',
-    'theme-blood-moon',
-    'theme-crystal',
-    'theme-ancient',
-    'theme-aurora',
-    'theme-digital-rain',
-    'theme-deep-sea',
-    'theme-cosmic',
-    'theme-hologram',
-    'theme-neural',
-    'theme-nano',
-    'theme-augmented',
-    'theme-quantum-core',
-    'theme-space-station',
-    'theme-ai-interface',
-    'theme-cyber-grid',
-    'theme-fusion',
-    'theme-biorhythm'
+    'dark-theme'
   ];
 
   useEffect(() => {
@@ -89,10 +52,7 @@ function App() {
                     path='/monitor/display'
                     element={<ProtectedRoute><Display /></ProtectedRoute>}
                 />
-                 <Route
-                    path='/fuzz'
-                    element={<ProtectedRoute><Fuzz /></ProtectedRoute>}
-                />
+
                 {/* <Route
                     path='/endpoints'
                     element={<ProtectedRoute><Endpoint /></ProtectedRoute>}

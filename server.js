@@ -12,7 +12,6 @@ const loginRoute = require('./routes/auth/loginRoute')
 const checkRoute = require('./routes/auth/checkRoute')
 const changesRoute = require('./routes/changesRoute')
 const testingRoute = require('./routes/testRoute')
-const fuzzingRoute = require('./routes/fuzz/fuzzRoute')
 
 const http = require('http');
 
@@ -41,7 +40,6 @@ app.use('/api/v1/monitor', validateToken, checkAdmin, monitorRoute);
 app.use('/api/v1/download', downloadRoute); 
 app.use('/api/v1/changes', changesRoute )
 app.use('/api/v1/testing', testingRoute)
-app.use('/api/v1/fuzz', fuzzingRoute)
 
 const port = 5000;
 

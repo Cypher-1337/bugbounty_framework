@@ -1,95 +1,194 @@
 .highlight {
-    color: var(--primary);
-    font-weight: bold;
-  }
+  color: var(--primary);
+  font-weight: bold;
+}
 
-.table-content{
-    height: 850px;
+
+.monitor-table-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 97.70%;
+  border: none;
+  background-color: var(--surface-bg); /* Added background color */
+  padding: 20px; /* Added some padding to the container */
+  border-radius: 8px; /* Added some border-radius for a softer look */
 }
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 97.70%;
-    border: none;
-    background-color: var(--surface-bg); /* Added background color */
-    padding: 20px; /* Added some padding to the container */
-    border-radius: 8px; /* Added some border-radius for a softer look */
+
+.monitor-table-wrapper {
+  overflow-x: auto; /* Enable horizontal scrolling */
+  flex-grow: 1; /* Allow it to take up remaining vertical space */
 }
+
+.monitor-dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 16px;
+  display: table; /* Change to table to allow thead/tbody structure */
+  table-layout: fixed; /* Ensure table-layout is fixed */
+  min-width: 100%; /* Ensure the table is at least as wide as its container */
+}
+
+.monitor-dashboard-table thead {
+  background-color: var(--surface-bg);
+  color: var(--text-secondary);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.monitor-dashboard-table tbody {
+  display: table-row-group; /* Needed for proper table structure */
+}
+
+.monitor-dashboard-table th,
+.monitor-dashboard-table td {
+  padding: 8px 15px;
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  text-align: center; /* Center text for all cells by default */
+}
+
+.monitor-dashboard-table td:nth-child(1) {
+  text-align: left; /* Override for the ASSET column */
+}
+
+.monitor-dashboard-table th {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.monitor-dashboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.monitor-dashboard-table tbody tr:hover {
+  background-color: var(--surface-bg);
+}
+
+.monitor-asset-cell {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.monitor-asset-cell a {
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: color 0.2s ease;
+  display: block;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.monitor-asset-cell a:hover {
+  color: var(--primary-hover);
+}
+
+
+.monitor-centered-cell {
+  text-align: center;
+}
+
+.monitor-sort-header-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  gap: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* Ensure button takes full width of the cell */
+}
+
+.monitor-sort-header-button:focus {
+  outline: none;
+}
+
 
 .bloc-tabs {
-    display: flex;
-    height: 60px;
-    margin: 0;
-    padding: 0;
+  display: flex;
+  height: 60px;
+  margin: 0;
+  padding: 0;
 }
 
 .tabs {
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    cursor: pointer;
-    border: 1px solid var(--border-light);
-    flex: 1;
-    background-color: var(--surface-bg); /* Match background */
-    color: var(--text-primary);
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid var(--border-light);
+  flex: 1;
+  background-color: var(--surface-bg); /* Match background */
+  color: var(--text-primary);
 }
 
 .active-tabs {
-    background-color: var(--primary);
-    border: 1px solid transparent;
-    border-bottom: 2px solid var(--accent);
-    color: var(--text-primary);
+  background-color: var(--primary);
+  border: 1px solid transparent;
+  border-bottom: 2px solid var(--accent);
+  color: var(--text-primary);
 }
 
 .content {
-    background-color: var(--body-bg); /* Adjusted for better visibility */
-    backdrop-filter: blur(10px);
-    background-clip: padding-box;
-    width: 100%;
-    display: none;
-    padding: 20px; /* Added padding to the content area */
-    border-radius: 8px; /* Match container border-radius */
+  background-color: var(--body-bg); /* Adjusted for better visibility */
+  backdrop-filter: blur(10px);
+  background-clip: padding-box;
+  width: 100%;
+  display: none;
+  padding: 20px; /* Added padding to the content area */
+  border-radius: 8px; /* Match container border-radius */
 }
 
 .active-content {
-    display: block;
+  display: block;
 }
 
 /* Add Tab */
 
 .add{
-    padding: 40px 80px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center content horizontally */
-    justify-content: flex-start; /* Align content to the top */
+  padding: 40px 80px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+  justify-content: flex-start; /* Align content to the top */
 }
 
 .add-content{
-    width: 100%;
-    max-width: 800px; /* Limit the width of the content */
-    padding: 30px;
-    background-color: var(--surface-bg);
-    border-radius: 12px;
-    box-shadow: 0 4px 8px var(--surface-bg);
+  width: 100%;
+  max-width: 800px; /* Limit the width of the content */
+  padding: 30px;
+  background-color: var(--surface-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px var(--surface-bg);
 }
 
 .add-field{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .add-results{
-    height: auto; /* Adjust height automatically */
-    border: 1px solid var(--border-light);
-    background-color: var(--body-bg); /* Adjusted background */
-    border-radius: 8px;
-    padding: 20px;
-    color: var(--text-primary);
+  height: auto; /* Adjust height automatically */
+  border: 1px solid var(--border-light);
+  background-color: var(--body-bg); /* Adjusted background */
+  border-radius: 8px;
+  padding: 20px;
+  color: var(--text-primary);
 }
 
 /* display  */
@@ -113,48 +212,49 @@
 }
 
 .notification{
-    background-color: var(--error) !important;
-    color: var(--text-primary) !important;
+  background-color: var(--error) !important;
+  color: var(--text-primary) !important;
 }
 
 .notification_ai{
-    background-color: var(--info) !important;
-    color: var(--text-primary) !important;
+  background-color: var(--info) !important;
+  color: var(--text-primary) !important;
 }
 
 .display-header{
-    display: flex;
-    margin: 0 20px;
-    color: var(--text-primary);
+  display: flex;
+  margin: 0 20px;
+  color: var(--text-primary);
 }
 
 /* Specific styles for table cell widths */
-.dashboard-table th:nth-child(1),
-.dashboard-table td:nth-child(1) {
-  width: 8%; /* Adjust as needed for Count */
+.monitor-dashboard-table th:nth-child(1),
+.monitor-dashboard-table td:nth-child(1) {
+  width: 2%; /* Adjust as needed for Count */
+  text-align: center;
 }
 
-.dashboard-table th:nth-child(2),
-.dashboard-table td:nth-child(2) {
-  width: 60%; /* Adjust as needed for URL */
+.monitor-dashboard-table th:nth-child(2),
+.monitor-dashboard-table td:nth-child(2) {
+  width: 30%; /* Adjust as needed for URL */
 }
 
-.dashboard-table th:nth-child(3),
-.dashboard-table td:nth-child(3) {
+.monitor-dashboard-table th:nth-child(3),
+.monitor-dashboard-table td:nth-child(3) {
   width: 10%; /* Adjust as needed for Display */
 }
 
-.dashboard-table th:nth-child(4),
-.dashboard-table td:nth-child(4) {
+.monitor-dashboard-table th:nth-child(4),
+.monitor-dashboard-table td:nth-child(4) {
   width: 12%; /* Adjust as needed for Date */
 }
 
-.dashboard-table th:nth-child(5),
-.dashboard-table td:nth-child(5) {
+.monitor-dashboard-table th:nth-child(5),
+.monitor-dashboard-table td:nth-child(5) {
   width: 5%; /* Adjust as needed for Edit */
 }
 
-.dashboard-table th:nth-child(6),
-.dashboard-table td:nth-child(6) {
+.monitor-dashboard-table th:nth-child(6),
+.monitor-dashboard-table td:nth-child(6) {
   width: 5%; /* Adjust as needed for Delete */
 }

@@ -15,6 +15,10 @@ function Dashboard() {
     const [modalOpen, setModalOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [sortConfig, setSortConfig] = useState({ key: 'count', direction: 'descending' });
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(100);
+    const [searchTerm, setSearchTerm] = useState('');
+
 
     const navigate = useNavigate();
 
@@ -42,6 +46,7 @@ function Dashboard() {
         fetchMonitorData()
     );
 
+   
     const {
         data: notificationsData,
         isLoading: isLoadingNotifications,
@@ -49,22 +54,19 @@ function Dashboard() {
     } = useQuery(['notificationsData'], fetchMonitorNotifications);
 
     const formattedMonitorData = useMemo(() => {
-        if (!data) return [];
-        const formatted = formatMonitorData(data);
-        if (!isLoadingNotifications && !isErrorNotifications && notificationsData) {
-            notificationsData.forEach((notification) => {
-                formatted.forEach((row) => {
-                    if (row.url === notification.base_url) {
-                        if (notification.ai > 0) {
-                            row.hasAi = true;
-                        }
-                        row.count += 1;
-                    }
-                });
-            });
-        }
-        return formatted;
-    }, [data, isLoadingNotifications, isErrorNotifications, notificationsData]);
+        if (!data || !notificationsData) return [];
+        
+        const notificationMap = notificationsData.reduce((acc, notification) => {
+          acc[notification.base_url] = notification;
+          return acc;
+        }, {});
+      
+        return formatMonitorData(data).map(row => ({
+          ...row,
+          hasAi: notificationMap[row.url]?.ai > 0 || false,
+          count: notificationMap[row.url]?.count || 0
+        }));
+      }, [data, notificationsData]); // Only essential dependencies
 
     const sortedData = useMemo(() => {
         if (!sortConfig.key) {
@@ -112,64 +114,82 @@ function Dashboard() {
         return null;
     };
 
+     // Pagination Logic
+     const indexOfLastItem = currentPage * itemsPerPage;
+     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+     const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
+ 
+     const paginate = (pageNumber) => setCurrentPage(pageNumber);
+     const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+ 
+     const firstItemOnPage = Math.min(indexOfFirstItem + 1, sortedData.length);
+     const lastItemOnPage = Math.min(indexOfLastItem, sortedData.length);
+
+     
     return (
-        <div className="table-container">
+        <div className="monitor-table-container">
             <Helmet>
                 <title>Monitor</title>
             </Helmet>
-            <div className="table-wrapper">
-                <table className="dashboard-table">
+            <div className="monitor-table-wrapper">
+                <div className="entries-dropdown">
+                    Show
+                    <select value={itemsPerPage} onChange={(e) => {
+                        setItemsPerPage(parseInt(e.target.value, 10));
+                        setCurrentPage(1);
+                    }}>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <table className="monitor-dashboard-table">
                     <thead>
                         <tr>
-                            <th style={{ width: '8%' }}>
-                                <button className="sort-header-button" onClick={() => handleSort('count')}>
+                            <th>
+                                <button className="monitor-sort-header-button" onClick={() => handleSort('count')}>
                                     Count{getSortIndicator('count')}
                                 </button>
                             </th>
-                            <th style={{ width: '60%' }}>
-                                <button className="sort-header-button" onClick={() => handleSort('url')}>
+                            <th>
+                                <button className="monitor-sort-header-button" onClick={() => handleSort('url')}>
                                     Url{getSortIndicator('url')}
                                 </button>
                             </th>
-                            <th style={{ width: '10%' }}>Display</th>
-                            <th style={{ width: '12%' }}>
-                                <button className="sort-header-button" onClick={() => handleSort('date')}>
+                            <th >Display</th>
+                            <th >
+                                <button className="monitor-sort-header-button" onClick={() => handleSort('date')}>
                                     Date{getSortIndicator('date')}
                                 </button>
                             </th>
-                            <th style={{ width: '5%' }}>Edit</th>
-                            <th style={{ width: '5%' }}>Delete</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedData.map((row) => (
+                        {currentData.map((row) => (
                             <tr key={row.id}>
                                 <td
-                                    className="table-cell centered-cell"
+                                    className="monitor-table-cell monitor-centered-cell"
                                     style={{
-                                        width: '8%',
-                                        backgroundColor: row.count !== 0 && !row.hasAi
-                                            ? '#15ea1f57' // Use your --success color with transparency
-                                            : row.count !== 0 && row.hasAi
-                                                ? 'rgba(0, 95, 173, 0.58)' // A light blue color
-                                                : 'inherit',
+
+                                        backgroundColor: row.count !== 0 ? 'rgba(35, 173, 0, 0.58)' : 'inherit',
                                     }}
                                 >
                                     <span className={row.hasAi ? 'highlight' : ''}>{row.count}</span>
                                 </td>
-                                <td className="table-cell" style={{ width: '60%' }}>
-                                    <div className="asset-cell">
+                                <td className="monitor-table-cell" style={{ width: '45%' }}>
+                                    <div className="monitor-asset-cell">
                                         <a
                                             href={row.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            style={{ display: 'block', color: 'var(--primary)' }}
                                         >
                                             {row.url}
                                         </a>
                                     </div>
                                 </td>
-                                <td className="table-cell centered-cell" style={{ width: '10%' }}>
+                                <td className="monitor-table-cell monitor-centered-cell">
                                     <Button
                                         variant="outlined"
                                         style={{ color: 'var(--info)', borderColor: 'var(--info)' }}
@@ -179,11 +199,11 @@ function Dashboard() {
                                         Display
                                     </Button>
                                 </td>
-                                <td className="table-cell centered-cell" style={{ width: '12%' }}>
+                                <td className="monitor-table-cell monitor-centered-cell">
                                     {format(new Date(row.date), 'dd-MM-yyyy')}
                                 </td>
 
-                                <td className="table-cell centered-cell" style={{ width: '5%' }}>
+                                <td className="monitor-table-cell monitor-centered-cell" style={{ width: '5%' }}>
                                     <Button
                                         variant="contained"
                                         style={{ backgroundColor: 'var(--success)' }}
@@ -193,7 +213,7 @@ function Dashboard() {
                                         Edit
                                     </Button>
                                 </td>
-                                <td className="table-cell centered-cell" style={{ width: '5%' }}>
+                                <td className="monitor-table-cell monitor-centered-cell" style={{ width: '5%' }}>
                                     <Button
                                         variant="contained"
                                         style={{ backgroundColor: 'var(--error)' }}
@@ -207,8 +227,17 @@ function Dashboard() {
                         ))}
                     </tbody>
                 </table>
+                
             </div>
-
+            <div className="pagination">
+        <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+          Previous
+        </button>
+        <span>{firstItemOnPage} - {lastItemOnPage} of {sortedData.length}</span>
+        <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>
+          Next
+        </button>
+      </div>
             <Modal open={deleteModalOpen} onClose={handleCloseDeleteModal}>
                 <DeleteModal monitorId={monitorId} onClose={handleCloseDeleteModal} />
             </Modal>
@@ -216,6 +245,7 @@ function Dashboard() {
             <Modal open={modalOpen} onClose={handleCloseEditModal}>
                 <EditModal monitorId={monitorId} onClose={handleCloseEditModal} />
             </Modal>
+            
         </div>
     );
 }

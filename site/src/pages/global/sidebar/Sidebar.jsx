@@ -6,7 +6,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { AppContext } from '../../../App';
 import { AuthContext } from '../../../auth';
 import './Sidebar.css';
-import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; // Import the dropdown icon
 
@@ -55,12 +54,6 @@ export default function Sidebar() {
                             </Link>
                         </li>
 
-                        <li className={`nav-item ${location.pathname === '/fuzz' ? 'active' : ''}`}>
-                            <Link to="/fuzz" className="nav-link">
-                                <AssessmentOutlinedIcon className="nav-icon" />
-                                Fuzz
-                            </Link>
-                        </li>
                         <li className={`nav-item ${location.pathname === '/monitor' ? 'active' : ''}`}>
                             <Link to="/monitor" className="nav-link">
                                 <MonitorIcon className="nav-icon" />

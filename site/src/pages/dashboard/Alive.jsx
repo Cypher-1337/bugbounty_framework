@@ -2,8 +2,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { fetchAliveData, formatAliveData } from '../../data/allAliveData';
 import { AppContext } from '../../App';
-import TextField from '@mui/material/TextField';
-import './monitor_dash.css';
+import { Helmet } from 'react-helmet';
+
+import './alive.css';
 
 const Alive = () => {
   const [tableData, setTableData] = useState([]);
@@ -155,6 +156,9 @@ const Alive = () => {
 
   return (
     <div className="table-container">
+      <Helmet>
+          <title>Dashboard</title>
+      </Helmet>
       <div className='filter-area'>
         <div className="entries-dropdown">
           Show
@@ -197,11 +201,7 @@ const Alive = () => {
                   ASSET{getSortIndicator('alive')}
                 </button>
               </th>
-              <th>
-                <button className="sort-header-button" onClick={() => handleSort('title')}>
-                  TITLE{getSortIndicator('title')}
-                </button>
-              </th>
+              
               <th>
                 <button className="sort-header-button" onClick={() => handleSort('status')}>
                   STATUS{getSortIndicator('status')}
@@ -209,7 +209,12 @@ const Alive = () => {
               </th>
               <th>
                 <button className="sort-header-button" onClick={() => handleSort('size')}>
-                  CONTENT LENGTH{getSortIndicator('size')}
+                  SIZE{getSortIndicator('size')}
+                </button>
+              </th>
+              <th>
+                <button className="sort-header-button" onClick={() => handleSort('title')}>
+                  TITLE{getSortIndicator('title')}
                 </button>
               </th>
               <th>
@@ -303,7 +308,6 @@ const Alive = () => {
                       )}
                     </div>
                   </td>
-                  <td className="centered-cell">{row.title}</td>
                   <td className="centered-cell">
                     <div className="status-code-cell">
                       <span className={`status-code status-code-${Math.floor(row.status / 100)}xx`}>{row.status}</span>
@@ -316,6 +320,7 @@ const Alive = () => {
                       </span>
                     </div>
                   </td>
+                  <td className="centered-cell">{row.title}</td>
                   <td className="centered-cell">{Array.isArray(row.tech) ? row.tech.join(', ') : row.tech}</td>
                   <td className="centered-cell">{row.comment}</td>
                   <td className={`centered-cell ${isToday ? 'today-date' : ''}`}>

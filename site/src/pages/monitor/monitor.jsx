@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Add from './Add';
-import './monitor.css'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import GridViewIcon from '@mui/icons-material/GridView';
 import Dashboard from './Dashboard';
